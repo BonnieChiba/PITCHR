@@ -16,7 +16,7 @@ namespace PITCHR
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EmprendimientoGuest());
+            Application.Run(new CrearCuentaInversor());
         }
     }
 }
