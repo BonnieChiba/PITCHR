@@ -90,7 +90,7 @@ namespace PITCHR
             this.TerminosLink.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.TerminosLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.TerminosLink.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(153)))), ((int)(((byte)(247)))));
-            this.TerminosLink.Location = new System.Drawing.Point(193, 527);
+            this.TerminosLink.Location = new System.Drawing.Point(197, 526);
             this.TerminosLink.Name = "TerminosLink";
             this.TerminosLink.Size = new System.Drawing.Size(197, 21);
             this.TerminosLink.TabIndex = 10;
