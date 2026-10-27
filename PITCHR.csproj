@@ -91,6 +91,12 @@
     <Compile Include="EmprendimientoGuest.Designer.cs">
       <DependentUpon>EmprendimientoGuest.cs</DependentUpon>
     </Compile>
+    <Compile Include="IniciaAqui.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IniciaAqui.Designer.cs">
+      <DependentUpon>IniciaAqui.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CrearCuentaInversor.resx">
@@ -98,6 +104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EmprendimientoGuest.resx">
       <DependentUpon>EmprendimientoGuest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IniciaAqui.resx">
+      <DependentUpon>IniciaAqui.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
