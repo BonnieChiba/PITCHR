@@ -78,6 +78,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrearCuentaEmprendedor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CrearCuentaEmprendedor.Designer.cs">
+      <DependentUpon>CrearCuentaEmprendedor.cs</DependentUpon>
+    </Compile>
     <Compile Include="CrearCuentaInversor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CrearCuentaEmprendedor.resx">
+      <DependentUpon>CrearCuentaEmprendedor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrearCuentaInversor.resx">
       <DependentUpon>CrearCuentaInversor.cs</DependentUpon>
     </EmbeddedResource>

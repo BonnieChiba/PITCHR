@@ -46,9 +46,9 @@ namespace PITCHR
             ((System.ComponentModel.ISupportInitialize)(this.EmprendedorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RegresarPictureBox)).BeginInit();
             this.SuspendLayout();
-            //
+            // 
             // TituloLabel
-            //
+            // 
             this.TituloLabel.BackColor = System.Drawing.Color.Transparent;
             this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 80F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.TituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
@@ -58,9 +58,9 @@ namespace PITCHR
             this.TituloLabel.TabIndex = 0;
             this.TituloLabel.Text = "Inicia Aquí";
             this.TituloLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // EnfoqueLabel
-            //
+            // 
             this.EnfoqueLabel.BackColor = System.Drawing.Color.Transparent;
             this.EnfoqueLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 50F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.EnfoqueLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
@@ -70,9 +70,9 @@ namespace PITCHR
             this.EnfoqueLabel.TabIndex = 1;
             this.EnfoqueLabel.Text = "¿Cuál es tu enfoque?";
             this.EnfoqueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // InversorPanel
-            //
+            // 
             this.InversorPanel.BackColor = System.Drawing.Color.White;
             this.InversorPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("InversorPanel.BackgroundImage")));
             this.InversorPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -84,9 +84,9 @@ namespace PITCHR
             this.InversorPanel.Size = new System.Drawing.Size(527, 366);
             this.InversorPanel.TabIndex = 2;
             this.InversorPanel.Click += new System.EventHandler(this.InversorPanel_Click);
-            //
+            // 
             // InversorLabel
-            //
+            // 
             this.InversorLabel.BackColor = System.Drawing.Color.Transparent;
             this.InversorLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 60F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.InversorLabel.ForeColor = System.Drawing.Color.White;
@@ -96,9 +96,9 @@ namespace PITCHR
             this.InversorLabel.TabIndex = 1;
             this.InversorLabel.Text = "Inversor";
             this.InversorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // InversorPictureBox
-            //
+            // 
             this.InversorPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.InversorPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("InversorPictureBox.Image")));
             this.InversorPictureBox.Location = new System.Drawing.Point(178, 60);
@@ -107,9 +107,9 @@ namespace PITCHR
             this.InversorPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.InversorPictureBox.TabIndex = 0;
             this.InversorPictureBox.TabStop = false;
-            //
+            // 
             // EmprendedorPanel
-            //
+            // 
             this.EmprendedorPanel.BackColor = System.Drawing.Color.White;
             this.EmprendedorPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("EmprendedorPanel.BackgroundImage")));
             this.EmprendedorPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -121,9 +121,10 @@ namespace PITCHR
             this.EmprendedorPanel.Size = new System.Drawing.Size(527, 366);
             this.EmprendedorPanel.TabIndex = 3;
             this.EmprendedorPanel.Click += new System.EventHandler(this.EmprendedorPanel_Click);
-            //
+            this.EmprendedorPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.EmprendedorPanel_Paint);
+            // 
             // EmprendedorLabel
-            //
+            // 
             this.EmprendedorLabel.BackColor = System.Drawing.Color.Transparent;
             this.EmprendedorLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 60F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.EmprendedorLabel.ForeColor = System.Drawing.Color.White;
@@ -133,9 +134,9 @@ namespace PITCHR
             this.EmprendedorLabel.TabIndex = 1;
             this.EmprendedorLabel.Text = "Emprendedor";
             this.EmprendedorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // EmprendedorPictureBox
-            //
+            // 
             this.EmprendedorPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.EmprendedorPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("EmprendedorPictureBox.Image")));
             this.EmprendedorPictureBox.Location = new System.Drawing.Point(178, 60);
@@ -144,9 +145,9 @@ namespace PITCHR
             this.EmprendedorPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.EmprendedorPictureBox.TabIndex = 0;
             this.EmprendedorPictureBox.TabStop = false;
-            //
+            // 
             // RegresarPictureBox
-            //
+            // 
             this.RegresarPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.RegresarPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RegresarPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("RegresarPictureBox.Image")));
@@ -157,9 +158,9 @@ namespace PITCHR
             this.RegresarPictureBox.TabIndex = 4;
             this.RegresarPictureBox.TabStop = false;
             this.RegresarPictureBox.Click += new System.EventHandler(this.RegresarPictureBox_Click);
-            //
+            // 
             // YaTienesCuentaLabel
-            //
+            // 
             this.YaTienesCuentaLabel.BackColor = System.Drawing.Color.Transparent;
             this.YaTienesCuentaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.YaTienesCuentaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
@@ -169,9 +170,9 @@ namespace PITCHR
             this.YaTienesCuentaLabel.TabIndex = 5;
             this.YaTienesCuentaLabel.Text = "¿Ya tienes una cuenta?";
             this.YaTienesCuentaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
             // IniciarSesionLink
-            //
+            // 
             this.IniciarSesionLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
             this.IniciarSesionLink.BackColor = System.Drawing.Color.Transparent;
             this.IniciarSesionLink.Font = new System.Drawing.Font("Plus Jakarta Sans", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
@@ -186,12 +187,12 @@ namespace PITCHR
             this.IniciarSesionLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.IniciarSesionLink.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(197)))), ((int)(((byte)(251)))));
             this.IniciarSesionLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.IniciarSesionLink_LinkClicked);
-            //
+            // 
             // IniciaAqui
-            //
+            // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1280, 832);
+            this.ClientSize = new System.Drawing.Size(1280, 749);
             this.Controls.Add(this.IniciarSesionLink);
             this.Controls.Add(this.YaTienesCuentaLabel);
             this.Controls.Add(this.RegresarPictureBox);

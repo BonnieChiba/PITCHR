@@ -26,12 +26,9 @@ namespace PITCHR
         // Tarjeta naranja "Emprendedor"
         private void EmprendedorPanel_Click(object sender, EventArgs e)
         {
-            // Cuando agreguen la pantalla CrearCuentaEmprendedor al proyecto, quiten las // de estas 3 líneas
-            // y borren el MessageBox:
-            // CrearCuentaEmprendedor pantalla = new CrearCuentaEmprendedor();
-            // pantalla.Show();
-            // this.Hide();
-            MessageBox.Show("La pantalla para emprendedores estará disponible próximamente.", "Pitcher");
+            CrearCuentaEmprendedor pantalla = new CrearCuentaEmprendedor();
+            pantalla.Show();
+            this.Hide();
         }
 
         // Flecha de regresar
@@ -231,5 +228,10 @@ namespace PITCHR
         }
 
         #endregion
+
+        private void EmprendedorPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

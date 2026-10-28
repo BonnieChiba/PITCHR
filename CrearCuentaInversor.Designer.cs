@@ -36,6 +36,7 @@ namespace PITCHR
             this.CuadroBlancoTexto = new System.Windows.Forms.Panel();
             this.TerminosLink = new System.Windows.Forms.LinkLabel();
             this.RFCInversorTextbox = new System.Windows.Forms.MaskedTextBox();
+            this.CiudadInversorTextBox = new System.Windows.Forms.TextBox();
             this.RegistrarseBoton = new System.Windows.Forms.Button();
             this.TerminosCheckbox = new System.Windows.Forms.CheckBox();
             this.NombreTextbox = new System.Windows.Forms.TextBox();
@@ -67,6 +68,7 @@ namespace PITCHR
             this.CuadroBlancoTexto.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.CuadroBlancoTexto.Controls.Add(this.TerminosLink);
             this.CuadroBlancoTexto.Controls.Add(this.RFCInversorTextbox);
+            this.CuadroBlancoTexto.Controls.Add(this.CiudadInversorTextBox);
             this.CuadroBlancoTexto.Controls.Add(this.RegistrarseBoton);
             this.CuadroBlancoTexto.Controls.Add(this.TerminosCheckbox);
             this.CuadroBlancoTexto.Controls.Add(this.NombreTextbox);
@@ -79,7 +81,7 @@ namespace PITCHR
             this.CuadroBlancoTexto.Controls.Add(this.CrearCuentaLabel);
             this.CuadroBlancoTexto.Location = new System.Drawing.Point(80, 84);
             this.CuadroBlancoTexto.Name = "CuadroBlancoTexto";
-            this.CuadroBlancoTexto.Size = new System.Drawing.Size(578, 674);
+            this.CuadroBlancoTexto.Size = new System.Drawing.Size(578, 704);
             this.CuadroBlancoTexto.TabIndex = 0;
             // 
             // TerminosLink
@@ -90,22 +92,32 @@ namespace PITCHR
             this.TerminosLink.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.TerminosLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.TerminosLink.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(153)))), ((int)(((byte)(247)))));
-            this.TerminosLink.Location = new System.Drawing.Point(197, 526);
+            this.TerminosLink.Location = new System.Drawing.Point(197, 566);
             this.TerminosLink.Name = "TerminosLink";
             this.TerminosLink.Size = new System.Drawing.Size(197, 21);
-            this.TerminosLink.TabIndex = 10;
+            this.TerminosLink.TabIndex = 11;
             this.TerminosLink.TabStop = true;
             this.TerminosLink.Text = "ver Terminos y condiciones";
             // 
             // RFCInversorTextbox
             // 
             this.RFCInversorTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RFCInversorTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.RFCInversorTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RFCInversorTextbox.Location = new System.Drawing.Point(99, 463);
             this.RFCInversorTextbox.Name = "RFCInversorTextbox";
             this.RFCInversorTextbox.Size = new System.Drawing.Size(363, 23);
             this.RFCInversorTextbox.TabIndex = 8;
             this.RFCInversorTextbox.Tag = "RFC";
+            // 
+            // CiudadInversorTextBox
+            // 
+            this.CiudadInversorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.CiudadInversorTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.CiudadInversorTextBox.Location = new System.Drawing.Point(99, 508);
+            this.CiudadInversorTextBox.Name = "CiudadInversorTextBox";
+            this.CiudadInversorTextBox.Size = new System.Drawing.Size(363, 23);
+            this.CiudadInversorTextBox.TabIndex = 9;
+            this.CiudadInversorTextBox.Tag = "Ciudad";
             // 
             // RegistrarseBoton
             // 
@@ -117,12 +129,12 @@ namespace PITCHR
             this.RegistrarseBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.RegistrarseBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.RegistrarseBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RegistrarseBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegistrarseBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.RegistrarseBoton.ForeColor = System.Drawing.Color.White;
-            this.RegistrarseBoton.Location = new System.Drawing.Point(146, 563);
+            this.RegistrarseBoton.Location = new System.Drawing.Point(146, 600);
             this.RegistrarseBoton.Name = "RegistrarseBoton";
             this.RegistrarseBoton.Size = new System.Drawing.Size(272, 56);
-            this.RegistrarseBoton.TabIndex = 11;
+            this.RegistrarseBoton.TabIndex = 12;
             this.RegistrarseBoton.Text = "Registrarme";
             this.RegistrarseBoton.UseVisualStyleBackColor = false;
             this.RegistrarseBoton.Click += new System.EventHandler(this.RegistrarseBoton_Click);
@@ -132,10 +144,10 @@ namespace PITCHR
             this.TerminosCheckbox.BackColor = System.Drawing.Color.White;
             this.TerminosCheckbox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TerminosCheckbox.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.TerminosCheckbox.Location = new System.Drawing.Point(174, 502);
+            this.TerminosCheckbox.Location = new System.Drawing.Point(174, 544);
             this.TerminosCheckbox.Name = "TerminosCheckbox";
             this.TerminosCheckbox.Size = new System.Drawing.Size(230, 36);
-            this.TerminosCheckbox.TabIndex = 9;
+            this.TerminosCheckbox.TabIndex = 10;
             this.TerminosCheckbox.Text = "Terminos y Condiciones,";
             this.TerminosCheckbox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.TerminosCheckbox.UseVisualStyleBackColor = false;
@@ -144,7 +156,7 @@ namespace PITCHR
             // NombreTextbox
             // 
             this.NombreTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.NombreTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.NombreTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.NombreTextbox.Location = new System.Drawing.Point(99, 373);
             this.NombreTextbox.Name = "NombreTextbox";
             this.NombreTextbox.Size = new System.Drawing.Size(363, 23);
@@ -154,7 +166,7 @@ namespace PITCHR
             // ApellidoTextbox
             // 
             this.ApellidoTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ApellidoTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.ApellidoTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ApellidoTextbox.Location = new System.Drawing.Point(99, 418);
             this.ApellidoTextbox.Name = "ApellidoTextbox";
             this.ApellidoTextbox.Size = new System.Drawing.Size(363, 23);
@@ -164,7 +176,7 @@ namespace PITCHR
             // EmailTextbox
             // 
             this.EmailTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.EmailTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.EmailTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EmailTextbox.Location = new System.Drawing.Point(99, 327);
             this.EmailTextbox.Name = "EmailTextbox";
             this.EmailTextbox.Size = new System.Drawing.Size(363, 23);
@@ -174,7 +186,7 @@ namespace PITCHR
             // ConfirmarContraseñaTextbox
             // 
             this.ConfirmarContraseñaTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ConfirmarContraseñaTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.ConfirmarContraseñaTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ConfirmarContraseñaTextbox.Location = new System.Drawing.Point(99, 282);
             this.ConfirmarContraseñaTextbox.Name = "ConfirmarContraseñaTextbox";
             this.ConfirmarContraseñaTextbox.Size = new System.Drawing.Size(363, 23);
@@ -185,7 +197,7 @@ namespace PITCHR
             // ContraseñaTextBox
             // 
             this.ContraseñaTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ContraseñaTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.ContraseñaTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ContraseñaTextBox.Location = new System.Drawing.Point(99, 237);
             this.ContraseñaTextBox.Name = "ContraseñaTextBox";
             this.ContraseñaTextBox.Size = new System.Drawing.Size(363, 23);
@@ -197,7 +209,7 @@ namespace PITCHR
             // UsuarioTexto
             // 
             this.UsuarioTexto.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.UsuarioTexto.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.UsuarioTexto.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.UsuarioTexto.Location = new System.Drawing.Point(99, 192);
             this.UsuarioTexto.Name = "UsuarioTexto";
             this.UsuarioTexto.Size = new System.Drawing.Size(363, 23);
@@ -207,7 +219,7 @@ namespace PITCHR
             // InversorTexto
             // 
             this.InversorTexto.BackColor = System.Drawing.Color.Transparent;
-            this.InversorTexto.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.InversorTexto.Font = new System.Drawing.Font("Plus Jakarta Sans", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.InversorTexto.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(189)))), ((int)(((byte)(248)))));
             this.InversorTexto.Location = new System.Drawing.Point(118, 117);
             this.InversorTexto.Name = "InversorTexto";
@@ -219,7 +231,7 @@ namespace PITCHR
             // CrearCuentaLabel
             // 
             this.CrearCuentaLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CrearCuentaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 50F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.CrearCuentaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 50F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.CrearCuentaLabel.ForeColor = System.Drawing.Color.Black;
             this.CrearCuentaLabel.Location = new System.Drawing.Point(38, 51);
             this.CrearCuentaLabel.Name = "CrearCuentaLabel";
@@ -231,7 +243,7 @@ namespace PITCHR
             // InvierteText
             // 
             this.InvierteText.BackColor = System.Drawing.Color.Transparent;
-            this.InvierteText.Font = new System.Drawing.Font("Microsoft Sans Serif", 75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.InvierteText.Font = new System.Drawing.Font("Plus Jakarta Sans", 75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.InvierteText.ForeColor = System.Drawing.Color.White;
             this.InvierteText.Location = new System.Drawing.Point(718, 251);
             this.InvierteText.Name = "InvierteText";
@@ -351,6 +363,7 @@ namespace PITCHR
         private Panel BackgroundInversor;
         private PictureBox pictureBox1;
         private MaskedTextBox RFCInversorTextbox;
+        private System.Windows.Forms.TextBox CiudadInversorTextBox;
         private ImageList imageList1;
         private PictureBox RegresarPictureBox;
     }

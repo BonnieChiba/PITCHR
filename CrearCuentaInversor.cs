@@ -1,5 +1,7 @@
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -10,40 +12,339 @@ namespace PITCHR
 {
     public partial class CrearCuentaInversor : Form
     {
+        private DBConn dbconn;                                          //Conectar
+        private MySqlDataAdapter investorsDA = new MySqlDataAdapter();  //Extraer
+        private DataTable investortable = new DataTable();              //Almacenar
+        private BindingSource investorDataBind = new BindingSource();   //Vincular
+        private int maxID = 0;
+
+        // Rol de la cuenta (columna "role"): 1 = emprendedor, 0 = inversor.
+        private const int RolInversor = 0;
+        private int role;   // se asigna solo cuando todos los campos ya se verificaron
+
         public CrearCuentaInversor()
         {
             InitializeComponent();
             PrepararDiseno();   // estilo del Figma + adaptarse a cualquier pantalla (ver región de abajo)
+
+            // Las pantallas se ocultan con Hide(); si cierran esta ventana con la X, se cierra toda la aplicación.
+            this.FormClosed += (s, e) => Application.Exit();
+
+            // El RFC solo acepta letras, números, Ñ y &, en mayúsculas y máximo 13 caracteres.
+            this.RFCInversorTextbox.KeyPress += RFCInversorTextbox_KeyPress;
+            this.RFCInversorTextbox.TextChanged += RFCInversorTextbox_TextChanged;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Evita que el diseñador de Visual Studio intente conectarse a MySQL
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+            {
+                return;
+            }
 
+            this.LoadDBCommands();
+            this.LoadData();
+            this.BindControls();
+            this.clearTextBoxes();
         }
 
-        private void LineaSuperiorPicturebox_Click(object sender, EventArgs e)
+        private void LoadDBCommands()
         {
+            investorsDA.SelectCommand = new MySqlCommand("SELECT idInvestor, name, lastName, `user`, city, email, rfc, termsInvestor FROM integrative.investor ORDER BY idInvestor");
 
+            investorsDA.InsertCommand = new MySqlCommand("INSERT INTO integrative.investor (name, lastName, `user`, city, email, rfc, termsInvestor, role, `password`) VALUES (@name, @lastName, @user, @city, @email, @rfc, @termsInvestor, @role, @password)");
         }
 
+        private void LoadData()
+        {
+            dbconn = new DBConn();
+            investorsDA.SelectCommand.Connection = dbconn.dbConnection;
+            try
+            {
+                investorsDA.Fill(investortable);
+                object computeResult = investortable.Compute("MAX(idInvestor)", "");
+                if (computeResult != DBNull.Value)
+                {
+                    maxID = Convert.ToInt32(computeResult);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BindControls()
+        {
+            investorDataBind.DataSource = investortable;
+
+            // NOTA: aquí antes se vinculaban (DataBindings) las cajas de texto a la tabla. En una pantalla de
+            // REGISTRO eso hace que las cajas muestren y editen en memoria los datos del primer inversor
+            // guardado, así que se quitó. Los datos nuevos se mandan directo con el INSERT al registrarse.
+
+            // El texto gris de ejemplo (PlaceholderText no existe en .NET Framework) ya lo pone
+            // PrepararDiseno() usando la propiedad Tag de cada caja, y las contraseñas ya usan
+            // UseSystemPasswordChar desde el diseñador.
+        }
+
+        // ==================== BOTÓN REGISTRARSE ====================
         private void RegistrarseBoton_Click(object sender, EventArgs e)
         {
-            // CrearCuentaEmprendedor todavía no existe en este proyecto (está en IntegrativeProject).
-            // Cuando la agreguen, quiten las // de estas 3 líneas:
-            // CrearCuentaEmprendedor PantallaPrincipal = new CrearCuentaEmprendedor();
-            // PantallaPrincipal.Show();
-            // this.Hide();
+            if (this.Validar_campos() == false)
+            {
+                return;
+            }
+
+            // Antes de guardar, revisa que el usuario, el email y el RFC no estén ya registrados.
+            if (this.ExistenDuplicados() == true)
+            {
+                return;
+            }
+
+            // Todos los campos están completos y correctos: se le asigna el rol de inversor.
+            this.role = RolInversor;
+
+            try
+            {
+                using (DBConn dbTemp = new DBConn())
+                {
+                    investorsDA.InsertCommand.Connection = dbTemp.dbConnection;
+                    investorsDA.InsertCommand.Connection.Open();
+                    investorsDA.InsertCommand.Parameters.Clear();
+                    investorsDA.InsertCommand.Parameters.AddRange(new[] {
+                        new MySqlParameter("@name", NombreTextbox.Text.Trim()),
+                        new MySqlParameter("@lastName", ApellidoTextbox.Text.Trim()),
+                        new MySqlParameter("@user", UsuarioTexto.Text.Trim()),
+                        new MySqlParameter("@city", CiudadInversorTextBox.Text.Trim()),
+                        new MySqlParameter("@email", EmailTextbox.Text.Trim()),
+                        new MySqlParameter("@rfc", RFCInversorTextbox.Text.Trim().ToUpper()),
+                        new MySqlParameter("@termsInvestor", TerminosCheckbox.Checked),
+                        new MySqlParameter("@role", this.role),
+                        new MySqlParameter("@password", ContraseñaTextBox.Text)
+                        // Recomendado: BCrypt.Net.BCrypt.HashPassword(ContraseñaTextBox.Text)
+                    });
+
+                    investorsDA.InsertCommand.ExecuteNonQuery();
+
+                    investortable.Clear();
+                    investorsDA.Fill(investortable);
+                    maxID = Convert.ToInt32(investortable.Compute("MAX(idInvestor)", ""));
+
+                    this.clearTextBoxes();
+                    MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                // Solo se avanza si el INSERT salió bien.
+                // CrearCuentaEmprendedor todavía no existe en PITCHR; cuando la agreguen, quiten las // de estas 3 líneas:
+                // CrearCuentaEmprendedor PantallaPrincipal = new CrearCuentaEmprendedor();
+                // PantallaPrincipal.Show();
+                // this.Hide();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error al insertar registro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ==================== VALIDACIÓN ====================
+        private bool Validar_campos()
+        {
+            if (string.IsNullOrWhiteSpace(NombreTextbox.Text))
+            {
+                MessageBox.Show("El campo de nombre está vacío.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.NombreTextbox.Select();
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(ApellidoTextbox.Text))
+            {
+                MessageBox.Show("El campo de apellido está vacío.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.ApellidoTextbox.Select();
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(UsuarioTexto.Text))
+            {
+                MessageBox.Show("El campo de usuario está vacío.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.UsuarioTexto.Select();
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(CiudadInversorTextBox.Text))
+            {
+                MessageBox.Show("El campo de ciudad está vacío.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.CiudadInversorTextBox.Select();
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(EmailTextbox.Text) || !EmailTextbox.Text.Contains("@"))
+            {
+                MessageBox.Show("Ingresa un email válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.EmailTextbox.Select();
+                return false;
+            }
+            // La caja de RFC no tiene máscara (Mask) en el diseñador, así que MaskCompleted siempre sería true.
+            // Por eso se revisa que tenga 12 caracteres (persona moral) o 13 (persona física).
+            else if (RFCInversorTextbox.Text.Trim().Length != 12 && RFCInversorTextbox.Text.Trim().Length != 13)
+            {
+                MessageBox.Show("El RFC está incompleto (debe tener 12 o 13 caracteres).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.RFCInversorTextbox.Select();
+                return false;
+            }
+            else if (string.IsNullOrWhiteSpace(ContraseñaTextBox.Text))
+            {
+                MessageBox.Show("El campo de contraseña está vacío.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.ContraseñaTextBox.Select();
+                return false;
+            }
+            else if (ContraseñaTextBox.Text != ConfirmarContraseñaTextbox.Text)
+            {
+                MessageBox.Show("Las contraseñas no coinciden.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.ConfirmarContraseñaTextbox.Select();
+                return false;
+            }
+            else if (!TerminosCheckbox.Checked)
+            {
+                MessageBox.Show("Debes aceptar los términos y condiciones.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.TerminosCheckbox.Select();
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        // ==================== EVITAR DUPLICADOS ====================
+        // Busca en la base de datos si ya existe un inversor con el mismo usuario, email o RFC.
+        // Si encuentra alguno, muestra un mensaje que dice cuál(es) y regresa true (no se debe registrar).
+        private bool ExistenDuplicados()
+        {
+            string usuario = UsuarioTexto.Text.Trim();
+            string email = EmailTextbox.Text.Trim();
+            string rfc = RFCInversorTextbox.Text.Trim().ToUpper();
+
+            bool usuarioRepetido = false;
+            bool emailRepetido = false;
+            bool rfcRepetido = false;
+
+            try
+            {
+                using (DBConn dbTemp = new DBConn())
+                {
+                    MySqlCommand buscar = new MySqlCommand(
+                        "SELECT `user`, email, rfc FROM integrative.investor " +
+                        "WHERE `user` = @user OR email = @email OR rfc = @rfc", dbTemp.dbConnection);
+                    buscar.Parameters.AddWithValue("@user", usuario);
+                    buscar.Parameters.AddWithValue("@email", email);
+                    buscar.Parameters.AddWithValue("@rfc", rfc);
+
+                    dbTemp.dbConnection.Open();
+                    using (MySqlDataReader lector = buscar.ExecuteReader())
+                    {
+                        while (lector.Read())
+                        {
+                            if (string.Equals(lector["user"].ToString().Trim(), usuario, StringComparison.OrdinalIgnoreCase)) usuarioRepetido = true;
+                            if (string.Equals(lector["email"].ToString().Trim(), email, StringComparison.OrdinalIgnoreCase)) emailRepetido = true;
+                            if (string.Equals(lector["rfc"].ToString().Trim(), rfc, StringComparison.OrdinalIgnoreCase)) rfcRepetido = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo revisar si los datos ya existen:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;   // si no se pudo revisar, mejor no registrar
+            }
+
+            if (usuarioRepetido == false && emailRepetido == false && rfcRepetido == false)
+            {
+                return false;
+            }
+
+            string mensaje = "Ya existe una cuenta registrada con:\n";
+            if (usuarioRepetido) mensaje += "\n•  El usuario \"" + usuario + "\"";
+            if (emailRepetido) mensaje += "\n•  El email \"" + email + "\"";
+            if (rfcRepetido) mensaje += "\n•  El RFC \"" + rfc + "\"";
+            mensaje += "\n\nPor favor usa datos diferentes.";
+            MessageBox.Show(mensaje, "Datos ya registrados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            // Pone el cursor en el primer campo repetido
+            if (usuarioRepetido) this.UsuarioTexto.Select();
+            else if (emailRepetido) this.EmailTextbox.Select();
+            else this.RFCInversorTextbox.Select();
+
+            return true;
+        }
+
+        // ==================== RFC: SOLO 12 A 13 CARACTERES ====================
+        private const int RfcMaximo = 13;
+
+        // Bloquea al escribir: solo letras, números, Ñ y &, y no deja pasar de 13 caracteres.
+        private void RFCInversorTextbox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar)) return;   // permite borrar, Ctrl+C, Ctrl+V, etc.
+
+            bool caracterValido = char.IsLetterOrDigit(e.KeyChar) || e.KeyChar == '&';
+            int seleccionados = RFCInversorTextbox.SelectionLength;
+            bool hayEspacio = RFCInversorTextbox.Text.Length - seleccionados < RfcMaximo;
+
+            if (!caracterValido || !hayEspacio)
+            {
+                e.Handled = true;   // no escribe la tecla
+            }
+        }
+
+        // Por si pegan texto: lo pasa a mayúsculas, quita lo que no sea válido y lo corta a 13 caracteres.
+        private void RFCInversorTextbox_TextChanged(object sender, EventArgs e)
+        {
+            string limpio = "";
+            foreach (char c in RFCInversorTextbox.Text.ToUpper())
+            {
+                if ((char.IsLetterOrDigit(c) || c == '&') && limpio.Length < RfcMaximo)
+                {
+                    limpio += c;
+                }
+            }
+
+            if (RFCInversorTextbox.Text != limpio)
+            {
+                int cursor = Math.Min(RFCInversorTextbox.SelectionStart, limpio.Length);
+                RFCInversorTextbox.Text = limpio;
+                RFCInversorTextbox.SelectionStart = cursor;
+            }
+        }
+
+        // ==================== LIMPIAR CAMPOS ====================
+        private void clearTextBoxes()
+        {
+            this.NombreTextbox.Text = "";
+            this.ApellidoTextbox.Text = "";
+            this.UsuarioTexto.Text = "";
+            this.CiudadInversorTextBox.Text = "";
+            this.EmailTextbox.Text = "";
+            this.RFCInversorTextbox.Clear();
+            this.ContraseñaTextBox.Text = "";
+            this.ConfirmarContraseñaTextbox.Text = "";
+            this.TerminosCheckbox.Checked = false;
+        }
+
+        // ==================== REGRESAR ====================
+        private void RegresarPictureBox_Click(object sender, EventArgs e)
+        {
+            IniciaAqui pantalla = new IniciaAqui();
+            pantalla.Show();
+            this.Hide();
+        }
+
+        // ==================== EVENTOS VACÍOS ORIGINALES ====================
+        private void LineaSuperiorPicturebox_Click(object sender, EventArgs e)
+        {
         }
 
         private void ContraseñaTextBox_TextChanged(object sender, EventArgs e)
         {
-
         }
 
-        private void RegresarPictureBox_Click(object sender, EventArgs e)
-        {
-            // Aquí abren la pantalla anterior, igual que en RegistrarseBoton_Click.
-        }
+        // (CuadroBlancoTexto_Paint y TerminosCheckbox_CheckedChanged ya existen en la región de diseño de abajo,
+        //  por eso no se repiten aquí; repetirlos daría error de "ya contiene una definición".)
 
 
         #region Diseño del Figma y pantalla adaptable (no es necesario modificar esta parte)
