@@ -91,11 +91,11 @@
       <DependentUpon>CrearCuentaInversor.cs</DependentUpon>
     </Compile>
     <Compile Include="DBConn.cs" />
-    <Compile Include="EmprendimientoGuest.cs">
+    <Compile Include="EmprendimientosGuest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EmprendimientoGuest.Designer.cs">
-      <DependentUpon>EmprendimientoGuest.cs</DependentUpon>
+    <Compile Include="EmprendimientosGuest.Designer.cs">
+      <DependentUpon>EmprendimientosGuest.cs</DependentUpon>
     </Compile>
     <Compile Include="IniciaAqui.cs">
       <SubType>Form</SubType>
@@ -105,14 +105,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TarjetaEmprendimiento.cs" />
     <EmbeddedResource Include="CrearCuentaEmprendedor.resx">
       <DependentUpon>CrearCuentaEmprendedor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CrearCuentaInversor.resx">
       <DependentUpon>CrearCuentaInversor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EmprendimientoGuest.resx">
-      <DependentUpon>EmprendimientoGuest.cs</DependentUpon>
+    <EmbeddedResource Include="EmprendimientosGuest.resx">
+      <DependentUpon>EmprendimientosGuest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IniciaAqui.resx">
       <DependentUpon>IniciaAqui.cs</DependentUpon>
