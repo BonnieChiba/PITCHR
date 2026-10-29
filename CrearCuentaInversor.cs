@@ -401,6 +401,7 @@ namespace PITCHR
             {
                 TextBoxBase caja = control as TextBoxBase;
                 if (caja == null) continue;
+                caja.AutoSize = false;   // el alto lo pone AcomodarCampos para que no se corten las letras
                 caja.HandleCreated += (s, e) => PonerTextoGuia(caja);
                 caja.GotFocus += (s, e) => CuadroBlancoTexto.Invalidate();
                 caja.LostFocus += (s, e) => CuadroBlancoTexto.Invalidate();
@@ -484,6 +485,7 @@ namespace PITCHR
                     (int)Math.Round(r.Height * _escala));
                 c.Font = EscalarFuente(_fuentesOriginales[c], _escala);
             }
+            AcomodarCampos();
             ResumeLayout(true);
 
             PrepararFondo(cliente);
@@ -584,8 +586,85 @@ namespace PITCHR
         private RectangleF Pildora(Control caja)
         {
             float k = _escala;
-            float centro = caja.Top + caja.Height / 2f;
+            float centro = CentroPildora(caja);
             return new RectangleF(caja.Left - 16 * k, centro - 18.5f * k, caja.Width + 32 * k, 37 * k);
+        }
+
+        // La píldora se centra donde estaba la caja en el diseñador, no en la caja ya acomodada.
+        private float CentroPildora(Control caja)
+        {
+            Rectangle r = _posicionesOriginales[caja];
+            return (r.Y + r.Height / 2f) * _escala;
+        }
+
+        /// <summary>
+        /// Windows dibuja "Plus Jakarta Sans" mucho más abajo de lo que mide la fuente, así que con el alto
+        /// automático se cortaban las letras (la "p" de Apellido). Aquí cada caja toma el alto que de verdad
+        /// necesita y se mueve para que las letras queden centradas dentro de su píldora.
+        /// </summary>
+        private void AcomodarCampos()
+        {
+            float k = _escala;
+            foreach (Control control in CuadroBlancoTexto.Controls)
+            {
+                TextBoxBase caja = control as TextBoxBase;
+                if (caja == null) continue;
+
+                PointF tinta = MedirTinta(caja.Font);
+                float centro = CentroPildora(caja);
+                float limiteArriba = centro - 18.5f * k + 2 * k;   // sin tapar el borde de la píldora
+                float limiteAbajo = centro + 18.5f * k - 2 * k;
+
+                float arriba = Math.Max(centro - tinta.X, limiteArriba);
+                float alto = Math.Min(tinta.Y + 2, limiteAbajo - arriba);
+                caja.Bounds = new Rectangle(caja.Left, (int)Math.Round(arriba), caja.Width, (int)Math.Round(alto));
+            }
+        }
+
+        private static readonly Dictionary<Font, PointF> CacheTinta = new Dictionary<Font, PointF>();
+
+        /// <summary>
+        /// Dónde pinta Windows las letras de una fuente, medido desde arriba de la caja:
+        /// X = mitad de las mayúsculas, Y = parte más baja de letras como "p" o "g".
+        /// </summary>
+        private static PointF MedirTinta(Font fuente)
+        {
+            PointF medida;
+            if (CacheTinta.TryGetValue(fuente, out medida)) return medida;
+
+            Size tamano = TextRenderer.MeasureText("Hp", fuente);
+            using (Bitmap bmp = new Bitmap(tamano.Width + 4, tamano.Height + 4))
+            {
+                int capArriba, capAbajo, pArriba, pAbajo;
+                FilasConTinta(bmp, "H", fuente, out capArriba, out capAbajo);
+                FilasConTinta(bmp, "p", fuente, out pArriba, out pAbajo);
+                medida = new PointF((capArriba + capAbajo) / 2f, Math.Max(capAbajo, pAbajo) + 1);
+            }
+            CacheTinta[fuente] = medida;
+            return medida;
+        }
+
+        private static void FilasConTinta(Bitmap bmp, string texto, Font fuente, out int primera, out int ultima)
+        {
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.White);
+                TextRenderer.DrawText(g, texto, fuente, Point.Empty, Color.Black, Color.White);
+            }
+            primera = 0;
+            ultima = bmp.Height - 1;
+            bool encontrada = false;
+            for (int y = 0; y < bmp.Height; y++)
+            {
+                for (int x = 0; x < bmp.Width; x++)
+                {
+                    if (bmp.GetPixel(x, y).R >= 128) continue;
+                    if (!encontrada) primera = y;
+                    encontrada = true;
+                    ultima = y;
+                    break;
+                }
+            }
         }
 
         // Clic en la píldora (fuera del texto) también pone el cursor en el campo.
@@ -691,6 +770,16 @@ namespace PITCHR
         #endregion
 
         private void TerminosCheckbox_CheckedChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CuadroBlancoTexto_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void InvierteText_Click(object sender, EventArgs e)
         {
 
         }

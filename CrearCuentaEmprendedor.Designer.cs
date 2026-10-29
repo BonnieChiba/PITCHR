@@ -44,8 +44,8 @@
             this.ApellidoTextbox = new System.Windows.Forms.TextBox();
             this.CiudadEmprendedorTextBox = new System.Windows.Forms.TextBox();
             this.RFCEmprendedorTextbox = new System.Windows.Forms.MaskedTextBox();
-            this.TerminosCheckbox = new System.Windows.Forms.CheckBox();
             this.TerminosLink = new System.Windows.Forms.LinkLabel();
+            this.TerminosCheckbox = new System.Windows.Forms.CheckBox();
             this.RegistrarseBoton = new System.Windows.Forms.Button();
             this.LineaSuperiorPicturebox = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -104,6 +104,7 @@
             this.PresentaText.Location = new System.Drawing.Point(718, 244);
             this.PresentaText.Name = "PresentaText";
             this.PresentaText.Size = new System.Drawing.Size(520, 280);
+            this.PresentaText.UseCompatibleTextRendering = true;
             this.PresentaText.TabIndex = 1;
             this.PresentaText.Text = "Presenta\r\nConecta\r\nImpulsa";
             // 
@@ -158,9 +159,9 @@
             // 
             this.UsuarioTexto.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.UsuarioTexto.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.UsuarioTexto.Location = new System.Drawing.Point(115, 187);
+            this.UsuarioTexto.Location = new System.Drawing.Point(115, 188);
             this.UsuarioTexto.Name = "UsuarioTexto";
-            this.UsuarioTexto.Size = new System.Drawing.Size(347, 23);
+            this.UsuarioTexto.Size = new System.Drawing.Size(347, 26);
             this.UsuarioTexto.TabIndex = 2;
             this.UsuarioTexto.Tag = "Usuario";
             // 
@@ -168,9 +169,9 @@
             // 
             this.ContraseñaTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ContraseñaTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.ContraseñaTextBox.Location = new System.Drawing.Point(115, 233);
+            this.ContraseñaTextBox.Location = new System.Drawing.Point(115, 234);
             this.ContraseñaTextBox.Name = "ContraseñaTextBox";
-            this.ContraseñaTextBox.Size = new System.Drawing.Size(347, 23);
+            this.ContraseñaTextBox.Size = new System.Drawing.Size(347, 26);
             this.ContraseñaTextBox.TabIndex = 3;
             this.ContraseñaTextBox.Tag = "Contraseña";
             this.ContraseñaTextBox.UseSystemPasswordChar = true;
@@ -181,7 +182,7 @@
             this.ConfirmarContraseñaTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ConfirmarContraseñaTextbox.Location = new System.Drawing.Point(115, 279);
             this.ConfirmarContraseñaTextbox.Name = "ConfirmarContraseñaTextbox";
-            this.ConfirmarContraseñaTextbox.Size = new System.Drawing.Size(347, 23);
+            this.ConfirmarContraseñaTextbox.Size = new System.Drawing.Size(347, 26);
             this.ConfirmarContraseñaTextbox.TabIndex = 4;
             this.ConfirmarContraseñaTextbox.Tag = "Confirmar contraseña";
             this.ConfirmarContraseñaTextbox.UseSystemPasswordChar = true;
@@ -192,7 +193,7 @@
             this.EmailTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EmailTextbox.Location = new System.Drawing.Point(115, 325);
             this.EmailTextbox.Name = "EmailTextbox";
-            this.EmailTextbox.Size = new System.Drawing.Size(347, 23);
+            this.EmailTextbox.Size = new System.Drawing.Size(347, 26);
             this.EmailTextbox.TabIndex = 5;
             this.EmailTextbox.Tag = "Email";
             // 
@@ -202,7 +203,7 @@
             this.NombreTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.NombreTextbox.Location = new System.Drawing.Point(115, 371);
             this.NombreTextbox.Name = "NombreTextbox";
-            this.NombreTextbox.Size = new System.Drawing.Size(347, 23);
+            this.NombreTextbox.Size = new System.Drawing.Size(347, 26);
             this.NombreTextbox.TabIndex = 6;
             this.NombreTextbox.Tag = "Nombre";
             // 
@@ -212,7 +213,7 @@
             this.ApellidoTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ApellidoTextbox.Location = new System.Drawing.Point(115, 417);
             this.ApellidoTextbox.Name = "ApellidoTextbox";
-            this.ApellidoTextbox.Size = new System.Drawing.Size(347, 23);
+            this.ApellidoTextbox.Size = new System.Drawing.Size(347, 26);
             this.ApellidoTextbox.TabIndex = 7;
             this.ApellidoTextbox.Tag = "Apellido";
             // 
@@ -222,7 +223,7 @@
             this.CiudadEmprendedorTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.CiudadEmprendedorTextBox.Location = new System.Drawing.Point(115, 463);
             this.CiudadEmprendedorTextBox.Name = "CiudadEmprendedorTextBox";
-            this.CiudadEmprendedorTextBox.Size = new System.Drawing.Size(347, 23);
+            this.CiudadEmprendedorTextBox.Size = new System.Drawing.Size(347, 26);
             this.CiudadEmprendedorTextBox.TabIndex = 8;
             this.CiudadEmprendedorTextBox.Tag = "Ciudad";
             // 
@@ -232,22 +233,9 @@
             this.RFCEmprendedorTextbox.Font = new System.Drawing.Font("Plus Jakarta Sans", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RFCEmprendedorTextbox.Location = new System.Drawing.Point(115, 509);
             this.RFCEmprendedorTextbox.Name = "RFCEmprendedorTextbox";
-            this.RFCEmprendedorTextbox.Size = new System.Drawing.Size(347, 23);
+            this.RFCEmprendedorTextbox.Size = new System.Drawing.Size(347, 26);
             this.RFCEmprendedorTextbox.TabIndex = 9;
             this.RFCEmprendedorTextbox.Tag = "RFC";
-            // 
-            // TerminosCheckbox
-            // 
-            this.TerminosCheckbox.BackColor = System.Drawing.Color.White;
-            this.TerminosCheckbox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.TerminosCheckbox.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.TerminosCheckbox.Location = new System.Drawing.Point(163, 546);
-            this.TerminosCheckbox.Name = "TerminosCheckbox";
-            this.TerminosCheckbox.Size = new System.Drawing.Size(230, 36);
-            this.TerminosCheckbox.TabIndex = 10;
-            this.TerminosCheckbox.Text = "Terminos y Condiciones,";
-            this.TerminosCheckbox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.TerminosCheckbox.UseVisualStyleBackColor = false;
             // 
             // TerminosLink
             // 
@@ -264,6 +252,19 @@
             this.TerminosLink.TabStop = true;
             this.TerminosLink.Text = "ver Terminos y condiciones";
             this.TerminosLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.TerminosLink_LinkClicked);
+            // 
+            // TerminosCheckbox
+            // 
+            this.TerminosCheckbox.BackColor = System.Drawing.Color.White;
+            this.TerminosCheckbox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.TerminosCheckbox.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.TerminosCheckbox.Location = new System.Drawing.Point(163, 546);
+            this.TerminosCheckbox.Name = "TerminosCheckbox";
+            this.TerminosCheckbox.Size = new System.Drawing.Size(230, 36);
+            this.TerminosCheckbox.TabIndex = 10;
+            this.TerminosCheckbox.Text = "Terminos y Condiciones,";
+            this.TerminosCheckbox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.TerminosCheckbox.UseVisualStyleBackColor = false;
             // 
             // RegistrarseBoton
             // 

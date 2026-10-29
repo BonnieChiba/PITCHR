@@ -192,7 +192,7 @@ namespace PITCHR
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1280, 749);
+            this.ClientSize = new System.Drawing.Size(1280, 828);
             this.Controls.Add(this.IniciarSesionLink);
             this.Controls.Add(this.YaTienesCuentaLabel);
             this.Controls.Add(this.RegresarPictureBox);
