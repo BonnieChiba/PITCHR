@@ -34,7 +34,7 @@ namespace PITCHR
         // Flecha de regresar
         private void RegresarPictureBox_Click(object sender, EventArgs e)
         {
-            EmprendimientoGuest pantalla = new EmprendimientoGuest();
+            EmprendimientosGuest pantalla = new EmprendimientosGuest();
             pantalla.Show();
             this.Hide();
         }
