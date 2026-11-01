@@ -65,11 +65,9 @@ namespace PITCHR
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.clearTextBoxes();
 
-                // Solo se avanza si la cuenta existe y la contraseña es correcta.
-                // Cuando tengan la pantalla principal (la que muestra la foto de perfil), ábranla aquí:
-                // PantallaPrincipal pantalla = new PantallaPrincipal();
-                // pantalla.Show();
-                // this.Hide();
+                EmprendimientoGuest pantalla = new EmprendimientoGuest();
+                pantalla.Show();
+                this.Hide();
             }
             catch (Exception ex)
             {
@@ -141,12 +139,11 @@ namespace PITCHR
 
         // ==================== OTROS BOTONES ====================
         private void RegresarPictureBox_Click(object sender, EventArgs e)
-        {
-            EmprendimientosGuest pantalla = new EmprendimientosGuest();
+          {
+            IniciaAqui pantalla = new IniciaAqui();
             pantalla.Show();
             this.Hide();
         }
-
         // "¿Aún no tienes cuenta? Registrarme" → elegir si es inversor o emprendedor
         private void RegistrarmeLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
