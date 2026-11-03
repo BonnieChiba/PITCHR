@@ -163,7 +163,9 @@ namespace PITCHR
         // ==================== PENDIENTES (todavía sin conexión a otras pantallas) ====================
         private void IniciarSesionBoton_Click(object sender, EventArgs e)
         {
-            // Aquí se abrirá la pantalla de iniciar sesión.
+            IniciarSesion   Pantalla = new IniciarSesion();
+            Pantalla.Show();
+            this.Hide();
         }
 
         private void VerMasBoton_Click(object sender, EventArgs e)

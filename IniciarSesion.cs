@@ -65,7 +65,7 @@ namespace PITCHR
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.clearTextBoxes();
 
-                EmprendimientoGuest pantalla = new EmprendimientoGuest();
+                EmprendimientosGuest pantalla = new EmprendimientosGuest();
                 pantalla.Show();
                 this.Hide();
             }
@@ -466,6 +466,16 @@ namespace PITCHR
         }
 
         #endregion
+
+        private void CuadroBlancoTexto_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void ContraseñaTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 
     /// <summary>
