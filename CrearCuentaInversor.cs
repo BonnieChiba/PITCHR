@@ -133,6 +133,10 @@ namespace PITCHR
 
                     this.clearTextBoxes();
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    IniciarSesion Pantalla = new IniciarSesion();
+                    Pantalla.Show();
+                    this.Hide();
                 }
 
                 // Solo se avanza si el INSERT salió bien.
