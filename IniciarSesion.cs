@@ -140,7 +140,7 @@ namespace PITCHR
         // ==================== OTROS BOTONES ====================
         private void RegresarPictureBox_Click(object sender, EventArgs e)
           {
-            IniciaAqui pantalla = new IniciaAqui();
+            HomePage pantalla = new HomePage();
             pantalla.Show();
             this.Hide();
         }

@@ -164,6 +164,9 @@
     <EmbeddedResource Include="IniciaAqui.resx">
       <DependentUpon>IniciaAqui.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="IniciarSesion.resx">
+      <DependentUpon>IniciarSesion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
