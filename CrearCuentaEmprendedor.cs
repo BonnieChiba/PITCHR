@@ -133,11 +133,10 @@ namespace PITCHR
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                // Solo se avanza si el INSERT salió bien.
-                // Cuando agreguen la pantalla de iniciar sesión, quiten las // de estas 3 líneas:
-                // IniciarSesion PantallaPrincipal = new IniciarSesion();
-                // PantallaPrincipal.Show();
-                // this.Hide();
+                
+                 IniciarSesion PantallaPrincipal = new IniciarSesion();
+                 PantallaPrincipal.Show();
+                 this.Hide();
             }
             catch (Exception ex)
             {
