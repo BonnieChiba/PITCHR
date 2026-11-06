@@ -34,7 +34,7 @@ namespace PITCHR
         // Flecha de regresar
         private void RegresarPictureBox_Click(object sender, EventArgs e)
         {
-            EmprendimientosGuest pantalla = new EmprendimientosGuest();
+            IniciarSesion pantalla = new IniciarSesion();
             pantalla.Show();
             this.Hide();
         }
@@ -42,11 +42,10 @@ namespace PITCHR
         // "¿Ya tienes una cuenta? Iniciar sesión"
         private void IniciarSesionLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Cuando agreguen la pantalla de iniciar sesión, ábranla aquí con el mismo patrón:
-            //     IniciarSesion pantalla = new IniciarSesion();
-            //     pantalla.Show();
-            //     this.Hide();
-            MessageBox.Show("La pantalla para iniciar sesión estará disponible próximamente.", "Pitcher");
+          
+            IniciarSesion Pantalla = new IniciarSesion();
+            Pantalla.Show();
+            this.Hide();
         }
 
         // Como las pantallas se ocultan con Hide(), si el usuario cierra esta ventana con la X
