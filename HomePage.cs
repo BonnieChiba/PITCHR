@@ -1,3 +1,4 @@
+﻿using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,7 +15,8 @@ namespace PITCHR
     /// </summary>
     public partial class HomePage : Form
     {
-        public enum Seccion { Emprendimientos, Eventos, Noticias, Mensajes }
+        // Las 4 primeras están en el menú; las 2 últimas se abren desde la foto de perfil
+        public enum Seccion { Emprendimientos, Eventos, Noticias, Mensajes, PersonalizarPerfil, VerPerfil }
 
         // Cada sección se crea una sola vez y se guarda aquí; al regresar a ella se muestra la misma
         // (así no se vuelve a consultar la base de datos cada vez que cambias de sección).
@@ -60,12 +62,38 @@ namespace PITCHR
             bool conSesion = Sesion.Activa;
             ZonaGuestPanel.Visible = !conSesion;
             ZonaUserPanel.Visible = conSesion;
+            if (conSesion) this.CargarFotoPerfil();
 
-            // Mensajes solo existe para usuarios con sesión
-            if (!conSesion && _seccionActual == Seccion.Mensajes)
+            // Mensajes y los paneles de perfil solo existen para usuarios con sesión
+            if (!conSesion && _seccionActual >= Seccion.Mensajes)
             {
                 this.MostrarSeccion(Seccion.Emprendimientos);
             }
+        }
+
+        // Lee la foto (columna imageProfile) del usuario que inició sesión, de investor o de entrepreneur según su rol
+        private void CargarFotoPerfil()
+        {
+            string consulta = Sesion.Rol == 1
+                ? "SELECT imageProfile FROM integrative.entrepreneur WHERE idEntrepreneur = @id"
+                : "SELECT imageProfile FROM integrative.investor WHERE idInvestor = @id";
+            try
+            {
+                using (DBConn dbTemp = new DBConn())
+                {
+                    MySqlCommand buscar = new MySqlCommand(consulta, dbTemp.dbConnection);
+                    buscar.Parameters.AddWithValue("@id", Sesion.IdUsuario);
+                    dbTemp.dbConnection.Open();
+                    object valor = buscar.ExecuteScalar();
+                    Image foto = SeccionBase.CargarImagen(valor == null || valor == DBNull.Value ? null : valor.ToString());
+                    if (foto != null) _fotoPerfil = foto;   // si no tiene foto, se queda la de siempre
+                }
+            }
+            catch (Exception)
+            {
+                // si falla la consulta se queda la foto de siempre
+            }
+            PerfilPictureBox.Invalidate();
         }
 
         // ==================== CAMBIAR DE SECCIÓN ====================
@@ -79,13 +107,20 @@ namespace PITCHR
 
         private void MostrarSeccion(Seccion destino)
         {
-            if (destino == Seccion.Mensajes && !Sesion.Activa)
+            if (destino >= Seccion.Mensajes && !Sesion.Activa)
             {
                 destino = Seccion.Emprendimientos;
             }
 
             UserControl panel;
-            if (!_secciones.TryGetValue(destino, out panel))
+            bool esDePerfil = destino == Seccion.PersonalizarPerfil || destino == Seccion.VerPerfil;
+            if (esDePerfil)
+            {
+                // Los paneles de perfil se crean nuevos cada vez, para que siempre muestren los datos actuales
+                panel = this.CrearPanelDePerfil(destino);
+                panel.Dock = DockStyle.Fill;
+            }
+            else if (!_secciones.TryGetValue(destino, out panel))
             {
                 panel = this.CrearSeccion(destino);
                 panel.Dock = DockStyle.Fill;
@@ -93,8 +128,13 @@ namespace PITCHR
             }
 
             ContenidoPanel.SuspendLayout();
-            ContenidoPanel.Controls.Clear();       // quita la sección anterior (no se borra, queda guardada)
-            ContenidoPanel.Controls.Add(panel);    // pone la nueva
+            foreach (Control anterior in ContenidoPanel.Controls)
+            {
+                // Los paneles de perfil anteriores ya no se usan: se liberan. Las secciones del menú se guardan.
+                if (!_secciones.ContainsValue(anterior as UserControl) && anterior != panel) anterior.Dispose();
+            }
+            ContenidoPanel.Controls.Clear();       // quita el panel anterior
+            ContenidoPanel.Controls.Add(panel);    // pone el nuevo
             ContenidoPanel.ResumeLayout(true);
 
             _seccionActual = destino;
@@ -109,6 +149,51 @@ namespace PITCHR
                 case Seccion.Noticias: return new SeccionNoticias();
                 case Seccion.Mensajes: return new SeccionMensajes();
                 default: return new SeccionEmprendimientos();
+            }
+        }
+
+        // ==================== PANELES DE PERFIL (según el rol) ====================
+        // Rol 1 = emprendedor, 0 = inversor (igual que en CrearCuenta)
+        private UserControl CrearPanelDePerfil(Seccion seccion)
+        {
+            bool emprendedor = Sesion.Rol == 1;
+
+            if (seccion == Seccion.PersonalizarPerfil)
+            {
+                if (emprendedor)
+                {
+                    SeccionPersonalizaMarca marca = new SeccionPersonalizaMarca();
+                    marca.Regresar += (s, e) => MostrarSeccion(Seccion.VerPerfil);
+                    marca.MarcaGuardada += (s, e) => OlvidarSeccion(Seccion.Emprendimientos);   // para que se vea la marca nueva
+                    return marca;
+                }
+                SeccionEditarPerfil editar = new SeccionEditarPerfil();
+                editar.PerfilActualizado += (s, e) => CargarFotoPerfil();
+                return editar;
+            }
+
+            // Ver perfil
+            if (emprendedor)
+            {
+                SeccionProducto producto = new SeccionProducto();
+                producto.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+                producto.CrearMarca += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
+                return producto;
+            }
+            SeccionPerfilInversor perfil = new SeccionPerfilInversor();
+            perfil.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+            perfil.EditarPerfil += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
+            return perfil;
+        }
+
+        // Borra una sección guardada para que la próxima vez se vuelva a crear (y a leer de la base)
+        private void OlvidarSeccion(Seccion seccion)
+        {
+            UserControl panel;
+            if (_secciones.TryGetValue(seccion, out panel))
+            {
+                _secciones.Remove(seccion);
+                if (panel.Parent == null) panel.Dispose();
             }
         }
 
@@ -137,28 +222,35 @@ namespace PITCHR
             this.Hide();
         }
 
-        // Zona usuario: clic en la foto de perfil → menú con opciones
+        // Zona usuario: clic en la foto de perfil → menú desplegable con 3 opciones
         private void PerfilPictureBox_Click(object sender, EventArgs e)
         {
             _menuPerfil = new ContextMenuStrip();
-            _menuPerfil.Font = new Font("Segoe UI", 11f, FontStyle.Regular, GraphicsUnit.Pixel);
-            _menuPerfil.Items.Add(new ToolStripLabel(Sesion.Usuario ?? "Mi cuenta") { Font = new Font("Segoe UI", 11f, FontStyle.Bold, GraphicsUnit.Pixel) });
+            _menuPerfil.Font = new Font(FuenteInstalada("Plus Jakarta Sans") ? "Plus Jakarta Sans" : "Segoe UI", 14f, FontStyle.Regular, GraphicsUnit.Pixel);
+            _menuPerfil.ShowImageMargin = false;
+            _menuPerfil.Padding = new Padding(4, 6, 4, 6);
+
+            // Encabezado: nombre de usuario y tipo de cuenta
+            ToolStripLabel encabezado = new ToolStripLabel("@" + Sesion.Usuario + (Sesion.Rol == 1 ? "  ·  Emprendedor" : "  ·  Inversionista"));
+            encabezado.ForeColor = Color.Gray;
+            _menuPerfil.Items.Add(encabezado);
             _menuPerfil.Items.Add(new ToolStripSeparator());
-            if (Sesion.Rol == 1)   // solo los emprendedores tienen marca
-            {
-                _menuPerfil.Items.Add("Personaliza tu marca", null, (s, a) =>
-                {
-                    PersonalizaMarca pantalla = new PersonalizaMarca();
-                    pantalla.Show();
-                    this.Hide();
-                });
-            }
-            _menuPerfil.Items.Add("Cerrar sesión", null, (s, a) =>
-            {
-                Sesion.Cerrar();
-                this.ActualizarZona();
-            });
-            _menuPerfil.Show(PerfilPictureBox, new Point(PerfilPictureBox.Width - _menuPerfil.PreferredSize.Width, PerfilPictureBox.Height));
+
+            _menuPerfil.Items.Add("Personalizar perfil", null, (s, a) => MostrarSeccion(Seccion.PersonalizarPerfil));
+            _menuPerfil.Items.Add("Ver perfil", null, (s, a) => MostrarSeccion(Seccion.VerPerfil));
+            _menuPerfil.Items.Add(new ToolStripSeparator());
+            ToolStripItem cerrar = _menuPerfil.Items.Add("Cerrar sesión", null, (s, a) => CerrarSesion());
+            cerrar.ForeColor = Color.FromArgb(220, 38, 38);
+            foreach (ToolStripItem item in _menuPerfil.Items) item.Padding = new Padding(8, 6, 8, 6);
+
+            _menuPerfil.Show(PerfilPictureBox, new Point(PerfilPictureBox.Width - _menuPerfil.PreferredSize.Width, PerfilPictureBox.Height + 4));
+        }
+
+        private void CerrarSesion()
+        {
+            Sesion.Cerrar();
+            this.ActualizarZona();              // la barra regresa a la zona de invitado
+            this.MostrarSeccion(Seccion.Emprendimientos);
         }
 
 

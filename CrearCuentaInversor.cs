@@ -1,4 +1,4 @@
-using MySqlConnector;
+﻿using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -213,7 +213,8 @@ namespace PITCHR
         }
 
         // ==================== EVITAR DUPLICADOS ====================
-        // Busca en la base de datos si ya existe un inversor con el mismo usuario, email o RFC.
+        // Busca en las DOS tablas (investor y entrepreneur) si ya existe una cuenta con el mismo usuario, email o RFC.
+        // UNION ALL junta los resultados de ambas consultas en una sola lista.
         // Si encuentra alguno, muestra un mensaje que dice cuál(es) y regresa true (no se debe registrar).
         private bool ExistenDuplicados()
         {
@@ -231,6 +232,9 @@ namespace PITCHR
                 {
                     MySqlCommand buscar = new MySqlCommand(
                         "SELECT `user`, email, rfc FROM integrative.investor " +
+                        "WHERE `user` = @user OR email = @email OR rfc = @rfc " +
+                        "UNION ALL " +
+                        "SELECT `user`, email, rfc FROM integrative.entrepreneur " +
                         "WHERE `user` = @user OR email = @email OR rfc = @rfc", dbTemp.dbConnection);
                     buscar.Parameters.AddWithValue("@user", usuario);
                     buscar.Parameters.AddWithValue("@email", email);

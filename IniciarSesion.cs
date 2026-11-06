@@ -37,6 +37,11 @@ namespace PITCHR
         }
 
         // ==================== BOTÓN INICIAR SESIÓN ====================
+        // Resultado de buscar la cuenta en una tabla
+        private const int NoExiste = 0;
+        private const int ContraseñaIncorrecta = 1;
+        private const int Correcta = 2;
+
         private void IniciarSesionBoton_Click(object sender, EventArgs e)
         {
             if (this.Validar_campos() == false)
@@ -46,66 +51,99 @@ namespace PITCHR
 
             string usuario = UsuarioTextBox.Text.Trim();
             string contraseña = ContraseñaTextBox.Text;
+            int resultado;
 
-            try
+            // 1) Se busca en la tabla de INVERSORES (investor).
+            //    Se puede entrar con el usuario o con el email.
+            int enInversores = this.BuscarCuenta("integrative.investor", "idInvestor", usuario, contraseña, RolInversor);
+            if (enInversores == Correcta)
             {
-                // Primero se busca entre los inversores y, si no está, entre los emprendedores.
-                // Se puede entrar con el usuario o con el email.
-                if (this.BuscarCuenta("integrative.investor", "idInvestor", usuario, contraseña, RolInversor) == false &&
-                    this.BuscarCuenta("integrative.entrepreneur", "idEntrepreneur", usuario, contraseña, RolEmprendedor) == false)
+                resultado = Correcta;
+            }
+            else
+            {
+                // 2) Si no entró como inversor, se busca en la tabla de EMPRENDEDORES (entrepreneur).
+                int enEmprendedores = this.BuscarCuenta("integrative.entrepreneur", "idEntrepreneur", usuario, contraseña, RolEmprendedor);
+
+                if (enEmprendedores == Correcta)
                 {
-                    MessageBox.Show("Usuario o contraseña incorrectos.", "Iniciar sesión", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    this.ContraseñaTextBox.Clear();
-                    this.ContraseñaTextBox.Select();
-                    return;
+                    resultado = Correcta;
                 }
-
-                string tipo = Sesion.Rol == RolEmprendedor ? "emprendedor" : "inversor";
-                MessageBox.Show("¡Bienvenido, " + Sesion.Usuario + "!\nIniciaste sesión como " + tipo + ".", "Iniciar sesión",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.clearTextBoxes();
-
-                HomePage pantalla = new HomePage();
-                pantalla.Show();
-                this.Hide();
+                else if (enInversores == ContraseñaIncorrecta || enEmprendedores == ContraseñaIncorrecta)
+                {
+                    resultado = ContraseñaIncorrecta;   // la cuenta sí existe, pero la contraseña no coincide
+                }
+                else
+                {
+                    resultado = NoExiste;               // no está en ninguna de las dos tablas
+                }
             }
-            catch (Exception ex)
+
+            if (resultado == NoExiste)
             {
-                MessageBox.Show(ex.Message, "Error al iniciar sesión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No existe ninguna cuenta (inversor ni emprendedor) con ese usuario o email.", "Iniciar sesión", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.UsuarioTextBox.Select();
+                return;
             }
+            if (resultado == ContraseñaIncorrecta)
+            {
+                MessageBox.Show("La contraseña es incorrecta.", "Iniciar sesión", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.ContraseñaTextBox.Clear();
+                this.ContraseñaTextBox.Select();
+                return;
+            }
+
+            string tipo = Sesion.Rol == RolEmprendedor ? "emprendedor" : "inversor";
+            MessageBox.Show("¡Bienvenido, " + Sesion.Usuario + "!\nIniciaste sesión como " + tipo + ".", "Iniciar sesión",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.clearTextBoxes();
+
+            HomePage pantalla = new HomePage();
+            pantalla.Show();
+            this.Hide();
         }
 
         /// <summary>
         /// Busca la cuenta en una tabla (investor o entrepreneur) por usuario o email.
-        /// Si la encuentra y la contraseña coincide, guarda los datos en Sesion y regresa true.
+        /// Regresa NoExiste, ContraseñaIncorrecta o Correcta. Si es Correcta, guarda los datos en Sesion.
         /// </summary>
-        private bool BuscarCuenta(string tabla, string columnaId, string usuario, string contraseña, int rol)
+        private int BuscarCuenta(string tabla, string columnaId, string usuario, string contraseña, int rol)
         {
-            using (DBConn dbTemp = new DBConn())
+            try
             {
-                MySqlCommand buscar = new MySqlCommand(
-                    "SELECT " + columnaId + ", `user`, `password` FROM " + tabla +
-                    " WHERE `user` = @usuario OR email = @usuario LIMIT 1", dbTemp.dbConnection);
-                buscar.Parameters.AddWithValue("@usuario", usuario);
-
-                dbTemp.dbConnection.Open();
-                using (MySqlDataReader lector = buscar.ExecuteReader())
+                using (DBConn dbTemp = new DBConn())
                 {
-                    if (lector.Read() == false)
-                    {
-                        return false;   // no existe en esta tabla
-                    }
+                    MySqlCommand buscar = new MySqlCommand(
+                        "SELECT " + columnaId + ", `user`, `password` FROM " + tabla +
+                        " WHERE `user` = @usuario OR email = @usuario", dbTemp.dbConnection);
+                    buscar.Parameters.AddWithValue("@usuario", usuario);
 
-                    // La contraseña se compara aquí (en C#) para que distinga mayúsculas y minúsculas.
-                    string guardada = lector["password"].ToString();
-                    if (guardada != contraseña)
+                    dbTemp.dbConnection.Open();
+                    using (MySqlDataReader lector = buscar.ExecuteReader())
                     {
-                        return false;
-                    }
+                        bool existe = false;
+                        while (lector.Read())
+                        {
+                            existe = true;
 
-                    Sesion.Iniciar(Convert.ToInt32(lector[columnaId]), lector["user"].ToString(), rol);
-                    return true;
+                            // La contraseña se compara aquí (en C#) para que distinga mayúsculas y minúsculas.
+                            string guardada = lector["password"].ToString();
+                            if (guardada == contraseña)
+                            {
+                                Sesion.Iniciar(Convert.ToInt32(lector[columnaId]), lector["user"].ToString(), rol);
+                                return Correcta;
+                            }
+                        }
+                        return existe ? ContraseñaIncorrecta : NoExiste;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Dice en qué tabla falló (por ejemplo, si una columna se llama distinto en MySQL).
+                MessageBox.Show("No se pudo revisar la tabla " + tabla + ":\n" + ex.Message, "Error al iniciar sesión",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return NoExiste;
             }
         }
 
@@ -475,34 +513,6 @@ namespace PITCHR
         private void ContraseñaTextBox_TextChanged(object sender, EventArgs e)
         {
 
-        }
-    }
-
-    /// <summary>
-    /// Datos de la persona que inició sesión. Se llenan en IniciarSesion y cualquier pantalla puede leerlos
-    /// (por ejemplo, para mostrar la foto de perfil en lugar del botón "Iniciar Sesión").
-    /// </summary>
-    public static class Sesion
-    {
-        public static int IdUsuario { get; private set; }
-        public static string Usuario { get; private set; }
-        public static int Rol { get; private set; }          // 1 = emprendedor, 0 = inversor
-        public static bool Activa { get; private set; }
-
-        public static void Iniciar(int idUsuario, string usuario, int rol)
-        {
-            IdUsuario = idUsuario;
-            Usuario = usuario;
-            Rol = rol;
-            Activa = true;
-        }
-
-        public static void Cerrar()
-        {
-            IdUsuario = 0;
-            Usuario = null;
-            Rol = 0;
-            Activa = false;
         }
     }
 }

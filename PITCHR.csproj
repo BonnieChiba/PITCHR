@@ -149,6 +149,37 @@
     </Compile>
     <Compile Include="TarjetaEmprendimiento.cs" />
     <Compile Include="TarjetaNoticia.cs" />
+    <Compile Include="SeccionBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SeccionEditarPerfil.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SeccionEditarPerfil.Designer.cs">
+      <DependentUpon>SeccionEditarPerfil.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SeccionPerfilInversor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SeccionPerfilInversor.Designer.cs">
+      <DependentUpon>SeccionPerfilInversor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SeccionPersonalizaMarca.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SeccionPersonalizaMarca.Designer.cs">
+      <DependentUpon>SeccionPersonalizaMarca.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SeccionProducto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SeccionProducto.Designer.cs">
+      <DependentUpon>SeccionProducto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sesion.cs" />
+    <EmbeddedResource Include="SeccionPersonalizaMarca.resx">
+      <DependentUpon>SeccionPersonalizaMarca.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CrearCuentaEmprendedor.resx">
       <DependentUpon>CrearCuentaEmprendedor.cs</DependentUpon>
     </EmbeddedResource>
