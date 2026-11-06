@@ -148,8 +148,28 @@ namespace PITCHR
                 case Seccion.Eventos: return new SeccionEventos();
                 case Seccion.Noticias: return new SeccionNoticias();
                 case Seccion.Mensajes: return new SeccionMensajes();
-                default: return new SeccionEmprendimientos();
+                default:
+                    SeccionEmprendimientos emprendimientos = new SeccionEmprendimientos();
+                    emprendimientos.AbrirEmprendimiento += (s, id) => this.AbrirProducto(id);
+                    return emprendimientos;
             }
+        }
+
+        // ==================== PÁGINA DE PRODUCTO (clic en una tarjeta) ====================
+        private void AbrirProducto(int idEmprendimiento)
+        {
+            SeccionProducto producto = new SeccionProducto(idEmprendimiento);
+            producto.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+            producto.Dock = DockStyle.Fill;
+
+            ContenidoPanel.SuspendLayout();
+            foreach (Control anterior in ContenidoPanel.Controls)
+            {
+                if (!_secciones.ContainsValue(anterior as UserControl)) anterior.Dispose();
+            }
+            ContenidoPanel.Controls.Clear();       // quita Emprendimientos (se queda guardada)
+            ContenidoPanel.Controls.Add(producto); // pone la página de producto
+            ContenidoPanel.ResumeLayout(true);
         }
 
         // ==================== PANELES DE PERFIL (según el rol) ====================

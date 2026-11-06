@@ -51,10 +51,6 @@
             this.FlechaIzquierdaBoton = new System.Windows.Forms.Button();
             this.FlechaDerechaBoton = new System.Windows.Forms.Button();
             this.FondoPanel = new System.Windows.Forms.Panel();
-            this.LogoPanel.SuspendLayout();
-            this.Producto1Panel.SuspendLayout();
-            this.Producto2Panel.SuspendLayout();
-            this.Producto3Panel.SuspendLayout();
             this.SobrePanel.SuspendLayout();
             this.FundadorPanel.SuspendLayout();
             this.GaleriaPanel.SuspendLayout();
@@ -69,13 +65,12 @@
             this.RegresarBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.RegresarBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.RegresarBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RegresarBoton.ForeColor = System.Drawing.Color.White;
             this.RegresarBoton.Location = new System.Drawing.Point(18, 14);
             this.RegresarBoton.Name = "RegresarBoton";
             this.RegresarBoton.Size = new System.Drawing.Size(56, 60);
             this.RegresarBoton.TabIndex = 0;
-            this.RegresarBoton.Text = "";
             this.RegresarBoton.UseVisualStyleBackColor = false;
             this.RegresarBoton.Click += new System.EventHandler(this.RegresarBoton_Click);
             // 
@@ -89,9 +84,9 @@
             // 
             // MarcaLabel
             // 
-            this.MarcaLabel.BackColor = System.Drawing.Color.Transparent;
             this.MarcaLabel.AutoEllipsis = true;
-            this.MarcaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 64F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.MarcaLabel.BackColor = System.Drawing.Color.Transparent;
+            this.MarcaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 64F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.MarcaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
             this.MarcaLabel.Location = new System.Drawing.Point(284, 30);
             this.MarcaLabel.Name = "MarcaLabel";
@@ -103,7 +98,7 @@
             // LikesLabel
             // 
             this.LikesLabel.BackColor = System.Drawing.Color.Transparent;
-            this.LikesLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.LikesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.LikesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(70)))));
             this.LikesLabel.Location = new System.Drawing.Point(320, 138);
             this.LikesLabel.Name = "LikesLabel";
@@ -114,17 +109,17 @@
             // 
             // CategoriaLabel
             // 
+            this.CategoriaLabel.AutoSize = true;
             this.CategoriaLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CategoriaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.CategoriaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.CategoriaLabel.ForeColor = System.Drawing.Color.White;
             this.CategoriaLabel.Location = new System.Drawing.Point(384, 140);
             this.CategoriaLabel.Name = "CategoriaLabel";
-            this.CategoriaLabel.Size = new System.Drawing.Size(240, 30);
+            this.CategoriaLabel.Padding = new System.Windows.Forms.Padding(12, 7, 12, 7);
+            this.CategoriaLabel.Size = new System.Drawing.Size(102, 27);
             this.CategoriaLabel.TabIndex = 4;
             this.CategoriaLabel.Text = "CATEGORÍA";
             this.CategoriaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.CategoriaLabel.AutoSize = true;
-            this.CategoriaLabel.Padding = new System.Windows.Forms.Padding(12, 7, 12, 7);
             // 
             // Producto1Panel
             // 
@@ -136,9 +131,9 @@
             // 
             // Producto1Label
             // 
-            this.Producto1Label.BackColor = System.Drawing.Color.Transparent;
             this.Producto1Label.AutoEllipsis = true;
-            this.Producto1Label.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.Producto1Label.BackColor = System.Drawing.Color.Transparent;
+            this.Producto1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.Producto1Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(80)))));
             this.Producto1Label.Location = new System.Drawing.Point(742, 168);
             this.Producto1Label.Name = "Producto1Label";
@@ -157,9 +152,9 @@
             // 
             // Producto2Label
             // 
-            this.Producto2Label.BackColor = System.Drawing.Color.Transparent;
             this.Producto2Label.AutoEllipsis = true;
-            this.Producto2Label.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.Producto2Label.BackColor = System.Drawing.Color.Transparent;
+            this.Producto2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.Producto2Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(80)))));
             this.Producto2Label.Location = new System.Drawing.Point(920, 168);
             this.Producto2Label.Name = "Producto2Label";
@@ -178,9 +173,9 @@
             // 
             // Producto3Label
             // 
-            this.Producto3Label.BackColor = System.Drawing.Color.Transparent;
             this.Producto3Label.AutoEllipsis = true;
-            this.Producto3Label.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.Producto3Label.BackColor = System.Drawing.Color.Transparent;
+            this.Producto3Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.Producto3Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(80)))));
             this.Producto3Label.Location = new System.Drawing.Point(1098, 168);
             this.Producto3Label.Name = "Producto3Label";
@@ -192,27 +187,25 @@
             // SobreTituloLabel
             // 
             this.SobreTituloLabel.BackColor = System.Drawing.Color.Transparent;
-            this.SobreTituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 34F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.SobreTituloLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 34F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.SobreTituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(110)))), ((int)(((byte)(56)))));
             this.SobreTituloLabel.Location = new System.Drawing.Point(28, 22);
             this.SobreTituloLabel.Name = "SobreTituloLabel";
             this.SobreTituloLabel.Size = new System.Drawing.Size(560, 92);
             this.SobreTituloLabel.TabIndex = 11;
             this.SobreTituloLabel.Text = "SOBRE EL\r\nEMPRENDIMIENTO";
-            this.SobreTituloLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // SobreTextoLabel
             // 
-            this.SobreTextoLabel.BackColor = System.Drawing.Color.Transparent;
             this.SobreTextoLabel.AutoEllipsis = true;
-            this.SobreTextoLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 17F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.SobreTextoLabel.BackColor = System.Drawing.Color.Transparent;
+            this.SobreTextoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 17F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.SobreTextoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(95)))));
             this.SobreTextoLabel.Location = new System.Drawing.Point(28, 120);
             this.SobreTextoLabel.Name = "SobreTextoLabel";
             this.SobreTextoLabel.Size = new System.Drawing.Size(572, 296);
             this.SobreTextoLabel.TabIndex = 12;
             this.SobreTextoLabel.Text = "Aquí va la descripción del emprendimiento.";
-            this.SobreTextoLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // SobrePanel
             // 
@@ -227,27 +220,25 @@
             // FundadorLabel
             // 
             this.FundadorLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FundadorLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.FundadorLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.FundadorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(100)))));
             this.FundadorLabel.Location = new System.Drawing.Point(22, 22);
             this.FundadorLabel.Name = "FundadorLabel";
             this.FundadorLabel.Size = new System.Drawing.Size(300, 30);
             this.FundadorLabel.TabIndex = 14;
             this.FundadorLabel.Text = "FUNDADOR";
-            this.FundadorLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // FundadorNombreLabel
             // 
-            this.FundadorNombreLabel.BackColor = System.Drawing.Color.Transparent;
             this.FundadorNombreLabel.AutoEllipsis = true;
-            this.FundadorNombreLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.FundadorNombreLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FundadorNombreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.FundadorNombreLabel.ForeColor = System.Drawing.Color.Black;
             this.FundadorNombreLabel.Location = new System.Drawing.Point(22, 52);
             this.FundadorNombreLabel.Name = "FundadorNombreLabel";
             this.FundadorNombreLabel.Size = new System.Drawing.Size(300, 32);
             this.FundadorNombreLabel.TabIndex = 15;
             this.FundadorNombreLabel.Text = "NOMBRE APELLIDO";
-            this.FundadorNombreLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // ContactarBoton
             // 
@@ -257,7 +248,7 @@
             this.ContactarBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.ContactarBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.ContactarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ContactarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.ContactarBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.ContactarBoton.ForeColor = System.Drawing.Color.White;
             this.ContactarBoton.Location = new System.Drawing.Point(10, 100);
             this.ContactarBoton.Name = "ContactarBoton";
@@ -275,7 +266,7 @@
             this.PerfilBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.PerfilBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.PerfilBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PerfilBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.PerfilBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.PerfilBoton.ForeColor = System.Drawing.Color.White;
             this.PerfilBoton.Location = new System.Drawing.Point(172, 100);
             this.PerfilBoton.Name = "PerfilBoton";
@@ -314,13 +305,12 @@
             this.FlechaIzquierdaBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.FlechaIzquierdaBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.FlechaIzquierdaBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FlechaIzquierdaBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.FlechaIzquierdaBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.FlechaIzquierdaBoton.ForeColor = System.Drawing.Color.White;
             this.FlechaIzquierdaBoton.Location = new System.Drawing.Point(684, 300);
             this.FlechaIzquierdaBoton.Name = "FlechaIzquierdaBoton";
             this.FlechaIzquierdaBoton.Size = new System.Drawing.Size(40, 44);
             this.FlechaIzquierdaBoton.TabIndex = 20;
-            this.FlechaIzquierdaBoton.Text = "";
             this.FlechaIzquierdaBoton.UseVisualStyleBackColor = false;
             this.FlechaIzquierdaBoton.Click += new System.EventHandler(this.FlechaIzquierdaBoton_Click);
             // 
@@ -332,13 +322,12 @@
             this.FlechaDerechaBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.FlechaDerechaBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.FlechaDerechaBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FlechaDerechaBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.FlechaDerechaBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.FlechaDerechaBoton.ForeColor = System.Drawing.Color.White;
             this.FlechaDerechaBoton.Location = new System.Drawing.Point(1220, 300);
             this.FlechaDerechaBoton.Name = "FlechaDerechaBoton";
             this.FlechaDerechaBoton.Size = new System.Drawing.Size(40, 44);
             this.FlechaDerechaBoton.TabIndex = 21;
-            this.FlechaDerechaBoton.Text = "";
             this.FlechaDerechaBoton.UseVisualStyleBackColor = false;
             this.FlechaDerechaBoton.Click += new System.EventHandler(this.FlechaDerechaBoton_Click);
             // 
@@ -373,20 +362,9 @@
             this.Name = "SeccionProducto";
             this.Size = new System.Drawing.Size(1280, 701);
             this.Load += new System.EventHandler(this.SeccionProducto_Load);
-            this.LogoPanel.ResumeLayout(false);
-            this.LogoPanel.PerformLayout();
-            this.Producto1Panel.ResumeLayout(false);
-            this.Producto1Panel.PerformLayout();
-            this.Producto2Panel.ResumeLayout(false);
-            this.Producto2Panel.PerformLayout();
-            this.Producto3Panel.ResumeLayout(false);
-            this.Producto3Panel.PerformLayout();
             this.SobrePanel.ResumeLayout(false);
-            this.SobrePanel.PerformLayout();
             this.FundadorPanel.ResumeLayout(false);
-            this.FundadorPanel.PerformLayout();
             this.GaleriaPanel.ResumeLayout(false);
-            this.GaleriaPanel.PerformLayout();
             this.FondoPanel.ResumeLayout(false);
             this.FondoPanel.PerformLayout();
             this.ResumeLayout(false);

@@ -39,6 +39,15 @@ namespace PITCHR
             PrepararDiseno();   // estilo del Figma (ver región de abajo)
         }
 
+        // Si se abrió desde una tarjeta, aquí va el idEntrepreneurship de esa tarjeta.
+        // Si vale 0, se muestra la marca del emprendedor que inició sesión ("Ver perfil").
+        private int _idEmprendimiento = 0;
+
+        public SeccionProducto(int idEmprendimiento) : this()
+        {
+            _idEmprendimiento = idEmprendimiento;
+        }
+
         private int IdEmprendedor()
         {
             if (Sesion.Activa && Sesion.Rol == 1) return Sesion.IdUsuario;
@@ -66,7 +75,9 @@ namespace PITCHR
                 "en.name, en.lastName, en.imageProfile " +
                 "FROM integrative.entrepreneurship e " +
                 "INNER JOIN integrative.entrepreneur en ON en.idEntrepreneur = e.idEntrepreneur " +
-                "WHERE e.idEntrepreneur = @idEntrepreneur LIMIT 1");
+                (_idEmprendimiento > 0
+                    ? "WHERE e.idEntrepreneurship = @idEntrepreneurship LIMIT 1"
+                    : "WHERE e.idEntrepreneur = @idEntrepreneur LIMIT 1"));
         }
 
         private void LoadData()
@@ -75,6 +86,7 @@ namespace PITCHR
             entrepreneurshipDA.SelectCommand.Connection = dbconn.dbConnection;
             entrepreneurshipDA.SelectCommand.Parameters.Clear();
             entrepreneurshipDA.SelectCommand.Parameters.AddWithValue("@idEntrepreneur", this.IdEmprendedor());
+            entrepreneurshipDA.SelectCommand.Parameters.AddWithValue("@idEntrepreneurship", _idEmprendimiento);
             try
             {
                 entrepreneurshiptable.Clear();

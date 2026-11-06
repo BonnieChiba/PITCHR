@@ -208,10 +208,13 @@ namespace PITCHR
             // Aquí se abrirá la pantalla de eventos (el anuncio es fijo).
         }
 
+        // Aviso para HomePage: "abran la página de producto de este emprendimiento" (manda su idEntrepreneurship).
+        public event EventHandler<int> AbrirEmprendimiento;
+
         private void Tarjeta_Click(object sender, EventArgs e)
         {
-            // Aquí se abrirá el detalle del emprendimiento elegido:
-            //     Emprendimiento elegido = ((TarjetaEmprendimiento)sender).Datos;
+            Emprendimiento elegido = ((TarjetaEmprendimiento)sender).Datos;
+            if (AbrirEmprendimiento != null) AbrirEmprendimiento(this, elegido.Id);
         }
 
 

@@ -213,6 +213,9 @@
     <EmbeddedResource Include="SeccionNoticias.resx">
       <DependentUpon>SeccionNoticias.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SeccionProducto.resx">
+      <DependentUpon>SeccionProducto.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
