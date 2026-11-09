@@ -333,7 +333,7 @@ namespace PITCHR
         // Clic en "ver Terminos y condiciones"
         private void TerminosLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MessageBox.Show("Aquí van los Términos y Condiciones de Pitcher.", "Términos y Condiciones");
+            MessageBox.Show("Aquí van los Términos y Condiciones de PitchR.", "Términos y Condiciones");
         }
 
 
@@ -404,6 +404,7 @@ namespace PITCHR
             }
 
             // Eventos del diseño: se conectan aquí (no en el diseñador) para que Visual Studio no los borre.
+            BotonCircular.HacerBotonRegresar(RegresarPictureBox);   // el mismo botón de regresar de toda la app
             BackgroundEmprendedor.Paint += BackgroundEmprendedor_Paint;
             CuadroBlancoTexto.Paint += CuadroBlancoTexto_Paint;
             CuadroBlancoTexto.MouseDown += CuadroBlancoTexto_MouseDown;

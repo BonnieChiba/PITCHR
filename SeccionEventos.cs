@@ -6,8 +6,8 @@ using System.Windows.Forms;
 namespace PITCHR
 {
     /// <summary>
-    /// Sección "Eventos" de HomePage (es un panel, no una ventana). Por ahora solo muestra un aviso;
-    /// cuando la diseñen, su contenido se agrega aquí igual que en SeccionNoticias.
+    /// Sección "Eventos" de HomePage (es un panel, no una ventana).
+    /// Título, subtítulo y un carrusel con las tarjetas de los eventos.
     /// </summary>
     public partial class SeccionEventos : UserControl
     {
@@ -22,6 +22,47 @@ namespace PITCHR
                 _fuentesOriginales[c] = c.Font;
             }
             Resize += (s, e) => AjustarATamano();
+
+            Carrusel.EventoClick += Evento_Click;
+            AnteriorBoton.Click += (s, e) => Carrusel.Mover(-1);
+            SiguienteBoton.Click += (s, e) => Carrusel.Mover(1);
+            Carrusel.MostrarEventos(CargarEventos());
+        }
+
+        // ==================== EVENTOS ====================
+        // Por ahora la lista es fija. Cuando exista la tabla de eventos en la base,
+        // aquí va el SELECT y cada fila se convierte en un Evento (igual que en SeccionNoticias).
+        // La imagen puede ser un archivo de la carpeta Imagenes o un enlace (http...); si no existe se dibuja un degradado.
+        private List<Evento> CargarEventos()
+        {
+            return new List<Evento>
+            {
+                new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de Octubre 2026",
+                           SeccionBase.CargarImagen("farmers_market.jpg"), Color.FromArgb(96, 119, 74))
+                {
+                    DescripcionCompleta = "Mercado agricultor en Distrito 1 con productos frescos de productores locales.",
+                    Horario = "9:00am - 3:00pm"
+                },
+                new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de Octubre 2026",
+                           SeccionBase.CargarImagen("japan_market.jpg"), Color.FromArgb(240, 74, 120))
+                {
+                    DescripcionCompleta = "Mercado de emprendimientos locales con temáticas asiáticas y japonesas.",
+                    Horario = "11:00am - 8:00pm"
+                },
+                new Evento(3, "Scrub Daddy Fest", "Evento de productos de limpieza.", "3 de Enero de 2027",
+                           SeccionBase.CargarImagen("scrub_daddy_fest.jpg"), Color.FromArgb(56, 160, 230))
+                {
+                    DescripcionCompleta = "Evento de productos de limpieza con demostraciones, juegos y regalos.",
+                    Horario = "10:00am - 6:00pm"
+                },
+            };
+        }
+
+        // Clic en una tarjeta: abre el popup con el detalle. Si cambian el favorito ahí, se actualiza el carrusel.
+        private void Evento_Click(object sender, Evento evento)
+        {
+            PopupEvento.Mostrar(this, evento, (s, e) => Carrusel.Invalidate());
+            Carrusel.Invalidate();
         }
 
         #region Sección adaptable (no es necesario modificar esta parte)

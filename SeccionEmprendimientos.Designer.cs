@@ -100,7 +100,7 @@
             this.BannerTituloLabel.Name = "BannerTituloLabel";
             this.BannerTituloLabel.Size = new System.Drawing.Size(240, 52);
             this.BannerTituloLabel.TabIndex = 1;
-            this.BannerTituloLabel.Text = "PitcheR Fest:";
+            this.BannerTituloLabel.Text = "PitchR Fest:";
             this.BannerTituloLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // BannerTitulo2Label
@@ -177,7 +177,7 @@
             this.TituloLabel.BackColor = System.Drawing.Color.Transparent;
             this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 70F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.TituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
-            this.TituloLabel.Location = new System.Drawing.Point(190, 347);
+            this.TituloLabel.Location = new System.Drawing.Point(190, 341);
             this.TituloLabel.Name = "TituloLabel";
             this.TituloLabel.Size = new System.Drawing.Size(900, 100);
             this.TituloLabel.TabIndex = 5;

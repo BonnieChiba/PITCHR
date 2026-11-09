@@ -86,12 +86,12 @@
             this.ConfiguracionLabel.BackColor = System.Drawing.Color.Transparent;
             this.ConfiguracionLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.ConfiguracionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(189)))), ((int)(((byte)(248)))));
-            this.ConfiguracionLabel.Location = new System.Drawing.Point(25, 13);
+            this.ConfiguracionLabel.Location = new System.Drawing.Point(25, 10);
             this.ConfiguracionLabel.Name = "ConfiguracionLabel";
-            this.ConfiguracionLabel.Size = new System.Drawing.Size(250, 16);
+            this.ConfiguracionLabel.Size = new System.Drawing.Size(250, 19);
             this.ConfiguracionLabel.TabIndex = 0;
             this.ConfiguracionLabel.Text = "CONFIGURACIÓN";
-            this.ConfiguracionLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ConfiguracionLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // InformacionLabel
             // 
@@ -110,7 +110,7 @@
             this.DatosGeneralesLabel.BackColor = System.Drawing.Color.Transparent;
             this.DatosGeneralesLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.DatosGeneralesLabel.ForeColor = System.Drawing.Color.Black;
-            this.DatosGeneralesLabel.Location = new System.Drawing.Point(57, 73);
+            this.DatosGeneralesLabel.Location = new System.Drawing.Point(57, 71);
             this.DatosGeneralesLabel.Name = "DatosGeneralesLabel";
             this.DatosGeneralesLabel.Size = new System.Drawing.Size(300, 16);
             this.DatosGeneralesLabel.TabIndex = 2;
@@ -122,7 +122,7 @@
             this.DatosGeneralesSubLabel.BackColor = System.Drawing.Color.Transparent;
             this.DatosGeneralesSubLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DatosGeneralesSubLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(112)))), ((int)(((byte)(125)))));
-            this.DatosGeneralesSubLabel.Location = new System.Drawing.Point(57, 89);
+            this.DatosGeneralesSubLabel.Location = new System.Drawing.Point(57, 90);
             this.DatosGeneralesSubLabel.Name = "DatosGeneralesSubLabel";
             this.DatosGeneralesSubLabel.Size = new System.Drawing.Size(300, 14);
             this.DatosGeneralesSubLabel.TabIndex = 3;
@@ -179,9 +179,9 @@
             "Naturaleza",
             "Salud",
             "Startup"});
-            this.CategoryComboBox.Location = new System.Drawing.Point(252, 127);
+            this.CategoryComboBox.Location = new System.Drawing.Point(262, 131);
             this.CategoryComboBox.Name = "CategoryComboBox";
-            this.CategoryComboBox.Size = new System.Drawing.Size(218, 25);
+            this.CategoryComboBox.Size = new System.Drawing.Size(198, 21);
             this.CategoryComboBox.TabIndex = 7;
             // 
             // DescCortaLabel
@@ -548,9 +548,9 @@
             this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RegresarBoton.ForeColor = System.Drawing.Color.White;
-            this.RegresarBoton.Location = new System.Drawing.Point(106, 27);
+            this.RegresarBoton.Location = new System.Drawing.Point(98, 19);
             this.RegresarBoton.Name = "RegresarBoton";
-            this.RegresarBoton.Size = new System.Drawing.Size(36, 36);
+            this.RegresarBoton.Size = new System.Drawing.Size(52, 52);
             this.RegresarBoton.TabIndex = 3;
             this.RegresarBoton.Text = "";
             this.RegresarBoton.UseVisualStyleBackColor = false;
@@ -573,7 +573,7 @@
             this.TituloLabel.BackColor = System.Drawing.Color.Transparent;
             this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 26F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.TituloLabel.ForeColor = System.Drawing.Color.Black;
-            this.TituloLabel.Location = new System.Drawing.Point(155, 26);
+            this.TituloLabel.Location = new System.Drawing.Point(155, 22);
             this.TituloLabel.Name = "TituloLabel";
             this.TituloLabel.Size = new System.Drawing.Size(520, 38);
             this.TituloLabel.TabIndex = 5;
@@ -585,7 +585,7 @@
             this.SubtituloLabel.BackColor = System.Drawing.Color.Transparent;
             this.SubtituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.SubtituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(120)))));
-            this.SubtituloLabel.Location = new System.Drawing.Point(158, 60);
+            this.SubtituloLabel.Location = new System.Drawing.Point(158, 62);
             this.SubtituloLabel.Name = "SubtituloLabel";
             this.SubtituloLabel.Size = new System.Drawing.Size(520, 17);
             this.SubtituloLabel.TabIndex = 6;

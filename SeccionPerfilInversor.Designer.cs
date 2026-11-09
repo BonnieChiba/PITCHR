@@ -51,9 +51,9 @@
             this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RegresarBoton.ForeColor = System.Drawing.Color.White;
-            this.RegresarBoton.Location = new System.Drawing.Point(26, 24);
+            this.RegresarBoton.Location = new System.Drawing.Point(28, 28);
             this.RegresarBoton.Name = "RegresarBoton";
-            this.RegresarBoton.Size = new System.Drawing.Size(56, 60);
+            this.RegresarBoton.Size = new System.Drawing.Size(52, 52);
             this.RegresarBoton.TabIndex = 0;
             this.RegresarBoton.Text = "";
             this.RegresarBoton.UseVisualStyleBackColor = false;

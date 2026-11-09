@@ -169,6 +169,15 @@
       <DependentUpon>SeccionProducto.cs</DependentUpon>
     </Compile>
     <Compile Include="Sesion.cs" />
+    <Compile Include="BotonCircular.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PopupEvento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CarruselEventos.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TarjetaEmprendimiento.cs" />
     <Compile Include="TarjetaNoticia.cs" />
     <EmbeddedResource Include="SeccionMensajes.resx">

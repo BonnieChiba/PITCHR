@@ -59,12 +59,12 @@ namespace PITCHR
             Size = new Size(291, 351);
         }
 
-        [Category("Pitcher")] public string Titulo { get { return _titulo; } set { _titulo = value; Invalidate(); } }
-        [Category("Pitcher")] public string Descripcion { get { return _descripcion; } set { _descripcion = value; Invalidate(); } }
-        [Category("Pitcher")] public string Categoria { get { return _categoria; } set { _categoria = value; Invalidate(); } }
-        [Category("Pitcher")] public Image Imagen { get { return _imagen; } set { _imagen = value; Invalidate(); } }
-        [Category("Pitcher")] public bool Favorito { get { return _favorito; } set { _favorito = value; Invalidate(); } }
-        [Category("Pitcher")] public Formas Forma { get { return _forma; } set { _forma = value; Invalidate(); } }
+        [Category("PitchR")] public string Titulo { get { return _titulo; } set { _titulo = value; Invalidate(); } }
+        [Category("PitchR")] public string Descripcion { get { return _descripcion; } set { _descripcion = value; Invalidate(); } }
+        [Category("PitchR")] public string Categoria { get { return _categoria; } set { _categoria = value; Invalidate(); } }
+        [Category("PitchR")] public Image Imagen { get { return _imagen; } set { _imagen = value; Invalidate(); } }
+        [Category("PitchR")] public bool Favorito { get { return _favorito; } set { _favorito = value; Invalidate(); } }
+        [Category("PitchR")] public Formas Forma { get { return _forma; } set { _forma = value; Invalidate(); } }
 
         /// <summary>El emprendimiento que muestra esta tarjeta (para saber cuál se eligió).</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

@@ -55,9 +55,9 @@
             this.RegresarPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.RegresarPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RegresarPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("RegresarPictureBox.Image")));
-            this.RegresarPictureBox.Location = new System.Drawing.Point(26, 21);
+            this.RegresarPictureBox.Location = new System.Drawing.Point(30, 25);
             this.RegresarPictureBox.Name = "RegresarPictureBox";
-            this.RegresarPictureBox.Size = new System.Drawing.Size(60, 60);
+            this.RegresarPictureBox.Size = new System.Drawing.Size(52, 52);
             this.RegresarPictureBox.TabIndex = 5;
             this.RegresarPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.RegresarPictureBox.TabStop = false;
@@ -251,7 +251,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "IniciarSesion";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Pitcher - Iniciar sesión";
+            this.Text = "PitchR - Iniciar sesión";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.CuadroBlancoTexto.ResumeLayout(false);

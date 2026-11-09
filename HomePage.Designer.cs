@@ -281,7 +281,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "HomePage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Pitcher";
+            this.Text = "PitchR";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.HomePage_Load);
             this.MenuGuestPanel.ResumeLayout(false);

@@ -66,12 +66,12 @@ namespace PITCHR
             Size = new Size(480, 150);
         }
 
-        [Category("Pitcher")] public string Titulo { get { return _titulo; } set { _titulo = value; Invalidate(); } }
-        [Category("Pitcher")] public string Resumen { get { return _resumen; } set { _resumen = value; Invalidate(); } }
-        [Category("Pitcher")] public string Categoria { get { return _categoria; } set { _categoria = value; Invalidate(); } }
-        [Category("Pitcher")] public string Fecha { get { return _fecha; } set { _fecha = value; Invalidate(); } }
-        [Category("Pitcher")] public Image Imagen { get { return _imagen; } set { _imagen = value; Invalidate(); } }
-        [Category("Pitcher")] public Formas Forma { get { return _forma; } set { _forma = value; Invalidate(); } }
+        [Category("PitchR")] public string Titulo { get { return _titulo; } set { _titulo = value; Invalidate(); } }
+        [Category("PitchR")] public string Resumen { get { return _resumen; } set { _resumen = value; Invalidate(); } }
+        [Category("PitchR")] public string Categoria { get { return _categoria; } set { _categoria = value; Invalidate(); } }
+        [Category("PitchR")] public string Fecha { get { return _fecha; } set { _fecha = value; Invalidate(); } }
+        [Category("PitchR")] public Image Imagen { get { return _imagen; } set { _imagen = value; Invalidate(); } }
+        [Category("PitchR")] public Formas Forma { get { return _forma; } set { _forma = value; Invalidate(); } }
 
         /// <summary>La noticia que muestra esta tarjeta (para saber cuál se eligió).</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -214,10 +214,10 @@ namespace PITCHR
             }
 
             using (Font fTitulo = Fuente(15 * k, FontStyle.Bold))
-                Texto(g, _titulo, fTitulo, new RectangleF(x, t.Y + 48 * k, 260 * k, 42 * k), AzulTitulo,
+                Texto(g, _titulo, fTitulo, new RectangleF(x, t.Y + 46 * k, 268 * k, 50 * k), AzulTitulo,
                       TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
 
-            DibujarVerMas(g, "Ver más", Fuente(12 * k, FontStyle.Bold), new PointF(x, t.Y + 96 * k), GrisVerMas, k);
+            DibujarVerMas(g, "Ver más", Fuente(12 * k, FontStyle.Bold), new PointF(x, t.Y + 100 * k), GrisVerMas, k);
         }
 
         private void DibujarFoto(Graphics g, RectangleF area)

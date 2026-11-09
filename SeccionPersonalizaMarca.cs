@@ -423,13 +423,20 @@ namespace PITCHR
             }
 
             // Botones redondeados
-            foreach (Button boton in new[] { VistaPreviaBoton, CancelarBoton, GuardarBoton, RegresarBoton })
+            foreach (Button boton in new[] { VistaPreviaBoton, CancelarBoton, GuardarBoton })
             {
                 Button b = boton;
                 b.Paint += Boton_Paint;
                 b.MouseEnter += (s, e) => b.Invalidate();
                 b.MouseLeave += (s, e) => b.Invalidate();
             }
+            BotonCircular.HacerBotonRegresar(RegresarBoton, FondoFranja);   // el mismo botón de regresar de toda la app
+
+            // Lista de categorías: se dibuja a mano para mostrar "Elige una categoría" cuando está vacía
+            CategoryComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            CategoryComboBox.DrawItem += CategoryComboBox_DrawItem;
+            CategoryComboBox.GotFocus += (s, e) => TarjetaPanel.Invalidate();
+            CategoryComboBox.LostFocus += (s, e) => TarjetaPanel.Invalidate();
 
 
             // Eventos del diseño: se conectan aquí (no en el diseñador) para que Visual Studio no los borre.
@@ -502,6 +509,8 @@ namespace PITCHR
                     (int)Math.Round(r.Height * _escala));
                 c.Font = EscalarFuente(_fuentesOriginales[c], _escala);
             }
+            // La lista de categorías se dibuja a mano: su alto sigue al tamaño de la letra
+            CategoryComboBox.ItemHeight = Math.Max(10, (int)Math.Round(19 * _escala));
             ResumeLayout(true);
             BackgroundMarca.Invalidate(true);
         }
@@ -641,6 +650,18 @@ namespace PITCHR
                 Numero(g, "0" + (i + 1), new RectangleF(530 * k, (yProducto[i] + 11) * k, 30 * k, 30 * k), k);
             }
 
+            // Caja de Categoría: mismo alto y estilo que la de "Nombre Emprendimiento", a su lado
+            {
+                ComboBox lista = CategoryComboBox;
+                RectangleF r = new RectangleF(lista.Left - 10 * k, BrandTextBox.Top - 7 * k, lista.Width + 20 * k, BrandTextBox.Height + 12 * k);
+                using (GraphicsPath p = Redondeado(r, 5 * k))
+                using (Pen borde = new Pen(lista.Focused ? Celeste : BordeCampo, Math.Max(1f, lista.Focused ? 1.5f * k : 0.8f * k)))
+                {
+                    g.FillPath(Brushes.White, p);
+                    g.DrawPath(borde, p);
+                }
+            }
+
             // Cajas alrededor de cada TextBox (el TextBox no tiene borde)
             foreach (Control control in TarjetaPanel.Controls)
             {
@@ -654,6 +675,21 @@ namespace PITCHR
                     g.DrawPath(borde, p);
                 }
             }
+        }
+
+        /// <summary>Opciones de la lista de categorías; si no hay ninguna elegida muestra el texto guía en gris.</summary>
+        private void CategoryComboBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            bool enCaja = (e.State & DrawItemState.ComboBoxEdit) == DrawItemState.ComboBoxEdit;
+            bool marcada = (e.State & DrawItemState.Selected) == DrawItemState.Selected && !enCaja;
+            using (SolidBrush fondo = new SolidBrush(marcada ? Color.FromArgb(224, 242, 254) : Color.White))
+                e.Graphics.FillRectangle(fondo, e.Bounds);
+
+            string texto = e.Index >= 0 ? CategoryComboBox.Items[e.Index].ToString() : "Elige una categoría";
+            Color color = e.Index >= 0 ? Color.FromArgb(40, 40, 52) : Color.FromArgb(170, 168, 180);
+            Rectangle area = new Rectangle(e.Bounds.X + 2, e.Bounds.Y, e.Bounds.Width - 4, e.Bounds.Height);
+            TextRenderer.DrawText(e.Graphics, texto, CategoryComboBox.Font, area, color,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }
 
         private static void Numero(Graphics g, string texto, RectangleF r, float k)
@@ -734,6 +770,14 @@ namespace PITCHR
             using (Font fTitulo = new Font(fuente, Math.Max(1f, 9.5f * k), FontStyle.Bold, GraphicsUnit.Pixel))
             using (Font fDetalle = new Font(fuente, Math.Max(1f, 8.5f * k), FontStyle.Regular, GraphicsUnit.Pixel))
             {
+                // En los recuadros angostos (Imagen 2 y 3) el texto completo no cabe: se usa una versión más corta
+                if (campo.RutaNueva == null && campo.Archivo == null)
+                    foreach (string opcion in new[] { "PNG o JPG · Máx. 5 MB", "PNG o JPG · 5 MB", "Máx. 5 MB" })
+                    {
+                        detalle = opcion;
+                        if (TextRenderer.MeasureText(g, opcion, fDetalle, Size.Empty, TextFormatFlags.NoPadding).Width <= anchoTexto) break;
+                    }
+
                 float cy = recuadro.Height / 2f;
                 TextRenderer.DrawText(g, campo.Titulo, fTitulo, Rectangle.Round(new RectangleF(x, cy - 14 * k, anchoTexto, 14 * k)),
                     Color.FromArgb(77, 79, 98), TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
@@ -795,7 +839,7 @@ namespace PITCHR
         }
 
 
-        /// <summary>Botones: vista previa / Cancelar (blancos), Guardar cambios (azul) y la flecha naranja de regresar.</summary>
+        /// <summary>Botones: vista previa / Cancelar (blancos) y Guardar cambios (azul).</summary>
         private void Boton_Paint(object sender, PaintEventArgs e)
         {
             Button boton = (Button)sender;
@@ -803,22 +847,6 @@ namespace PITCHR
             Calidad(g);
             float k = _escala;
             bool encima = boton.ClientRectangle.Contains(boton.PointToClient(Cursor.Position));
-
-            if (boton == RegresarBoton)
-            {
-                g.Clear(FondoFranja);
-                RectangleF c = new RectangleF(2 * k, 2 * k, 32 * k, 32 * k);
-                using (SolidBrush b = new SolidBrush(encima ? ControlPaint.Light(Naranja, 0.15f) : Naranja))
-                    g.FillEllipse(b, c);
-                float cx = c.X + c.Width / 2f, cy = c.Y + c.Height / 2f;
-                using (Pen p = new Pen(Color.White, 2f * k))
-                {
-                    p.StartCap = LineCap.Round; p.EndCap = LineCap.Round; p.LineJoin = LineJoin.Round;
-                    g.DrawLine(p, cx - 6 * k, cy, cx + 6 * k, cy);
-                    g.DrawLines(p, new[] { new PointF(cx - 1 * k, cy - 5 * k), new PointF(cx - 6 * k, cy), new PointF(cx - 1 * k, cy + 5 * k) });
-                }
-                return;
-            }
 
             g.Clear(FondoDerecha);   // los tres botones están sobre la columna derecha
             RectangleF area = new RectangleF(3 * k, 0, boton.Width - 6 * k - 1, boton.Height - 8 * k);

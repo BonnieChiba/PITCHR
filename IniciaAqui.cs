@@ -79,6 +79,7 @@ namespace PITCHR
             ActivarDobleBuffer(EmprendedorPanel);
 
             // Eventos del diseño: se conectan aquí (no en el diseñador) para que Visual Studio no los borre.
+            BotonCircular.HacerBotonRegresar(RegresarPictureBox);   // el mismo botón de regresar de toda la app
             InversorPanel.Paint += Tarjeta_Paint;
             EmprendedorPanel.Paint += Tarjeta_Paint;
             ConectarTarjeta(InversorPanel, InversorPanel_Click);

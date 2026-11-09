@@ -181,7 +181,7 @@ namespace PITCHR
             // Solo un inversionista puede empezar una conversación con el fundador
             if (!Sesion.Activa || Sesion.Rol != 0)
             {
-                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "Pitcher");
+                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "PitchR");
                 return;
             }
             if (_idFundador == 0) return;
@@ -196,7 +196,7 @@ namespace PITCHR
                 return;
             }
             // Aquí se abrirá el perfil del fundador (frame "porfileFounder").
-            MessageBox.Show("El perfil del fundador estará disponible próximamente.", "Pitcher");
+            MessageBox.Show("El perfil del fundador estará disponible próximamente.", "PitchR");
         }
 
         private void RegresarBoton_Click(object sender, EventArgs e)
@@ -225,16 +225,43 @@ namespace PITCHR
             SobrePanel.Paint += SobrePanel_Paint;
             GaleriaPanel.Paint += GaleriaPanel_Paint;
             FundadorPanel.Paint += FundadorPanel_Paint;
-            RegresarBoton.Paint += (s, e) => SeccionPerfilInversor.DibujarRegresar(e.Graphics, RegresarBoton, Escala, GrisFranja);
+            BotonCircular.HacerBotonRegresar(RegresarBoton, GrisFranja);
             FlechaIzquierdaBoton.Paint += Flecha_Paint;
             FlechaDerechaBoton.Paint += Flecha_Paint;
-            foreach (Button b in new[] { RegresarBoton, FlechaIzquierdaBoton, FlechaDerechaBoton })
+            foreach (Button b in new[] { FlechaIzquierdaBoton, FlechaDerechaBoton })
             {
                 Button boton = b;
                 boton.MouseEnter += (s, e) => boton.Invalidate();
                 boton.MouseLeave += (s, e) => boton.Invalidate();
             }
             PrepararEscalado(FondoPanel);
+
+            // El nombre de la marca se achica para que quepa completo (sin "..."); se registra después del escalado.
+            Resize += (s, e) => AjustarNombreMarca();
+            Load += (s, e) => AjustarNombreMarca();
+            MarcaLabel.TextChanged += (s, e) => AjustarNombreMarca();
+        }
+
+        /// <summary>Reduce la letra del nombre de la marca hasta que quepa en una línea.</summary>
+        private void AjustarNombreMarca()
+        {
+            if (MarcaLabel.Width < 10) return;
+            float tamano = 64f * Escala;              // tamaño del Figma ya escalado
+            float minimo = 26f * Escala;
+            Font actual = MarcaLabel.Font;
+            while (true)
+            {
+                Font prueba;
+                using (Font temporal = new Font(actual.FontFamily, Math.Max(1f, tamano), actual.Style, GraphicsUnit.Pixel))
+                    prueba = EscalarFuente(temporal, 1f);   // fuente guardada en caché (no se crea una nueva cada vez)
+                Size medida = TextRenderer.MeasureText(MarcaLabel.Text, prueba);
+                if (medida.Width <= MarcaLabel.Width || tamano <= minimo)
+                {
+                    if (MarcaLabel.Font != prueba) MarcaLabel.Font = prueba;
+                    return;
+                }
+                tamano -= 2f * Escala;
+            }
         }
 
         /// <summary>Franja gris de arriba (a todo lo ancho), corazón de likes y etiqueta de categoría.</summary>
@@ -247,18 +274,20 @@ namespace PITCHR
             using (SolidBrush b = new SolidBrush(GrisFranja))
                 g.FillRectangle(b, 0, 0, FondoPanel.Width, MargenY + 200 * k);
 
-            if (!_tieneMarca) return;
+            // Corazón (a la izquierda del número de likes); se dibuja siempre que haya número
+            if (LikesLabel.Visible && LikesLabel.Text.Length > 0)
+            {
+                RectangleF corazon = new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
+                DibujarCorazon(g, corazon, k);
+            }
 
-            // Corazón (a la izquierda del número de likes)
-            RectangleF corazon = new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
-            DibujarCorazon(g, corazon, k);
-
-            // Etiqueta naranja de la categoría (CategoriaLabel tiene AutoSize: mide lo que su texto)
-            if (CategoriaLabel.Text.Length > 0)
+            // Etiqueta naranja de la categoría (CategoriaLabel tiene AutoSize: mide lo que su texto).
+            // Se dibuja siempre que haya texto: así las letras blancas nunca quedan sobre el gris.
+            if (CategoriaLabel.Visible && CategoriaLabel.Text.Length > 0)
             {
                 RectangleF pildora = CategoriaLabel.Bounds;
                 using (GraphicsPath p = Redondeado(pildora, pildora.Height / 2f))
-                using (SolidBrush b = new SolidBrush(Color.FromArgb(125, 248, 110, 56)))
+                using (SolidBrush b = new SolidBrush(Naranja))
                     g.FillPath(b, p);
             }
         }

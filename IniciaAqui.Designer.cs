@@ -1,4 +1,4 @@
-namespace PITCHR
+﻿namespace PITCHR
 {
     partial class IniciaAqui
     {
@@ -52,7 +52,7 @@ namespace PITCHR
             this.TituloLabel.BackColor = System.Drawing.Color.Transparent;
             this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 80F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.TituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
-            this.TituloLabel.Location = new System.Drawing.Point(190, 74);
+            this.TituloLabel.Location = new System.Drawing.Point(190, 68);
             this.TituloLabel.Name = "TituloLabel";
             this.TituloLabel.Size = new System.Drawing.Size(900, 110);
             this.TituloLabel.TabIndex = 0;
@@ -151,9 +151,9 @@ namespace PITCHR
             this.RegresarPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.RegresarPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RegresarPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("RegresarPictureBox.Image")));
-            this.RegresarPictureBox.Location = new System.Drawing.Point(94, 98);
+            this.RegresarPictureBox.Location = new System.Drawing.Point(112, 116);
             this.RegresarPictureBox.Name = "RegresarPictureBox";
-            this.RegresarPictureBox.Size = new System.Drawing.Size(89, 89);
+            this.RegresarPictureBox.Size = new System.Drawing.Size(52, 52);
             this.RegresarPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.RegresarPictureBox.TabIndex = 4;
             this.RegresarPictureBox.TabStop = false;
@@ -164,9 +164,9 @@ namespace PITCHR
             this.YaTienesCuentaLabel.BackColor = System.Drawing.Color.Transparent;
             this.YaTienesCuentaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.YaTienesCuentaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.YaTienesCuentaLabel.Location = new System.Drawing.Point(340, 690);
+            this.YaTienesCuentaLabel.Location = new System.Drawing.Point(340, 676);
             this.YaTienesCuentaLabel.Name = "YaTienesCuentaLabel";
-            this.YaTienesCuentaLabel.Size = new System.Drawing.Size(600, 46);
+            this.YaTienesCuentaLabel.Size = new System.Drawing.Size(600, 60);
             this.YaTienesCuentaLabel.TabIndex = 5;
             this.YaTienesCuentaLabel.Text = "¿Ya tienes una cuenta?";
             this.YaTienesCuentaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -178,9 +178,9 @@ namespace PITCHR
             this.IniciarSesionLink.Font = new System.Drawing.Font("Plus Jakarta Sans", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.IniciarSesionLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.IniciarSesionLink.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(197)))), ((int)(((byte)(251)))));
-            this.IniciarSesionLink.Location = new System.Drawing.Point(440, 734);
+            this.IniciarSesionLink.Location = new System.Drawing.Point(440, 740);
             this.IniciarSesionLink.Name = "IniciarSesionLink";
-            this.IniciarSesionLink.Size = new System.Drawing.Size(400, 46);
+            this.IniciarSesionLink.Size = new System.Drawing.Size(400, 50);
             this.IniciarSesionLink.TabIndex = 6;
             this.IniciarSesionLink.TabStop = true;
             this.IniciarSesionLink.Text = "Iniciar sesión";
@@ -203,7 +203,7 @@ namespace PITCHR
             this.MinimumSize = new System.Drawing.Size(660, 460);
             this.Name = "IniciaAqui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Pitcher";
+            this.Text = "PitchR";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.IniciaAqui_FormClosed);
             this.InversorPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.InversorPictureBox)).EndInit();

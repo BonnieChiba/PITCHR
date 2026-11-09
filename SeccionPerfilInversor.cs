@@ -113,9 +113,7 @@ namespace PITCHR
             ActivarDobleBuffer(FotoPanel);
             TarjetaPanel.Paint += TarjetaPanel_Paint;
             FotoPanel.Paint += FotoPanel_Paint;
-            RegresarBoton.Paint += RegresarBoton_Paint;
-            RegresarBoton.MouseEnter += (s, e) => RegresarBoton.Invalidate();
-            RegresarBoton.MouseLeave += (s, e) => RegresarBoton.Invalidate();
+            BotonCircular.HacerBotonRegresar(RegresarBoton, Color.White);
             PrepararEscalado(FondoPanel);
         }
 
@@ -146,30 +144,7 @@ namespace PITCHR
             DibujarFotoRedonda(g, _foto, circulo, NombreLabel.Text, k);
         }
 
-        /// <summary>Botón de regresar: círculo gris claro con flecha azul.</summary>
-        private void RegresarBoton_Paint(object sender, PaintEventArgs e)
-        {
-            DibujarRegresar(e.Graphics, RegresarBoton, Escala, Color.White);
-        }
-
-        internal static void DibujarRegresar(Graphics g, Button boton, float k, Color fondo)
-        {
-            Calidad(g);
-            g.Clear(fondo);
-            bool encima = boton.ClientRectangle.Contains(boton.PointToClient(Cursor.Position));
-            RectangleF c = new RectangleF(2 * k, 2 * k, boton.Width - 4 * k - 1, boton.Width - 4 * k - 1);
-            using (SolidBrush sombra = new SolidBrush(Color.FromArgb(40, 0, 0, 0)))
-                g.FillEllipse(sombra, c.X, c.Y + 3 * k, c.Width, c.Height);
-            using (SolidBrush b = new SolidBrush(encima ? Color.FromArgb(225, 232, 240) : Color.FromArgb(240, 243, 244)))
-                g.FillEllipse(b, c);
-            float cx = c.X + c.Width / 2f, cy = c.Y + c.Height / 2f;
-            using (Pen p = new Pen(AzulPitcher, 3.2f * k))
-            {
-                p.StartCap = LineCap.Round; p.EndCap = LineCap.Round; p.LineJoin = LineJoin.Round;
-                g.DrawLine(p, cx - 8 * k, cy, cx + 8 * k, cy);
-                g.DrawLines(p, new[] { new PointF(cx - 2 * k, cy - 7 * k), new PointF(cx - 8 * k, cy), new PointF(cx - 2 * k, cy + 7 * k) });
-            }
-        }
+        // El botón de regresar se dibuja con BotonCircular.DibujarRegresar (el mismo en toda la app).
 
         #endregion
     }
