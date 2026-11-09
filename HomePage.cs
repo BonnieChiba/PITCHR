@@ -160,6 +160,7 @@ namespace PITCHR
         {
             SeccionProducto producto = new SeccionProducto(idEmprendimiento);
             producto.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+            producto.Contactar += (s, idEntrepreneur) => AbrirMensajesCon(idEntrepreneur);
             producto.Dock = DockStyle.Fill;
 
             ContenidoPanel.SuspendLayout();
@@ -170,6 +171,14 @@ namespace PITCHR
             ContenidoPanel.Controls.Clear();       // quita Emprendimientos (se queda guardada)
             ContenidoPanel.Controls.Add(producto); // pone la página de producto
             ContenidoPanel.ResumeLayout(true);
+        }
+
+        // ==================== MENSAJES (botón CONTACTAR) ====================
+        private void AbrirMensajesCon(int idEntrepreneur)
+        {
+            this.MostrarSeccion(Seccion.Mensajes);
+            SeccionMensajes mensajes = _secciones[Seccion.Mensajes] as SeccionMensajes;
+            if (mensajes != null) mensajes.AbrirConversacion(idEntrepreneur);
         }
 
         // ==================== PANELES DE PERFIL (según el rol) ====================

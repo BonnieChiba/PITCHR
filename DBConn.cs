@@ -42,7 +42,7 @@ namespace PITCHR
         {
             string dblocation = "localhost";
             string user = "root";
-            string password = "password";
+            string password = "Imaginacion1.";
             string dbName = "integrative";
 
             string connectionString = "Server=" + dblocation + ";Database=" + dbName + ";Uid=" + user + ";Pwd=" + password + ";";

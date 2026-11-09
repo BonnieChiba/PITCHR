@@ -178,6 +178,9 @@
       <DependentUpon>SeccionProducto.cs</DependentUpon>
     </Compile>
     <Compile Include="Sesion.cs" />
+    <EmbeddedResource Include="SeccionMensajes.resx">
+      <DependentUpon>SeccionMensajes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SeccionPersonalizaMarca.resx">
       <DependentUpon>SeccionPersonalizaMarca.cs</DependentUpon>
     </EmbeddedResource>

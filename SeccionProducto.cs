@@ -32,6 +32,9 @@ namespace PITCHR
         /// <summary>Avisos para HomePage: la flecha de regresar y "todavía no tiene marca" (para ir a crearla).</summary>
         public event EventHandler Regresar;
         public event EventHandler CrearMarca;
+        public event EventHandler<int> Contactar;   // manda el idEntrepreneur del fundador
+
+        private int _idFundador = 0;
 
         public SeccionProducto()
         {
@@ -70,7 +73,7 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             entrepreneurshipDA.SelectCommand = new MySqlCommand(
-                "SELECT e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
+                "SELECT e.idEntrepreneur, e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
                 "e.productName1, e.productName2, e.productName3, e.productImage1, e.productImage2, e.productImage3, " +
                 "en.name, en.lastName, en.imageProfile " +
                 "FROM integrative.entrepreneurship e " +
@@ -110,6 +113,7 @@ namespace PITCHR
         private void ShowData(DataRow fila)
         {
             _tieneMarca = true;
+            _idFundador = Convert.ToInt32(fila["idEntrepreneur"]);
             MarcaLabel.Text = Convert.ToString(fila["brand"]);
             CategoriaLabel.Text = Convert.ToString(fila["category"]).ToUpper();
             LikesLabel.Text = Convert.ToString(fila["likes"]);
@@ -174,8 +178,14 @@ namespace PITCHR
         // ==================== BOTONES ====================
         private void ContactarBoton_Click(object sender, EventArgs e)
         {
-            // Cuando exista la sección de Mensajes, aquí se abrirá la conversación con el fundador.
-            MessageBox.Show("Los mensajes estarán disponibles próximamente.", "Pitcher");
+            // Solo un inversionista puede empezar una conversación con el fundador
+            if (!Sesion.Activa || Sesion.Rol != 0)
+            {
+                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "Pitcher");
+                return;
+            }
+            if (_idFundador == 0) return;
+            if (Contactar != null) Contactar(this, _idFundador);
         }
 
         private void PerfilBoton_Click(object sender, EventArgs e)
