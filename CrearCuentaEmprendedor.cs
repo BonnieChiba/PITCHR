@@ -25,7 +25,7 @@ namespace PITCHR
         public CrearCuentaEmprendedor()
         {
             InitializeComponent();
-            PrepararDiseno();   // estilo del Figma + adaptarse a cualquier pantalla (ver región de abajo)
+            PrepararDiseno();   // aplica el estilo visual y adapta la pantalla a cualquier tamaño
 
             // Las pantallas se ocultan con Hide(); si cierran esta ventana con la X, se cierra toda la aplicación.
             this.FormClosed += (s, e) => Application.Exit();
@@ -49,8 +49,7 @@ namespace PITCHR
             this.clearTextBoxes();
         }
 
-        // Si su tabla o columnas se llaman distinto en MySQL, solo cambien los nombres en estas consultas
-        // (y en la de ExistenDuplicados, más abajo).
+        // Consultas de la tabla integrative.entrepreneur
         private void LoadDBCommands()
         {
             entrepreneursDA.SelectCommand = new MySqlCommand("SELECT idEntrepreneur, name, lastName, `user`, city, email, rfc, termsEntrepreneur FROM integrative.entrepreneur ORDER BY idEntrepreneur");
@@ -79,11 +78,9 @@ namespace PITCHR
 
         private void BindControls()
         {
+            // Las cajas de texto no se vinculan a la tabla: en una pantalla de registro los datos
+            // nuevos se envían directamente con el INSERT.
             entrepreneurDataBind.DataSource = entrepreneurtable;
-
-            // Igual que en CrearCuentaInversor: en una pantalla de REGISTRO no se vinculan las cajas de texto
-            // a la tabla (mostrarían y editarían en memoria al primer emprendedor guardado).
-            // El texto gris de ejemplo lo pone PrepararDiseno() con la propiedad Tag de cada caja.
         }
 
         // ==================== BOTÓN REGISTRARSE ====================
@@ -120,7 +117,6 @@ namespace PITCHR
                         new MySqlParameter("@termsEntrepreneur", TerminosCheckbox.Checked),
                         new MySqlParameter("@role", this.role),
                         new MySqlParameter("@password", ContraseñaTextBox.Text)
-                        // Recomendado: BCrypt.Net.BCrypt.HashPassword(ContraseñaTextBox.Text)
                     });
 
                     entrepreneursDA.InsertCommand.ExecuteNonQuery();
@@ -133,10 +129,10 @@ namespace PITCHR
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
-                
-                 IniciarSesion PantallaPrincipal = new IniciarSesion();
-                 PantallaPrincipal.Show();
-                 this.Hide();
+                // Registro exitoso: pasa a la pantalla de inicio de sesión.
+                IniciarSesion PantallaPrincipal = new IniciarSesion();
+                PantallaPrincipal.Show();
+                this.Hide();
             }
             catch (Exception ex)
             {
@@ -251,7 +247,7 @@ namespace PITCHR
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo revisar si los datos ya existen:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return true;   // si no se pudo revisar, mejor no registrar
+                return true;   // si no se pudo revisar, no se registra
             }
 
             if (usuarioRepetido == false && emailRepetido == false && rfcRepetido == false)
@@ -292,7 +288,7 @@ namespace PITCHR
             }
         }
 
-        // Por si pegan texto: lo pasa a mayúsculas, quita lo que no sea válido y lo corta a 13 caracteres.
+        // Al pegar texto: lo pasa a mayúsculas, quita lo que no sea válido y lo corta a 13 caracteres.
         private void RFCEmprendedorTextbox_TextChanged(object sender, EventArgs e)
         {
             string limpio = "";
@@ -341,9 +337,9 @@ namespace PITCHR
         }
 
 
-        #region Diseño del Figma y pantalla adaptable (no es necesario modificar esta parte)
+        #region Diseño visual y pantalla adaptable
 
-        // Medidas del frame "Login enterprising" en Figma: todo el diseño está hecho en 1280 × 832.
+        // Tamaño base del diseño: 1280 × 832.
         private const float AnchoFigma = 1280f;
         private const float AltoFigma = 832f;
 
@@ -359,11 +355,11 @@ namespace PITCHR
         private static readonly Color AzulPitcher = Color.FromArgb(0, 96, 214);
         private static readonly Color GrisBorde = Color.FromArgb(217, 217, 217);
 
-        // Posición de las ondas naranjas en el Figma (y, alto)
+        // Posición vertical y alto de las ondas naranjas
         private const float OndaArribaAlto = 282f;
         private const float OndaAbajoY = 612f;
         private const float OndaAbajoAlto = 220f;
-        private const float AltoPildora = 40f;   // un poco más bajos que en el Figma (43) para que quepan Nombre y Apellido
+        private const float AltoPildora = 40f;   // alto de los campos, ajustado para que quepan Nombre y Apellido
 
         // Mensaje de Windows para poner texto guía gris dentro de un TextBox ("Usuario", "Contraseña"...).
         private const int EM_SETCUEBANNER = 0x1501;
@@ -373,7 +369,7 @@ namespace PITCHR
 
         private void PrepararDiseno()
         {
-            // Las ondas se dibujan a mano para que una pase por debajo y otra por encima del cuadro blanco.
+            // Las ondas se dibujan con código para que una pase por debajo y otra por encima del cuadro blanco.
             _ondaArriba = LineaSuperiorPicturebox.Image;
             _ondaAbajo = pictureBox1.Image;
             LineaSuperiorPicturebox.Visible = false;
@@ -494,7 +490,7 @@ namespace PITCHR
 
         private static readonly Dictionary<string, Font> CacheFuentes = new Dictionary<string, Font>();
 
-        /// <summary>Misma fuente pero escalada. Si la fuente del Figma no está instalada, usa Segoe UI.</summary>
+        /// <summary>Misma fuente pero escalada. Si la fuente original no está instalada, usa Segoe UI.</summary>
         private static Font EscalarFuente(Font original, float escala)
         {
             string nombre = original.OriginalFontName ?? original.Name;
@@ -572,7 +568,7 @@ namespace PITCHR
                         g.DrawPath(borde, pildora);
                 }
 
-                // La onda de arriba cruza por encima del cuadro blanco (como en el Figma)
+                // La onda de arriba cruza por encima del cuadro blanco
                 if (_ondaArriba != null)
                 {
                     Region anterior = g.Clip;
@@ -598,8 +594,8 @@ namespace PITCHR
         }
 
         /// <summary>
-        /// Windows dibuja "Plus Jakarta Sans" mucho más abajo de lo que mide la fuente, así que con el alto
-        /// automático se cortaban las letras (la "p" de Apellido). Aquí cada caja toma el alto que de verdad
+        /// Windows dibuja "Plus Jakarta Sans" más abajo de lo que mide la fuente, así que con el alto
+        /// automático se cortan las letras (la "p" de Apellido). Aquí cada caja toma el alto que de verdad
         /// necesita y se mueve para que las letras queden centradas dentro de su píldora.
         /// </summary>
         private void AcomodarCampos()
@@ -700,7 +696,7 @@ namespace PITCHR
             TerminosCheckbox.Invalidate();
         }
 
-        /// <summary>Casilla cuadrada con borde verde y el texto a la derecha, como en el Figma.</summary>
+        /// <summary>Casilla cuadrada con borde verde y el texto a la derecha.</summary>
         private void TerminosCheckbox_Paint(object sender, PaintEventArgs e)
         {
             CheckBox casilla = (CheckBox)sender;
@@ -754,7 +750,7 @@ namespace PITCHR
             return ruta;
         }
 
-        /// <summary>Sombra como la del Figma (Y 4, desenfoque 4, negro al 25 %).</summary>
+        /// <summary>Sombra suave debajo de un rectángulo redondeado (desplazamiento 4, negro al 25 %).</summary>
         private static void Sombra(Graphics g, RectangleF r, float radio, float k)
         {
             for (int i = 4; i >= 1; i--)

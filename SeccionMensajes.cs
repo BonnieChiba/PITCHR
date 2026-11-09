@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace PITCHR
 {
     /// <summary>
-    /// Sección "Mensajes" (frame "Messages" del Figma).
+    /// Sección "Mensajes".
     /// Izquierda: las conversaciones. Derecha: los mensajes de la conversación elegida y la caja para escribir.
     ///
     /// Tabla integrative.message:
@@ -23,7 +23,7 @@ namespace PITCHR
     {
         private DBConn dbconn;                                                //Conectar
         private MySqlDataAdapter conversacionesDA = new MySqlDataAdapter();   //Extraer la lista de conversaciones
-        private MySqlDataAdapter messageDA = new MySqlDataAdapter();          //Extraer, insertar, editar y borrar mensajes
+        private MySqlDataAdapter messageDA = new MySqlDataAdapter();          //Extraer, insertar y editar mensajes
         private DataTable conversacionestable = new DataTable();             //Almacenar
         private DataTable messagetable = new DataTable();                     //Almacenar
 
@@ -51,8 +51,8 @@ namespace PITCHR
         private readonly List<Mensaje> _mensajes = new List<Mensaje>();
         private int _idOtro = 0;           // conversación abierta (0 = ninguna)
         private int _idEditando = 0;       // mensaje que se está editando (0 = ninguno)
-        private string _usuarioCargado = "";
-        private RectangleF _caja;              // dónde se dibuja la caja redondeada para escribir   // para saber si cambió la sesión
+        private string _usuarioCargado = "";   // para saber si cambió la sesión
+        private RectangleF _caja;              // dónde se dibuja la caja redondeada para escribir
         private Image _miFoto;
         private Image _fotoOtro;
         private ContextMenuStrip _menuMensaje;
@@ -60,10 +60,10 @@ namespace PITCHR
         public SeccionMensajes()
         {
             InitializeComponent();
-            PrepararDiseno();   // estilo del Figma (ver región de abajo)
+            PrepararDiseno();   // aplica el estilo visual
         }
 
-        // Rol 0 = inversor, 1 = emprendedor (igual que en CrearCuenta)
+        // Rol 0 = inversor, 1 = emprendedor
         private bool SoyInversor()
         {
             return Sesion.Rol == 0;
@@ -125,7 +125,7 @@ namespace PITCHR
             messageDA.UpdateCommand = new MySqlCommand(
                 "UPDATE integrative.message SET content = @content, editedDate = NOW() WHERE idMessage = @idMessage");
 
-            // (No hay DELETE: los mensajes no se pueden borrar para mantener evidencia de las conversaciones.)
+            // No hay DELETE: los mensajes no se pueden borrar para mantener evidencia de las conversaciones.
         }
 
         private void LoadData()
@@ -469,9 +469,9 @@ namespace PITCHR
         }
 
 
-        #region Diseño del Figma (no es necesario modificar esta parte)
+        #region Diseño visual
 
-        // Medidas del frame "Messages" (sin la barra de arriba, que está en HomePage)
+        // Medidas del diseño (sin la barra de arriba, que está en HomePage)
         private const float AltoFila = 92f;          // cada conversación de la lista
         private const float AnchoBurbuja = 309f;
         private const float RellenoX = 25f, RellenoY = 20f;
@@ -521,7 +521,7 @@ namespace PITCHR
             // Si la ventana es más ancha o más alta que el diseño, la franja naranja llega hasta el borde derecho y hasta arriba
             int arriba = (int)Math.Round(MargenY);
             EncabezadoPanel.Bounds = new Rectangle(EncabezadoPanel.Left, 0, FondoPanel.ClientSize.Width - EncabezadoPanel.Left, arriba + (int)Math.Round(115 * k));
-            ContactoFotoPanel.Top = arriba + (int)Math.Round(21 * k);     // la foto y el nombre se quedan en su lugar del Figma
+            ContactoFotoPanel.Top = arriba + (int)Math.Round(21 * k);     // la foto y el nombre se quedan en su lugar
             ContactoNombreLabel.Top = arriba + (int)Math.Round(24 * k);
 
             // La zona del chat ocupa todo lo que queda a la derecha y hacia abajo; la caja para escribir va pegada abajo
@@ -690,7 +690,7 @@ namespace PITCHR
             DibujarFotoRedonda(g, _fotoOtro, new RectangleF(0, 0, ContactoFotoPanel.Width - 1, ContactoFotoPanel.Height - 1), ContactoNombreLabel.Text, Escala);
         }
 
-        /// <summary>Botón circular azul con el ícono de enviar del Figma.</summary>
+        /// <summary>Botón circular azul con el ícono de enviar.</summary>
         private void EnviarBoton_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
