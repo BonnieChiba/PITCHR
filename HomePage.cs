@@ -11,36 +11,32 @@ namespace PITCHR
  
     public partial class HomePage : Form
     {
-        // Las 4 primeras están en el menú; las 2 últimas se abren desde la foto de perfil
         public enum Seccion { Emprendimientos, Eventos, Noticias, Mensajes, PersonalizarPerfil, VerPerfil }
 
-        // Cada sección se crea una sola vez y se guarda aquí; al regresar a ella se muestra la misma
-        // (así no se vuelve a consultar la base de datos cada vez que cambias de sección).
+        // Crear y guardar secciones 
         private readonly Dictionary<Seccion, UserControl> _secciones = new Dictionary<Seccion, UserControl>();
         private Seccion _seccionActual;
         private readonly Seccion _seccionInicial;
 
-        // Menú que aparece al dar clic en la foto de perfil
+        // Dropdown menu perfil
         private ContextMenuStrip _menuPerfil;
 
         public HomePage() : this(Seccion.Emprendimientos)
         {
         }
 
-        /// <summary>Abre la pantalla principal directo en una sección, ej. new HomePage(HomePage.Seccion.Noticias)</summary>
         public HomePage(Seccion seccionInicial)
         {
             InitializeComponent();
-            PrepararDiseno();   // estilo del Figma + adaptarse a cualquier pantalla (ver región de abajo)
+            PrepararDiseno();   
             _seccionInicial = seccionInicial;
 
-            // Si cierran esta ventana con la X, se cierra toda la aplicación.
+            //para cerrar el form
             this.FormClosed += (s, e) => Application.Exit();
         }
 
         private void HomePage_Load(object sender, EventArgs e)
         {
-            // Evita que el diseñador de Visual Studio ejecute esto
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
             {
                 return;
@@ -51,8 +47,6 @@ namespace PITCHR
         }
 
         // ==================== ZONAS DE NAVEGACIÓN ====================
-        // Invitado: Emprendimientos · Eventos · Noticias + botón "Iniciar Sesión"
-        // Usuario:  Emprendimientos · Eventos · Noticias · Mensajes + foto de perfil
         private void ActualizarZona()
         {
             bool conSesion = Sesion.Activa;
@@ -60,14 +54,12 @@ namespace PITCHR
             ZonaUserPanel.Visible = conSesion;
             if (conSesion) this.CargarFotoPerfil();
 
-            // Mensajes y los paneles de perfil solo existen para usuarios con sesión
             if (!conSesion && _seccionActual >= Seccion.Mensajes)
             {
                 this.MostrarSeccion(Seccion.Emprendimientos);
             }
         }
 
-        // Lee la foto (columna imageProfile) del usuario que inició sesión, de investor o de entrepreneur según su rol
         private void CargarFotoPerfil()
         {
             string consulta = Sesion.Rol == 1
@@ -93,7 +85,6 @@ namespace PITCHR
         }
 
         // ==================== CAMBIAR DE SECCIÓN ====================
-        // Clic en cualquier opción del menú (de las dos zonas). La propiedad Tag dice a qué sección va.
         private void Menu_Click(object sender, EventArgs e)
         {
             Label opcion = (Label)sender;
@@ -151,7 +142,7 @@ namespace PITCHR
             }
         }
 
-        // ==================== PÁGINA DE PRODUCTO (clic en una tarjeta) ====================
+        // ==================== PÁGINA DE PRODUCTO (clic en tarjeta) ====================
         private void AbrirProducto(int idEmprendimiento)
         {
             SeccionProducto producto = new SeccionProducto(idEmprendimiento);
@@ -177,8 +168,7 @@ namespace PITCHR
             if (mensajes != null) mensajes.AbrirConversacion(idEntrepreneur);
         }
 
-        // ==================== PANELES DE PERFIL (según el rol) ====================
-        // Rol 1 = emprendedor, 0 = inversor (igual que en CrearCuenta)
+        // ==================== PANELES DE PERFIL  ====================
         private UserControl CrearPanelDePerfil(Seccion seccion)
         {
             bool emprendedor = Sesion.Rol == 1;
@@ -239,7 +229,6 @@ namespace PITCHR
         }
 
         // ==================== BOTONES DE LA DERECHA ====================
-        // Zona invitado: "Iniciar Sesión"
         private void IniciarSesionBoton_Click(object sender, EventArgs e)
         {
             IniciarSesion pantalla = new IniciarSesion();
@@ -247,7 +236,7 @@ namespace PITCHR
             this.Hide();
         }
 
-        // Zona usuario: clic en la foto de perfil → menú desplegable con 3 opciones
+        // Dropdown Perfil
         private void PerfilPictureBox_Click(object sender, EventArgs e)
         {
             _menuPerfil = new ContextMenuStrip();
@@ -298,19 +287,19 @@ namespace PITCHR
 
         private void PrepararDiseno()
         {
-            // Imágenes de vista previa del diseñador; al ejecutar se dibuja con código.
+            // Imágenes de vista previa del diseñador; al ejecutar se dibuja 
             MenuGuestPanel.BackgroundImage = null;
             MenuUserPanel.BackgroundImage = null;
             IniciarSesionBoton.BackgroundImage = null;
 
-            // La foto de perfil se dibuja redonda con código
+            // La foto de perfil se dibuja redonda 
             _fotoPerfil = PerfilPictureBox.Image;
             PerfilPictureBox.Image = null;
 
             foreach (Control c in new Control[] { BarraPanel, MenuGuestPanel, MenuUserPanel, ZonaGuestPanel, ZonaUserPanel })
                 ActivarDobleBuffer(c);
 
-            // Eventos del diseño: se conectan aquí (no en el diseñador) para que Visual Studio no los borre.
+            // Eventos del diseño: 
             MenuGuestPanel.Paint += MenuPanel_Paint;
             MenuUserPanel.Paint += MenuPanel_Paint;
             IniciarSesionBoton.Paint += IniciarSesionBoton_Paint;
@@ -325,7 +314,7 @@ namespace PITCHR
             }
             Resize += (s, e) => AjustarATamano();
 
-            // Se guardan las posiciones y fuentes del diseñador para escalarlas después.
+            // Se guardan las posiciones y fuentes del diseñador para escalarlas 
             GuardarOriginales(BarraPanel);
             Load += (s, e) => AjustarATamano();
         }
@@ -346,10 +335,7 @@ namespace PITCHR
                            .SetValue(control, true, null);
         }
 
-        /// <summary>
-        /// La barra ocupa todo el ancho y su contenido crece parejo y centrado; debajo, el panel de la sección
-        /// ocupa todo lo que sobra (cada sección se acomoda sola a ese tamaño).
-        /// </summary>
+       
         private void AjustarATamano()
         {
             Size cliente = ClientSize;
