@@ -113,7 +113,7 @@
             this.CategoriaLabel.BackColor = System.Drawing.Color.Transparent;
             this.CategoriaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.CategoriaLabel.ForeColor = System.Drawing.Color.White;
-            this.CategoriaLabel.Location = new System.Drawing.Point(384, 140);
+            this.CategoriaLabel.Location = new System.Drawing.Point(347, 139);
             this.CategoriaLabel.Name = "CategoriaLabel";
             this.CategoriaLabel.Padding = new System.Windows.Forms.Padding(12, 7, 12, 7);
             this.CategoriaLabel.Size = new System.Drawing.Size(102, 27);
