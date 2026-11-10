@@ -373,7 +373,8 @@ namespace PITCHR
             Calidad(g);
             g.Clear(Color.White);
             float k = Escala;
-            RectangleF r = new RectangleF(0, 0, GaleriaPanel.Width - 1, GaleriaPanel.Height - 1);
+            // La foto va ARRIBA de la tarjeta del fundador (antes quedaba debajo y se tapaba)
+            RectangleF r = new RectangleF(0, 0, GaleriaPanel.Width - 1, FundadorPanel.Top - 12 * k);
             using (GraphicsPath ruta = Redondeado(r, 14 * k))
             {
                 Region anterior = g.Clip;
@@ -382,7 +383,14 @@ namespace PITCHR
                     g.FillRectangle(b, r);
                 if (_galeria.Count > 0)
                 {
-                    DibujarCubriendo(g, _galeria[_imagenActual], r);
+                    // Fondo: la misma foto agrandada y oscurecida. Encima: la foto completa, sin recortarla.
+                    Image foto = _galeria[_imagenActual];
+                    DibujarCubriendo(g, foto, r);
+                    using (SolidBrush velo = new SolidBrush(Color.FromArgb(150, 20, 20, 30)))
+                        g.FillRectangle(velo, r);
+                    float escala = Math.Min(r.Width / foto.Width, r.Height / foto.Height);
+                    float w = foto.Width * escala, h = foto.Height * escala;
+                    g.DrawImage(foto, r.X + (r.Width - w) / 2f, r.Y + (r.Height - h) / 2f, w, h);
                 }
                 else
                 {

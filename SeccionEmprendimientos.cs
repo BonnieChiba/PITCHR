@@ -27,6 +27,9 @@ namespace PITCHR
         // Lo que se está mostrando después de aplicar el buscador y el filtro.
         private List<Emprendimiento> _visibles = new List<Emprendimiento>();
 
+        // Emprendimientos a los que ya les dio like la persona que inició sesión (para pintar el corazón lleno)
+        private HashSet<int> _misLikes = new HashSet<int>();
+
         private string _categoriaElegida = null;   // null = sin filtro
         private int _paginaCarrusel = 0;            // cuál grupo de 3 se ve arriba
 
@@ -54,10 +57,13 @@ namespace PITCHR
             this.LoadDBCommands();
             this.LoadData();
             this.AplicarBusquedaYFiltro();
+
+            // HomePage guarda esta sección: si cambió la sesión (otra persona o cerró sesión), se repintan los corazones
+            this.ParentChanged += (s, a) => { if (this.Parent != null) { this.CargarMisLikes(); this.PintarCorazones(); } };
         }
 
         // ==================== CRUD: LEER (SELECT) ====================
-        // Esta sección solo LEE las marcas. Se crean y se editan en la pantalla PersonalizaMarca.
+        // Esta sección LEE las marcas (se crean y se editan en PersonalizaMarca) y guarda los likes.
         // Las que tienen más likes salen primero (van al carrusel de arriba).
         private void LoadDBCommands()
         {
@@ -88,6 +94,90 @@ namespace PITCHR
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudieron cargar los emprendimientos:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            this.CargarMisLikes();
+        }
+
+        // ==================== LIKES ====================
+        // Tabla integrative.entrepreneurshipLike: un renglón por cada like (emprendimiento + persona + rol).
+        // Así nadie puede dar like dos veces y el corazón se queda lleno la próxima vez que entre.
+        // La columna likes de entrepreneurship guarda el total, que es lo que se ve en la página de producto.
+        private void CargarMisLikes()
+        {
+            _misLikes.Clear();
+            if (!Sesion.Activa) return;
+            try
+            {
+                using (DBConn dbTemp = new DBConn())
+                {
+                    MySqlCommand buscar = new MySqlCommand(
+                        "SELECT idEntrepreneurship FROM integrative.entrepreneurshipLike WHERE idUser = @yo AND role = @rol", dbTemp.dbConnection);
+                    buscar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
+                    buscar.Parameters.AddWithValue("@rol", Sesion.Rol);
+                    dbTemp.dbConnection.Open();
+                    using (MySqlDataReader lector = buscar.ExecuteReader())
+                    {
+                        while (lector.Read()) _misLikes.Add(Convert.ToInt32(lector["idEntrepreneurship"]));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudieron cargar tus likes:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Clic en el corazón: si no le había dado like, lo agrega (INSERT); si ya le había dado, lo quita (DELETE).
+        // Después se actualiza el total en entrepreneurship.likes contando los likes que tiene.
+        private void Corazon_Click(object sender, EventArgs e)
+        {
+            if (!Sesion.Activa)
+            {
+                MessageBox.Show("Inicia sesión para darle like a un emprendimiento.", "PitchR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int id = ((TarjetaEmprendimiento)sender).Datos.Id;
+            bool yaTeniaLike = _misLikes.Contains(id);
+            try
+            {
+                using (DBConn dbTemp = new DBConn())
+                {
+                    dbTemp.dbConnection.Open();
+
+                    MySqlCommand cambiar = new MySqlCommand(yaTeniaLike
+                        ? "DELETE FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id AND idUser = @yo AND role = @rol"
+                        : "INSERT IGNORE INTO integrative.entrepreneurshipLike (idEntrepreneurship, idUser, role) VALUES (@id, @yo, @rol)",
+                        dbTemp.dbConnection);
+                    cambiar.Parameters.AddWithValue("@id", id);
+                    cambiar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
+                    cambiar.Parameters.AddWithValue("@rol", Sesion.Rol);
+                    cambiar.ExecuteNonQuery();
+
+                    MySqlCommand total = new MySqlCommand(
+                        "UPDATE integrative.entrepreneurship SET likes = " +
+                        "(SELECT COUNT(*) FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id) " +
+                        "WHERE idEntrepreneurship = @id", dbTemp.dbConnection);
+                    total.Parameters.AddWithValue("@id", id);
+                    total.ExecuteNonQuery();
+                }
+
+                if (yaTeniaLike) _misLikes.Remove(id); else _misLikes.Add(id);
+                this.PintarCorazones();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo guardar el like:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Pone el corazón lleno o vacío en todas las tarjetas (un emprendimiento puede salir en el carrusel y en la cuadrícula)
+        private void PintarCorazones()
+        {
+            foreach (Control c in _posicionesOriginales.Keys)
+            {
+                TarjetaEmprendimiento t = c as TarjetaEmprendimiento;
+                if (t != null && t.Datos != null) t.Favorito = _misLikes.Contains(t.Datos.Id);
             }
         }
 
@@ -363,7 +453,9 @@ namespace PITCHR
             TarjetaEmprendimiento t = new TarjetaEmprendimiento();
             t.Forma = forma;
             t.Mostrar(datos);
+            t.Favorito = _misLikes.Contains(datos.Id);
             t.TarjetaClick += Tarjeta_Click;
+            t.CorazonClick += Corazon_Click;
             _posicionesOriginales[t] = posicion;
             _fuentesOriginales[t] = t.Font;
             contenedor.Controls.Add(t);

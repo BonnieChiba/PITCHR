@@ -8,11 +8,7 @@ using System.Windows.Forms;
 
 namespace PITCHR
 {
-    /// <summary>
-    /// Pantalla principal. Arriba está la barra de navegación (siempre igual) y abajo un panel
-    /// donde se cambia la sección: Emprendimientos, Eventos, Noticias o Mensajes.
-    /// La barra tiene dos zonas: la de invitado (Guest) y la de usuario con sesión (User).
-    /// </summary>
+ 
     public partial class HomePage : Form
     {
         // Las 4 primeras están en el menú; las 2 últimas se abren desde la foto de perfil
@@ -283,9 +279,9 @@ namespace PITCHR
         }
 
 
-        #region Diseño del Figma y pantalla adaptable (no es necesario modificar esta parte)
+        #region Diseño y pantalla adaptable 
 
-        // La barra mide 1280 × 131 en el Figma (frame "News"); el resto de la ventana es para la sección.
+        
         private const float AnchoFigma = 1280f;
         private const float AltoFigma = 832f;
         private const float AltoBarra = 131f;
@@ -384,7 +380,7 @@ namespace PITCHR
 
         private static readonly Dictionary<string, Font> CacheFuentes = new Dictionary<string, Font>();
 
-        /// <summary>Misma fuente pero escalada. Si la fuente del Figma no está instalada, usa Segoe UI.</summary>
+        /// <summary>Misma fuente</summary>
         private static Font EscalarFuente(Font original, float escala)
         {
             string nombre = original.OriginalFontName ?? original.Name;
@@ -415,7 +411,7 @@ namespace PITCHR
         }
 
         // ---------- Dibujo ----------
-        /// <summary>Menú de opciones: píldora gris clara con sombra (se usa en las dos zonas).</summary>
+        /// <summary>Menú de opciones</summary>
         private void MenuPanel_Paint(object sender, PaintEventArgs e)
         {
             Panel menu = (Panel)sender;
@@ -430,7 +426,7 @@ namespace PITCHR
                 g.FillPath(b, ruta);
         }
 
-        /// <summary>Botón "Iniciar Sesión": píldora azul con sombra.</summary>
+        /// <summary>Botón de Iniciar Sesión.</summary>
         private void IniciarSesionBoton_Paint(object sender, PaintEventArgs e)
         {
             Button boton = (Button)sender;
@@ -448,7 +444,7 @@ namespace PITCHR
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
         }
 
-        /// <summary>Foto de perfil redonda con sombra.</summary>
+        /// <summary>Foto de perfil .</summary>
         private void PerfilPictureBox_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -490,7 +486,7 @@ namespace PITCHR
             return ruta;
         }
 
-        /// <summary>Sombra como la del Figma (Y 4, desenfoque 4, negro al 25 %).</summary>
+        /// <summary>Sombra </summary>
         private static void Sombra(Graphics g, RectangleF r, float radio, float k)
         {
             for (int i = 4; i >= 1; i--)
@@ -504,5 +500,11 @@ namespace PITCHR
         }
 
         #endregion
+
+        private void LogoPictureBox_Click(object sender, EventArgs e)
+        {
+            this.MostrarSeccion(Seccion.Emprendimientos);
+
+        }
     }
 }

@@ -307,7 +307,7 @@
             this.FlechaIzquierdaBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.FlechaIzquierdaBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.FlechaIzquierdaBoton.ForeColor = System.Drawing.Color.White;
-            this.FlechaIzquierdaBoton.Location = new System.Drawing.Point(684, 300);
+            this.FlechaIzquierdaBoton.Location = new System.Drawing.Point(684, 327);
             this.FlechaIzquierdaBoton.Name = "FlechaIzquierdaBoton";
             this.FlechaIzquierdaBoton.Size = new System.Drawing.Size(40, 44);
             this.FlechaIzquierdaBoton.TabIndex = 20;
@@ -324,7 +324,7 @@
             this.FlechaDerechaBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.FlechaDerechaBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.FlechaDerechaBoton.ForeColor = System.Drawing.Color.White;
-            this.FlechaDerechaBoton.Location = new System.Drawing.Point(1220, 300);
+            this.FlechaDerechaBoton.Location = new System.Drawing.Point(1220, 327);
             this.FlechaDerechaBoton.Name = "FlechaDerechaBoton";
             this.FlechaDerechaBoton.Size = new System.Drawing.Size(40, 44);
             this.FlechaDerechaBoton.TabIndex = 21;

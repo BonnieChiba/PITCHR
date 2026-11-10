@@ -50,6 +50,9 @@ namespace PITCHR
         /// <summary>Se dispara al hacer clic en la tarjeta (no en el corazón).</summary>
         public event EventHandler TarjetaClick;
 
+        /// <summary>Se dispara al hacer clic en el corazón (SeccionEmprendimientos guarda el like en la base).</summary>
+        public event EventHandler CorazonClick;
+
         public TarjetaEmprendimiento()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
@@ -110,7 +113,8 @@ namespace PITCHR
             RectangleF zona = Corazon; zona.Inflate(6 * K, 6 * K);
             if (zona.Contains(e.Location))
             {
-                Favorito = !Favorito;     // por ahora solo cambia el dibujo; después se guardará en la base
+                if (CorazonClick != null) CorazonClick(this, EventArgs.Empty);
+                else Favorito = !Favorito;
             }
             else if (TarjetaClick != null)
             {

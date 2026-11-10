@@ -48,18 +48,17 @@
             this.MenuGuestPanel.SuspendLayout();
             this.ZonaGuestPanel.SuspendLayout();
             this.MenuUserPanel.SuspendLayout();
-            this.ZonaUserPanel.SuspendLayout();
-            this.BarraPanel.SuspendLayout();
-            this.ContenidoPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PerfilPictureBox)).BeginInit();
+            this.ZonaUserPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LogoPictureBox)).BeginInit();
+            this.BarraPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // EmprendimientosGuestLabel
             // 
             this.EmprendimientosGuestLabel.BackColor = System.Drawing.Color.Transparent;
             this.EmprendimientosGuestLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EmprendimientosGuestLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.EmprendimientosGuestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EmprendimientosGuestLabel.ForeColor = System.Drawing.Color.Black;
             this.EmprendimientosGuestLabel.Location = new System.Drawing.Point(8, 0);
             this.EmprendimientosGuestLabel.Name = "EmprendimientosGuestLabel";
@@ -74,7 +73,7 @@
             // 
             this.EventosGuestLabel.BackColor = System.Drawing.Color.Transparent;
             this.EventosGuestLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EventosGuestLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.EventosGuestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EventosGuestLabel.ForeColor = System.Drawing.Color.Black;
             this.EventosGuestLabel.Location = new System.Drawing.Point(164, 0);
             this.EventosGuestLabel.Name = "EventosGuestLabel";
@@ -89,7 +88,7 @@
             // 
             this.NoticiasGuestLabel.BackColor = System.Drawing.Color.Transparent;
             this.NoticiasGuestLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NoticiasGuestLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.NoticiasGuestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.NoticiasGuestLabel.ForeColor = System.Drawing.Color.Black;
             this.NoticiasGuestLabel.Location = new System.Drawing.Point(254, 0);
             this.NoticiasGuestLabel.Name = "NoticiasGuestLabel";
@@ -123,7 +122,7 @@
             this.IniciarSesionBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.IniciarSesionBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.IniciarSesionBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IniciarSesionBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.IniciarSesionBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.IniciarSesionBoton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(243)))), ((int)(((byte)(244)))));
             this.IniciarSesionBoton.Location = new System.Drawing.Point(400, 9);
             this.IniciarSesionBoton.Name = "IniciarSesionBoton";
@@ -147,7 +146,7 @@
             // 
             this.EmprendimientosUserLabel.BackColor = System.Drawing.Color.Transparent;
             this.EmprendimientosUserLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EmprendimientosUserLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.EmprendimientosUserLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EmprendimientosUserLabel.ForeColor = System.Drawing.Color.Black;
             this.EmprendimientosUserLabel.Location = new System.Drawing.Point(16, 0);
             this.EmprendimientosUserLabel.Name = "EmprendimientosUserLabel";
@@ -162,7 +161,7 @@
             // 
             this.EventosUserLabel.BackColor = System.Drawing.Color.Transparent;
             this.EventosUserLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EventosUserLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.EventosUserLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.EventosUserLabel.ForeColor = System.Drawing.Color.Black;
             this.EventosUserLabel.Location = new System.Drawing.Point(177, 0);
             this.EventosUserLabel.Name = "EventosUserLabel";
@@ -177,7 +176,7 @@
             // 
             this.NoticiasUserLabel.BackColor = System.Drawing.Color.Transparent;
             this.NoticiasUserLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NoticiasUserLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.NoticiasUserLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.NoticiasUserLabel.ForeColor = System.Drawing.Color.Black;
             this.NoticiasUserLabel.Location = new System.Drawing.Point(256, 0);
             this.NoticiasUserLabel.Name = "NoticiasUserLabel";
@@ -192,7 +191,7 @@
             // 
             this.MensajesUserLabel.BackColor = System.Drawing.Color.Transparent;
             this.MensajesUserLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MensajesUserLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.MensajesUserLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.MensajesUserLabel.ForeColor = System.Drawing.Color.Black;
             this.MensajesUserLabel.Location = new System.Drawing.Point(340, 0);
             this.MensajesUserLabel.Name = "MensajesUserLabel";
@@ -225,8 +224,8 @@
             this.PerfilPictureBox.Location = new System.Drawing.Point(505, 9);
             this.PerfilPictureBox.Name = "PerfilPictureBox";
             this.PerfilPictureBox.Size = new System.Drawing.Size(52, 56);
-            this.PerfilPictureBox.TabIndex = 1;
             this.PerfilPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PerfilPictureBox.TabIndex = 1;
             this.PerfilPictureBox.TabStop = false;
             this.PerfilPictureBox.Click += new System.EventHandler(this.PerfilPictureBox_Click);
             // 
@@ -248,9 +247,10 @@
             this.LogoPictureBox.Location = new System.Drawing.Point(70, 47);
             this.LogoPictureBox.Name = "LogoPictureBox";
             this.LogoPictureBox.Size = new System.Drawing.Size(200, 60);
-            this.LogoPictureBox.TabIndex = 0;
             this.LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.LogoPictureBox.TabIndex = 0;
             this.LogoPictureBox.TabStop = false;
+            this.LogoPictureBox.Click += new System.EventHandler(this.LogoPictureBox_Click);
             // 
             // BarraPanel
             // 
@@ -287,11 +287,10 @@
             this.MenuGuestPanel.ResumeLayout(false);
             this.ZonaGuestPanel.ResumeLayout(false);
             this.MenuUserPanel.ResumeLayout(false);
-            this.ZonaUserPanel.ResumeLayout(false);
-            this.BarraPanel.ResumeLayout(false);
-            this.ContenidoPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PerfilPictureBox)).EndInit();
+            this.ZonaUserPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.LogoPictureBox)).EndInit();
+            this.BarraPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
