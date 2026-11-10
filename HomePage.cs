@@ -1,4 +1,4 @@
-﻿using MySqlConnector;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -74,12 +74,12 @@ namespace PITCHR
                     dbTemp.dbConnection.Open();
                     object valor = buscar.ExecuteScalar();
                     Image foto = SeccionBase.CargarImagen(valor == null || valor == DBNull.Value ? null : valor.ToString());
-                    if (foto != null) _fotoPerfil = foto;   // si no tiene foto, se queda la de siempre
+                    _fotoPerfil = foto;   // si no tiene foto queda en null y se dibuja el ícono azul predeterminado
                 }
             }
             catch (Exception)
             {
-                // si falla la consulta se queda la foto de siempre
+                _fotoPerfil = null;   // si falla la consulta, se muestra el ícono azul predeterminado
             }
             PerfilPictureBox.Invalidate();
         }
@@ -292,8 +292,9 @@ namespace PITCHR
             MenuUserPanel.BackgroundImage = null;
             IniciarSesionBoton.BackgroundImage = null;
 
-            // La foto de perfil se dibuja redonda 
-            _fotoPerfil = PerfilPictureBox.Image;
+            // La foto de perfil se dibuja redonda. La imagen del diseñador es solo la vista previa:
+            // al ejecutar se usa la foto de la cuenta o, si no tiene, el ícono azul predeterminado.
+            _fotoPerfil = null;
             PerfilPictureBox.Image = null;
 
             foreach (Control c in new Control[] { BarraPanel, MenuGuestPanel, MenuUserPanel, ZonaGuestPanel, ZonaUserPanel })
@@ -437,7 +438,9 @@ namespace PITCHR
             Calidad(g);
             g.Clear(GrisBarra);
             float k = _escala;
-            RectangleF circulo = new RectangleF(1, 0, PerfilPictureBox.Width - 3, 52 * k - 1);
+            // Círculo perfecto (mismo ancho y alto) para que la foto o el ícono no se vean ovalados
+            float lado = Math.Min(PerfilPictureBox.Width - 3, 52 * k);
+            RectangleF circulo = new RectangleF(1, 0, lado, lado);
             Sombra(g, circulo, circulo.Height / 2f, k);
             using (GraphicsPath ruta = new GraphicsPath())
             {
@@ -447,8 +450,44 @@ namespace PITCHR
                 {
                     Region anterior = g.Clip;
                     g.SetClip(ruta, CombineMode.Intersect);
-                    g.DrawImage(_fotoPerfil, circulo);
+                    // La foto se recorta al centro para llenar el círculo sin estirarse
+                    float escala = Math.Max(circulo.Width / _fotoPerfil.Width, circulo.Height / _fotoPerfil.Height);
+                    float w = _fotoPerfil.Width * escala, h = _fotoPerfil.Height * escala;
+                    g.DrawImage(_fotoPerfil, circulo.X + (circulo.Width - w) / 2f, circulo.Y + (circulo.Height - h) / 2f, w, h);
                     g.Clip = anterior;
+                }
+                else
+                {
+                    DibujarIconoPerfil(g, circulo);   // cuenta sin foto: ícono azul predeterminado
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ícono de perfil predeterminado: círculo azul (#2457C5) con una persona blanca.
+        /// Se dibuja con figuras (no con una imagen) para que se vea nítido en cualquier tamaño.
+        /// </summary>
+        private static void DibujarIconoPerfil(Graphics g, RectangleF circulo)
+        {
+            float d = Math.Min(circulo.Width, circulo.Height);
+            float x = circulo.X + (circulo.Width - d) / 2f, y = circulo.Y + (circulo.Height - d) / 2f;
+
+            using (SolidBrush azul = new SolidBrush(Color.FromArgb(36, 87, 197)))
+                g.FillEllipse(azul, x, y, d, d);
+
+            using (SolidBrush blanco = new SolidBrush(Color.White))
+            {
+                // Cabeza
+                float r = 0.165f * d;
+                g.FillEllipse(blanco, x + 0.5f * d - r, y + 0.31f * d - r, 2 * r, 2 * r);
+
+                // Cuerpo (arco de arriba más plano que el de abajo)
+                using (GraphicsPath cuerpo = new GraphicsPath())
+                {
+                    cuerpo.AddArc(x + 0.185f * d, y + 0.60f * d, 0.64f * d, 0.28f * d, 180, 180);
+                    cuerpo.AddArc(x + 0.185f * d, y + 0.575f * d, 0.64f * d, 0.33f * d, 0, 180);
+                    cuerpo.CloseFigure();
+                    g.FillPath(blanco, cuerpo);
                 }
             }
         }

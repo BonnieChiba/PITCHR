@@ -1,4 +1,4 @@
-﻿namespace PITCHR
+namespace PITCHR
 {
     partial class HomePage
     {
@@ -137,7 +137,7 @@
             this.ZonaGuestPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.ZonaGuestPanel.Controls.Add(this.IniciarSesionBoton);
             this.ZonaGuestPanel.Controls.Add(this.MenuGuestPanel);
-            this.ZonaGuestPanel.Location = new System.Drawing.Point(700, 30);
+            this.ZonaGuestPanel.Location = new System.Drawing.Point(700, 27);
             this.ZonaGuestPanel.Name = "ZonaGuestPanel";
             this.ZonaGuestPanel.Size = new System.Drawing.Size(540, 80);
             this.ZonaGuestPanel.TabIndex = 1;
@@ -211,7 +211,7 @@
             this.MenuUserPanel.Controls.Add(this.NoticiasUserLabel);
             this.MenuUserPanel.Controls.Add(this.EventosUserLabel);
             this.MenuUserPanel.Controls.Add(this.EmprendimientosUserLabel);
-            this.MenuUserPanel.Location = new System.Drawing.Point(25, 9);
+            this.MenuUserPanel.Location = new System.Drawing.Point(0, 0);
             this.MenuUserPanel.Name = "MenuUserPanel";
             this.MenuUserPanel.Size = new System.Drawing.Size(461, 60);
             this.MenuUserPanel.TabIndex = 0;
@@ -221,9 +221,9 @@
             this.PerfilPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.PerfilPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.PerfilPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("PerfilPictureBox.Image")));
-            this.PerfilPictureBox.Location = new System.Drawing.Point(505, 9);
+            this.PerfilPictureBox.Location = new System.Drawing.Point(479, 0);
             this.PerfilPictureBox.Name = "PerfilPictureBox";
-            this.PerfilPictureBox.Size = new System.Drawing.Size(52, 56);
+            this.PerfilPictureBox.Size = new System.Drawing.Size(56, 60);
             this.PerfilPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PerfilPictureBox.TabIndex = 1;
             this.PerfilPictureBox.TabStop = false;
@@ -234,9 +234,9 @@
             this.ZonaUserPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.ZonaUserPanel.Controls.Add(this.PerfilPictureBox);
             this.ZonaUserPanel.Controls.Add(this.MenuUserPanel);
-            this.ZonaUserPanel.Location = new System.Drawing.Point(640, 30);
+            this.ZonaUserPanel.Location = new System.Drawing.Point(705, 36);
             this.ZonaUserPanel.Name = "ZonaUserPanel";
-            this.ZonaUserPanel.Size = new System.Drawing.Size(600, 80);
+            this.ZonaUserPanel.Size = new System.Drawing.Size(535, 64);
             this.ZonaUserPanel.TabIndex = 2;
             this.ZonaUserPanel.Visible = false;
             // 
@@ -244,7 +244,7 @@
             // 
             this.LogoPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.LogoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("LogoPictureBox.Image")));
-            this.LogoPictureBox.Location = new System.Drawing.Point(70, 47);
+            this.LogoPictureBox.Location = new System.Drawing.Point(60, 41);
             this.LogoPictureBox.Name = "LogoPictureBox";
             this.LogoPictureBox.Size = new System.Drawing.Size(200, 60);
             this.LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -275,7 +275,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1280, 832);
+            this.ClientSize = new System.Drawing.Size(1280, 749);
             this.Controls.Add(this.ContenidoPanel);
             this.Controls.Add(this.BarraPanel);
             this.MinimumSize = new System.Drawing.Size(800, 600);
