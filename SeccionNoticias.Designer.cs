@@ -56,23 +56,25 @@
             this.NoticiaDestacada.BackColor = System.Drawing.Color.White;
             this.NoticiaDestacada.Categoria = "Destacada";
             this.NoticiaDestacada.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NoticiaDestacada.Fecha = "15 JUN 2025 · 6 min";
+            this.NoticiaDestacada.Fecha = "25 SEP 2026";
+            this.NoticiaDestacada.Enlace = "https://www.tiempo.com.mx/local/mayra-hurtado-startup-silicon-valley-chihuahua-2026/";
             this.NoticiaDestacada.Forma = PITCHR.TarjetaNoticia.Formas.Destacada;
             this.NoticiaDestacada.Imagen = ((System.Drawing.Image)(resources.GetObject("NoticiaDestacada.Imagen")));
             this.NoticiaDestacada.Location = new System.Drawing.Point(67, 126);
             this.NoticiaDestacada.Name = "NoticiaDestacada";
             this.NoticiaDestacada.Size = new System.Drawing.Size(632, 490);
             this.NoticiaDestacada.TabIndex = 4;
-            this.NoticiaDestacada.Resumen = "Emprendedores de distintas industrias comparten cómo una red puede cambiar el rumbo de un proyecto.";
-            this.NoticiaDestacada.Titulo = "El poder de encontrarse: la comunidad que impulsa nuevas ideas";
+            this.NoticiaDestacada.Resumen = "Mayra Hurtado ganó con su startup Hormony el pase para representar a México en la final de Startup World Cup 2026 en Silicon Valley.";
+            this.NoticiaDestacada.Titulo = "Competirá chihuahuense Mayra en mundial de Startup ¡en Silicon Valley!";
             this.NoticiaDestacada.TarjetaClick += new System.EventHandler(this.Noticia_Click);
             // 
             // Noticia1
             // 
             this.Noticia1.BackColor = System.Drawing.Color.White;
-            this.Noticia1.Categoria = "Emprendimientos";
+            this.Noticia1.Categoria = "Eventos";
             this.Noticia1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Noticia1.Fecha = "12 JUN 2025";
+            this.Noticia1.Fecha = "22 JUN 2026";
+            this.Noticia1.Enlace = "https://www.municipiochihuahua.gob.mx/CCS/Prensa/Invita_Municipio_a_Jornada_Emprende_2026_para_impulsar_negocios_y_proyectos_innovadores";
             this.Noticia1.Forma = PITCHR.TarjetaNoticia.Formas.Lista;
             this.Noticia1.Imagen = ((System.Drawing.Image)(resources.GetObject("Noticia1.Imagen")));
             this.Noticia1.Location = new System.Drawing.Point(719, 125);
@@ -80,15 +82,16 @@
             this.Noticia1.Size = new System.Drawing.Size(480, 150);
             this.Noticia1.TabIndex = 5;
             this.Noticia1.Resumen = "";
-            this.Noticia1.Titulo = "El diseño local encuentra nuevas formas de crecer";
+            this.Noticia1.Titulo = "Invita Municipio a Jornada Emprende 2026";
             this.Noticia1.TarjetaClick += new System.EventHandler(this.Noticia_Click);
             // 
             // Noticia2
             // 
             this.Noticia2.BackColor = System.Drawing.Color.White;
-            this.Noticia2.Categoria = "Comunidad";
+            this.Noticia2.Categoria = "Convocatorias";
             this.Noticia2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Noticia2.Fecha = "08 JUN 2025";
+            this.Noticia2.Fecha = "10 MAR 2026";
+            this.Noticia2.Enlace = "https://chihuahua.gob.mx/prensa/invita-gobierno-del-estado-participar-en-la-convocatoria-premio-chihuahua-emprende-2026";
             this.Noticia2.Forma = PITCHR.TarjetaNoticia.Formas.Lista;
             this.Noticia2.Imagen = ((System.Drawing.Image)(resources.GetObject("Noticia2.Imagen")));
             this.Noticia2.Location = new System.Drawing.Point(719, 295);
@@ -96,15 +99,16 @@
             this.Noticia2.Size = new System.Drawing.Size(480, 150);
             this.Noticia2.TabIndex = 6;
             this.Noticia2.Resumen = "";
-            this.Noticia2.Titulo = "Ferias que conectan talento, historias y comunidad";
+            this.Noticia2.Titulo = "Convocatoria Premio Chihuahua Emprende 2026";
             this.Noticia2.TarjetaClick += new System.EventHandler(this.Noticia_Click);
             // 
             // Noticia3
             // 
             this.Noticia3.BackColor = System.Drawing.Color.White;
-            this.Noticia3.Categoria = "Innovación";
+            this.Noticia3.Categoria = "Emprendimientos";
             this.Noticia3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Noticia3.Fecha = "03 JUN 2025";
+            this.Noticia3.Fecha = "16 FEB 2026";
+            this.Noticia3.Enlace = "https://soychihuahua.mx/abre-municipio-convocatoria-a-emprendedores-para-participar-en-vende-tu-proyecto-2026/";
             this.Noticia3.Forma = PITCHR.TarjetaNoticia.Formas.Lista;
             this.Noticia3.Imagen = ((System.Drawing.Image)(resources.GetObject("Noticia3.Imagen")));
             this.Noticia3.Location = new System.Drawing.Point(719, 470);
@@ -112,7 +116,7 @@
             this.Noticia3.Size = new System.Drawing.Size(480, 150);
             this.Noticia3.TabIndex = 7;
             this.Noticia3.Resumen = "";
-            this.Noticia3.Titulo = "Objetos únicos, procesos conscientes";
+            this.Noticia3.Titulo = "Abre Municipio convocatoria \"Vende tu Proyecto 2026\"";
             this.Noticia3.TarjetaClick += new System.EventHandler(this.Noticia_Click);
             // 
             // BackgroundNoticias

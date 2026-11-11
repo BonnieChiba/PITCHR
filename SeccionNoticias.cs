@@ -1,31 +1,20 @@
-﻿using MySqlConnector;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Globalization;
-using System.IO;
-using System.Net;
 using System.Windows.Forms;
 
 namespace PITCHR
 {
     /// <summary>
-    /// Sección "Noticias" de HomePage (es un panel, no una ventana). Lee integrative.news.
+    /// Sección "Noticias" de HomePage (es un panel, no una ventana). Versión SIN base de datos.
+    /// Las 4 noticias (título, categoría, fecha, resumen, imagen y enlace) están puestas en el diseñador,
+    /// así se ven igual en el diseñador y al correr la app.
+    /// Para cambiar una: abre el diseñador, da clic en la tarjeta y cambia sus propiedades del grupo "PitchR".
     /// </summary>
     public partial class SeccionNoticias : UserControl
     {
-        private DBConn dbconn;                                      //Conectar
-        private MySqlDataAdapter newsDA = new MySqlDataAdapter();   //Extraer
-        private DataTable newstable = new DataTable();              //Almacenar
-
-        // Carpeta (junto al .exe) donde van las fotos de las noticias.
-        // En la columna newsImage se guarda el nombre del archivo (ej. "feria.jpg") o un enlace de internet (http...).
-        private const string CarpetaImagenes = "Imagenes";
-
         public SeccionNoticias()
         {
             InitializeComponent();
@@ -34,92 +23,15 @@ namespace PITCHR
 
         private void SeccionNoticias_Load(object sender, EventArgs e)
         {
-            // Evita que el diseñador de Visual Studio intente conectarse a MySQL
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
-            {
-                return;
-            }
-
-            this.LoadDBCommands();
-            this.LoadData();
-        }
-
-        // ==================== CRUD: LEER (SELECT) ====================
-        // Trae las 4 noticias más recientes (la última que se guardó primero).
-        private void LoadDBCommands()
-        {
-            newsDA.SelectCommand = new MySqlCommand("SELECT idNews, newsName, eventLink, evenDate, newsImage FROM integrative.news ORDER BY idNews DESC LIMIT 4");
-        }
-
-        private void LoadData()
-        {
-            dbconn = new DBConn();
-            newsDA.SelectCommand.Connection = dbconn.dbConnection;
-            try
-            {
-                newstable.Clear();
-                newsDA.Fill(newstable);
-                this.ShowData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("No se pudieron cargar las noticias:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // La noticia más nueva va a la tarjeta grande; las siguientes 3, a la columna derecha.
-        private void ShowData()
-        {
-            TarjetaNoticia[] tarjetas = { NoticiaDestacada, Noticia1, Noticia2, Noticia3 };
-
-            for (int i = 0; i < tarjetas.Length; i++)
-            {
-                if (i < newstable.Rows.Count)
-                {
-                    DataRow fila = newstable.Rows[i];
-                    string enlace = Convert.ToString(fila["eventLink"]);
-
-                    Noticia noticia = new Noticia(
-                        Convert.ToInt32(fila["idNews"]),
-                        Convert.ToString(fila["newsName"]),
-                        "",                                   // la tabla no tiene resumen
-                        this.Fuente(enlace),                  // en la etiqueta naranja se muestra de qué página es
-                        this.FormatoFecha(fila["evenDate"]),
-                        this.CargarImagen(Convert.ToString(fila["newsImage"])));
-                    noticia.Enlace = enlace;
-
-                    tarjetas[i].Mostrar(noticia);
-                    tarjetas[i].Visible = true;
-                }
-                else
-                {
-                    tarjetas[i].Visible = false;   // no hay suficientes noticias para esta tarjeta
-                }
-            }
-
-            if (newstable.Rows.Count == 0)
-            {
-                NoticiaDestacada.Mostrar(new Noticia(0, "Aún no hay noticias publicadas", "", "", "", null));
-                NoticiaDestacada.Visible = true;
-            }
+            // No se carga nada: las noticias ya vienen del diseñador.
         }
 
         // ==================== VER MÁS ====================
-        // Clic en una noticia (o en su "Ver más"): abre en el navegador la página de donde se sacó (eventLink).
+        // Clic en una noticia (o en su "Ver más"): abre la página original en el navegador.
         private void Noticia_Click(object sender, EventArgs e)
         {
-            Noticia elegida = ((TarjetaNoticia)sender).Datos;
-            if (elegida == null || string.IsNullOrWhiteSpace(elegida.Enlace))
-            {
-                MessageBox.Show("Esta noticia no tiene enlace.", "Noticias", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string enlace = elegida.Enlace.Trim();
-            if (!enlace.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                enlace = "https://" + enlace;
-            }
+            string enlace = ((TarjetaNoticia)sender).Enlace;
+            if (string.IsNullOrWhiteSpace(enlace)) return;
 
             try
             {
@@ -128,66 +40,6 @@ namespace PITCHR
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo abrir el enlace:\n" + ex.Message, "Noticias", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // ==================== AYUDANTES ====================
-        // Fecha como en el Figma: "12 JUN 2025". Si la columna es texto, se muestra tal cual.
-        private string FormatoFecha(object valor)
-        {
-            if (valor == null || valor == DBNull.Value) return "";
-            if (valor is DateTime)
-            {
-                string fecha = ((DateTime)valor).ToString("dd MMM yyyy", new CultureInfo("es-MX"));
-                return fecha.Replace(".", "").ToUpper();
-            }
-            return valor.ToString();
-        }
-
-        // De "https://www.elheraldodechihuahua.com.mx/local/..." saca "elheraldodechihuahua.com.mx"
-        private string Fuente(string enlace)
-        {
-            try
-            {
-                string texto = enlace.Trim();
-                if (!texto.StartsWith("http", StringComparison.OrdinalIgnoreCase)) texto = "https://" + texto;
-                string dominio = new Uri(texto).Host;
-                return dominio.StartsWith("www.") ? dominio.Substring(4) : dominio;
-            }
-            catch (Exception)
-            {
-                return "Noticia";
-            }
-        }
-
-        // La imagen puede ser un archivo de la carpeta Imagenes o un enlace de internet. Si falla, regresa null.
-        private Image CargarImagen(string valor)
-        {
-            if (string.IsNullOrWhiteSpace(valor)) return null;
-            valor = valor.Trim();
-            try
-            {
-                if (valor.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                {
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    using (WebClient cliente = new WebClient())
-                    using (MemoryStream datos = new MemoryStream(cliente.DownloadData(valor)))
-                    using (Image original = Image.FromStream(datos))
-                    {
-                        return new Bitmap(original);
-                    }
-                }
-
-                string ruta = Path.Combine(Application.StartupPath, CarpetaImagenes, valor);
-                if (!File.Exists(ruta)) return null;
-                using (Image original = Image.FromFile(ruta))
-                {
-                    return new Bitmap(original);   // copia en memoria para no dejar el archivo bloqueado
-                }
-            }
-            catch (Exception)
-            {
-                return null;   // si la imagen no se puede leer, la tarjeta muestra un degradado azul
             }
         }
 

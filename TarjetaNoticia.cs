@@ -71,6 +71,7 @@ namespace PITCHR
         [Category("PitchR")] public string Categoria { get { return _categoria; } set { _categoria = value; Invalidate(); } }
         [Category("PitchR")] public string Fecha { get { return _fecha; } set { _fecha = value; Invalidate(); } }
         [Category("PitchR")] public Image Imagen { get { return _imagen; } set { _imagen = value; Invalidate(); } }
+        [Category("PitchR"), DefaultValue("")] public string Enlace { get; set; } = "";   // página que se abre al hacer clic
         [Category("PitchR")] public Formas Forma { get { return _forma; } set { _forma = value; Invalidate(); } }
 
         /// <summary>La noticia que muestra esta tarjeta (para saber cuál se eligió).</summary>
@@ -164,7 +165,9 @@ namespace PITCHR
             {
                 float altoResumen = string.IsNullOrWhiteSpace(_resumen) ? -18 * k : Math.Min(TextRenderer.MeasureText(g, _resumen, fResumen, new Size((int)ancho, int.MaxValue), varias | TextFormatFlags.NoPadding).Height, 48 * k);
                 float yResumen = yVerMas - 18 * k - altoResumen;
-                float altoTitulo = Math.Min(TextRenderer.MeasureText(g, _titulo, fTitulo, new Size((int)ancho, int.MaxValue), varias | TextFormatFlags.NoPadding).Height, 120 * k);
+                // El título puede ocupar hasta 3 renglones (el alto de un renglón cambia según la fuente de cada computadora)
+                int altoRenglon = TextRenderer.MeasureText(g, "Ág", fTitulo, Size.Empty, TextFormatFlags.NoPadding).Height;
+                float altoTitulo = Math.Min(TextRenderer.MeasureText(g, _titulo, fTitulo, new Size((int)ancho, int.MaxValue), varias | TextFormatFlags.NoPadding).Height, altoRenglon * 3);
                 float yTitulo = yResumen - 12 * k - altoTitulo;
                 float yTag = yTitulo - 14 * k - 28 * k;
 
@@ -196,7 +199,9 @@ namespace PITCHR
 
                 Region anterior = g.Clip;
                 g.SetClip(ruta, CombineMode.Intersect);
-                DibujarFoto(g, new RectangleF(t.X, t.Y, 120 * k, t.Height));
+                RectangleF areaFoto = new RectangleF(t.X, t.Y, 120 * k, t.Height);
+                g.SetClip(areaFoto, CombineMode.Intersect);   // la foto no se sale de su columna aunque sea muy ancha
+                DibujarFoto(g, areaFoto);
                 g.Clip = anterior;
 
                 using (Pen borde = new Pen(Color.FromArgb(241, 245, 249), Math.Max(1f, 0.8f * k)))

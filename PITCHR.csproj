@@ -109,6 +109,7 @@
     <Compile Include="IniciarSesion.Designer.cs">
       <DependentUpon>IniciarSesion.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageBox.cs" />
     <Compile Include="PersonalizaMarca.cs">
       <SubType>Form</SubType>
     </Compile>

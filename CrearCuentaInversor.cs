@@ -127,8 +127,10 @@ namespace PITCHR
                     this.clearTextBoxes();
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                IniciarSesion PantallaPrincipal = new IniciarSesion();
+                PantallaPrincipal.Show();
+                this.Hide();
 
-              
             }
             catch (Exception ex)
             {
