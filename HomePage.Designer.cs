@@ -243,6 +243,7 @@ namespace PITCHR
             // LogoPictureBox
             // 
             this.LogoPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.LogoPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LogoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("LogoPictureBox.Image")));
             this.LogoPictureBox.Location = new System.Drawing.Point(60, 41);
             this.LogoPictureBox.Name = "LogoPictureBox";
