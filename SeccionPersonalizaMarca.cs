@@ -21,7 +21,8 @@ namespace PITCHR
         private MySqlDataAdapter entrepreneurshipDA = new MySqlDataAdapter();   //Extraer
         private DataTable entrepreneurshiptable = new DataTable();              //Almacenar
 
-        // idEntrepreneurship de la marca que se está editando. 0 = el emprendedor todavía no tiene marca (se hará INSERT).
+        // idEntrepreneurship de la marca que se está editando. 0 = marca NUEVA (se hará INSERT).
+        // Un emprendedor puede tener varias marcas: HomePage manda aquí el id de la marca que eligió en "Mis Marcas".
         private int idEntrepreneurship = 0;
 
         // Mientras no inicien sesión (para probar la pantalla), se usa este idEntrepreneur.
@@ -38,9 +39,14 @@ namespace PITCHR
         public event EventHandler Regresar;
         public event EventHandler MarcaGuardada;
 
-        public SeccionPersonalizaMarca()
+        public SeccionPersonalizaMarca() : this(0)
+        {
+        }
+
+        public SeccionPersonalizaMarca(int idEmprendimiento)
         {
             InitializeComponent();
+            idEntrepreneurship = idEmprendimiento;
 
             _imagenes = new Dictionary<Panel, CampoImagen>
             {
@@ -83,7 +89,7 @@ namespace PITCHR
             entrepreneurshipDA.SelectCommand = new MySqlCommand(
                 "SELECT idEntrepreneurship, idEntrepreneur, brand, category, shortDescription, description, " +
                 "imageHome, image2, image3, productName1, productName2, productName3, productImage1, productImage2, productImage3 " +
-                "FROM integrative.entrepreneurship WHERE idEntrepreneur = @idEntrepreneur LIMIT 1");
+                "FROM integrative.entrepreneurship WHERE idEntrepreneurship = @idEntrepreneurship AND idEntrepreneur = @idEntrepreneur");
 
             entrepreneurshipDA.InsertCommand = new MySqlCommand(
                 "INSERT INTO integrative.entrepreneurship (idEntrepreneur, brand, category, shortDescription, description, " +
@@ -100,12 +106,20 @@ namespace PITCHR
         }
 
         // ==================== LEER (SELECT) ====================
-        // Busca la marca del emprendedor. Si ya tiene una, la muestra para editarla; si no, deja todo vacío.
+        // Busca la marca elegida (solo si es de este emprendedor). Si es marca nueva, deja todo vacío.
         private void LoadData()
         {
+            TituloLabel.Text = idEntrepreneurship == 0 ? "Nueva Marca" : "Editar Marca";
+            if (idEntrepreneurship == 0)
+            {
+                this.clearTextBoxes();
+                return;
+            }
+
             dbconn = new DBConn();
             entrepreneurshipDA.SelectCommand.Connection = dbconn.dbConnection;
             entrepreneurshipDA.SelectCommand.Parameters.Clear();
+            entrepreneurshipDA.SelectCommand.Parameters.AddWithValue("@idEntrepreneurship", idEntrepreneurship);
             entrepreneurshipDA.SelectCommand.Parameters.AddWithValue("@idEntrepreneur", this.IdEmprendedor());
             try
             {
@@ -189,10 +203,17 @@ namespace PITCHR
                     });
 
                     comando.ExecuteNonQuery();
+
+                    // Si fue marca nueva, se guarda su id para que el siguiente "Guardar" haga UPDATE (y no otra marca)
+                    if (idEntrepreneurship == 0)
+                    {
+                        MySqlCommand ultimo = new MySqlCommand("SELECT LAST_INSERT_ID()", dbTemp.dbConnection);
+                        idEntrepreneurship = Convert.ToInt32(ultimo.ExecuteScalar());
+                    }
                 }
 
                 MessageBox.Show("Tu marca se guardó correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.LoadData();   // vuelve a leer para tener el idEntrepreneurship (si fue INSERT)
+                this.LoadData();
 
                 // Avisa a HomePage para que la sección Emprendimientos muestre la marca actualizada
                 if (MarcaGuardada != null) MarcaGuardada(this, EventArgs.Empty);
@@ -353,7 +374,7 @@ namespace PITCHR
             vista.ShowDialog(this.FindForm());
         }
 
-        // Flecha naranja: HomePage regresa a la sección Emprendimientos
+        // Flecha de regresar: HomePage regresa a "Mis Marcas"
         private void RegresarBoton_Click(object sender, EventArgs e)
         {
             if (Regresar != null) Regresar(this, EventArgs.Empty);
@@ -380,8 +401,8 @@ namespace PITCHR
         private const float AnchoFigma = 1280f;
         private const float AltoFigma = 720f;
 
-        private static readonly Color FondoPagina = Color.FromArgb(245, 244, 251);    // #F5F4FB
-        private static readonly Color FondoFranja = Color.FromArgb(227, 226, 231);    // gris de "Personaliza tu marca"
+        private static readonly Color FondoPagina = Color.White;                      // fondo blanco como en el Figma "Editar Marca"
+        private static readonly Color FondoFranja = Color.White;                      // fondo del botón de regresar
         private static readonly Color GrisMenu = Color.FromArgb(240, 243, 244);       // #F0F3F4
         private static readonly Color Naranja = Color.FromArgb(248, 110, 56);         // #F86E38
         private static readonly Color Celeste = Color.FromArgb(56, 189, 248);         // #38BDF8
@@ -548,49 +569,10 @@ namespace PITCHR
         }
 
         // ---------- Dibujo ----------
-        /// <summary>Fondo lila claro y la franja gris con los anillos naranjas, a todo lo ancho.</summary>
+        /// <summary>Fondo blanco (diseño "Editar Marca" del Figma).</summary>
         private void BackgroundMarca_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
-            Calidad(g);
-            g.Clear(FondoPagina);
-
-            float s = _escala;
-            RectangleF franja = new RectangleF(0, _margenY, BackgroundMarca.Width, 93 * s);
-
-            // Sombra debajo de la franja
-            for (int i = 1; i <= 4; i++)
-                using (SolidBrush b = new SolidBrush(Color.FromArgb(14, 0, 0, 0)))
-                    g.FillRectangle(b, franja.X, franja.Bottom, franja.Width, i * s);
-
-            using (SolidBrush b = new SolidBrush(FondoFranja))
-                g.FillRectangle(b, franja);
-
-            // Anillos naranjas (rectángulos redondeados girados), recortados a la franja
-            Region anterior = g.Clip;
-            g.SetClip(franja, CombineMode.Intersect);
-            GraphicsState estado = g.Save();
-            g.TranslateTransform(_margenX, _margenY);
-            g.ScaleTransform(s, s);
-            using (Pen anillo = new Pen(Naranja, 10.4f))
-            {
-                DibujarAnillo(g, anillo, 926.2f, -14.5f, 330f, 125f, 101.55f, -4f);
-                DibujarAnillo(g, anillo, 123f, 138.5f, 390f, 135f, 114.7f, 4f);
-                DibujarAnillo(g, anillo, 1156f, 115.2f, 591.6f, 292f, 114.7f, 50f);
-            }
-            g.Restore(estado);
-            g.Clip = anterior;
-        }
-
-        private static void DibujarAnillo(Graphics g, Pen pluma, float cx, float cy, float ancho, float alto, float radio, float grados)
-        {
-            GraphicsState estado = g.Save();
-            g.TranslateTransform(cx, cy);
-            g.RotateTransform(grados);
-            float b = pluma.Width / 2f;
-            using (GraphicsPath ruta = Redondeado(new RectangleF(-ancho / 2f + b, -alto / 2f + b, ancho - pluma.Width, alto - pluma.Width), radio - b))
-                g.DrawPath(pluma, ruta);
-            g.Restore(estado);
+            e.Graphics.Clear(FondoPagina);
         }
 
         /// <summary>Tarjeta blanca: encabezado, columna derecha, números naranjas, cajas de texto y productos.</summary>

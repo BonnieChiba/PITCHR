@@ -8,8 +8,8 @@ using System.Windows.Forms;
 namespace PITCHR
 {
     /// <summary>
-    /// Panel "Ver perfil" del INVERSOR (frame "myProfile"): foto, nombre, @usuario y descripción.
-    /// Lee su fila en integrative.investor.
+    /// Panel "Ver perfil" (frame "myProfile"): foto, nombre, @usuario y descripción.
+    /// Sirve para los DOS roles: lee la fila de quien inició sesión en investor o en entrepreneur.
     /// </summary>
     public partial class SeccionPerfilInversor : SeccionBase
     {
@@ -17,8 +17,8 @@ namespace PITCHR
         private MySqlDataAdapter investorsDA = new MySqlDataAdapter();  //Extraer
         private DataTable investortable = new DataTable();              //Almacenar
 
-        // Mientras no inicien sesión (para probar el panel), se usa este idInvestor. Debe existir en la tabla investor.
-        private const int IdInversorDePrueba = 1;
+        // Mientras no inicien sesión (para probar el panel), se usa este id. Debe existir en la tabla.
+        private const int IdDePrueba = 1;
 
         private Image _foto;
 
@@ -32,10 +32,13 @@ namespace PITCHR
             PrepararDiseno();   // estilo del Figma (ver región de abajo)
         }
 
-        private int IdInversor()
+        // Según el rol se usa una tabla u otra (las dos tienen las mismas columnas)
+        private bool EsEmprendedor { get { return Sesion.Activa && Sesion.Rol == 1; } }
+
+        private int IdUsuario()
         {
-            if (Sesion.Activa && Sesion.Rol == 0) return Sesion.IdUsuario;
-            return IdInversorDePrueba;
+            if (Sesion.Activa) return Sesion.IdUsuario;
+            return IdDePrueba;
         }
 
         private void SeccionPerfilInversor_Load(object sender, EventArgs e)
@@ -54,7 +57,9 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             investorsDA.SelectCommand = new MySqlCommand(
-                "SELECT name, lastName, `user`, description, imageProfile FROM integrative.investor WHERE idInvestor = @idInvestor");
+                EsEmprendedor
+                    ? "SELECT name, lastName, `user`, description, imageProfile FROM integrative.entrepreneur WHERE idEntrepreneur = @id"
+                    : "SELECT name, lastName, `user`, description, imageProfile FROM integrative.investor WHERE idInvestor = @id");
         }
 
         private void LoadData()
@@ -62,7 +67,7 @@ namespace PITCHR
             dbconn = new DBConn();
             investorsDA.SelectCommand.Connection = dbconn.dbConnection;
             investorsDA.SelectCommand.Parameters.Clear();
-            investorsDA.SelectCommand.Parameters.AddWithValue("@idInvestor", this.IdInversor());
+            investorsDA.SelectCommand.Parameters.AddWithValue("@id", this.IdUsuario());
             try
             {
                 investortable.Clear();

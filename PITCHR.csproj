@@ -136,6 +136,7 @@
     <Compile Include="SeccionMensajes.Designer.cs">
       <DependentUpon>SeccionMensajes.cs</DependentUpon>
     </Compile>
+    <Compile Include="SeccionMisMarcas.cs" />
     <Compile Include="SeccionNoticias.cs">
       <SubType>UserControl</SubType>
     </Compile>

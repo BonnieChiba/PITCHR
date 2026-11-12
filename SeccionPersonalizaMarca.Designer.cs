@@ -456,6 +456,7 @@
             this.VistaPreviaBoton.Name = "VistaPreviaBoton";
             this.VistaPreviaBoton.Size = new System.Drawing.Size(175, 73);
             this.VistaPreviaBoton.TabIndex = 29;
+            this.VistaPreviaBoton.Visible = false;
             this.VistaPreviaBoton.Text = "vista previa";
             this.VistaPreviaBoton.UseVisualStyleBackColor = false;
             this.VistaPreviaBoton.Click += new System.EventHandler(this.VistaPreviaBoton_Click);
@@ -548,7 +549,7 @@
             this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.RegresarBoton.ForeColor = System.Drawing.Color.White;
-            this.RegresarBoton.Location = new System.Drawing.Point(98, 19);
+            this.RegresarBoton.Location = new System.Drawing.Point(91, 19);
             this.RegresarBoton.Name = "RegresarBoton";
             this.RegresarBoton.Size = new System.Drawing.Size(52, 52);
             this.RegresarBoton.TabIndex = 3;
@@ -567,18 +568,19 @@
             this.EmprendimientoLabel.TabIndex = 4;
             this.EmprendimientoLabel.Text = "EMPRENDIMIENTO";
             this.EmprendimientoLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.EmprendimientoLabel.Visible = false;
             // 
             // TituloLabel
             // 
             this.TituloLabel.BackColor = System.Drawing.Color.Transparent;
-            this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 26F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.TituloLabel.ForeColor = System.Drawing.Color.Black;
-            this.TituloLabel.Location = new System.Drawing.Point(155, 22);
+            this.TituloLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 50F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.TituloLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
+            this.TituloLabel.Location = new System.Drawing.Point(155, 10);
             this.TituloLabel.Name = "TituloLabel";
-            this.TituloLabel.Size = new System.Drawing.Size(520, 38);
+            this.TituloLabel.Size = new System.Drawing.Size(800, 70);
             this.TituloLabel.TabIndex = 5;
-            this.TituloLabel.Text = "Personaliza tu marca";
-            this.TituloLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.TituloLabel.Text = "Editar Marca";
+            this.TituloLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // SubtituloLabel
             // 
@@ -591,6 +593,7 @@
             this.SubtituloLabel.TabIndex = 6;
             this.SubtituloLabel.Text = "Completa la información que verán los inversionistas.";
             this.SubtituloLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.SubtituloLabel.Visible = false;
             // 
             // BackgroundMarca
             // 

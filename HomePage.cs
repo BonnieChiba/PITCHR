@@ -11,7 +11,7 @@ namespace PITCHR
  
     public partial class HomePage : Form
     {
-        public enum Seccion { Emprendimientos, Eventos, Noticias, Mensajes, PersonalizarPerfil, VerPerfil }
+        public enum Seccion { Emprendimientos, Eventos, Noticias, Mensajes, PersonalizarPerfil, VerPerfil, MisMarcas, Favoritos }
 
         // Crear y guardar secciones 
         private readonly Dictionary<Seccion, UserControl> _secciones = new Dictionary<Seccion, UserControl>();
@@ -100,7 +100,8 @@ namespace PITCHR
             }
 
             UserControl panel;
-            bool esDePerfil = destino == Seccion.PersonalizarPerfil || destino == Seccion.VerPerfil;
+            bool esDePerfil = destino == Seccion.PersonalizarPerfil || destino == Seccion.VerPerfil
+                           || destino == Seccion.MisMarcas || destino == Seccion.Favoritos;
             if (esDePerfil)
             {
                 // Los paneles de perfil se crean nuevos cada vez, para que siempre muestren los datos actuales
@@ -143,20 +144,36 @@ namespace PITCHR
         }
 
         // ==================== PÁGINA DE PRODUCTO (clic en tarjeta) ====================
-        private void AbrirProducto(int idEmprendimiento)
+        // regresarA: a qué sección lleva la flecha de regresar (Emprendimientos, Favoritos o Mis Marcas)
+        private void AbrirProducto(int idEmprendimiento, Seccion regresarA = Seccion.Emprendimientos)
         {
             SeccionProducto producto = new SeccionProducto(idEmprendimiento);
-            producto.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+            producto.Regresar += (s, e) => MostrarSeccion(regresarA);
             producto.Contactar += (s, idEntrepreneur) => AbrirMensajesCon(idEntrepreneur);
-            producto.Dock = DockStyle.Fill;
+            this.PonerEnContenido(producto);
+        }
 
+        // ==================== EDITAR MARCA (botón EDITAR de "Mis Marcas") ====================
+        // idEmprendimiento = 0 es una marca nueva
+        private void AbrirEditarMarca(int idEmprendimiento)
+        {
+            SeccionPersonalizaMarca marca = new SeccionPersonalizaMarca(idEmprendimiento);
+            marca.Regresar += (s, e) => MostrarSeccion(Seccion.MisMarcas);
+            marca.MarcaGuardada += (s, e) => OlvidarSeccion(Seccion.Emprendimientos);   // para que se vea la marca nueva
+            this.PonerEnContenido(marca);
+        }
+
+        // Pone un panel que no es del menú (producto, editar marca) en lugar del actual
+        private void PonerEnContenido(UserControl panel)
+        {
+            panel.Dock = DockStyle.Fill;
             ContenidoPanel.SuspendLayout();
             foreach (Control anterior in ContenidoPanel.Controls)
             {
                 if (!_secciones.ContainsValue(anterior as UserControl)) anterior.Dispose();
             }
-            ContenidoPanel.Controls.Clear();       // quita Emprendimientos (se queda guardada)
-            ContenidoPanel.Controls.Add(producto); // pone la página de producto
+            ContenidoPanel.Controls.Clear();       // quita el panel anterior (las secciones del menú se quedan guardadas)
+            ContenidoPanel.Controls.Add(panel);
             ContenidoPanel.ResumeLayout(true);
         }
 
@@ -169,36 +186,34 @@ namespace PITCHR
         }
 
         // ==================== PANELES DE PERFIL  ====================
+        // Ver Perfil y Editar Perfil son iguales para los dos roles (cada uno lee su propia tabla).
+        // Mis Marcas es solo del emprendedor; Favoritos es de los dos.
         private UserControl CrearPanelDePerfil(Seccion seccion)
         {
-            bool emprendedor = Sesion.Rol == 1;
-
-            if (seccion == Seccion.PersonalizarPerfil)
+            switch (seccion)
             {
-                if (emprendedor)
-                {
-                    SeccionPersonalizaMarca marca = new SeccionPersonalizaMarca();
-                    marca.Regresar += (s, e) => MostrarSeccion(Seccion.VerPerfil);
-                    marca.MarcaGuardada += (s, e) => OlvidarSeccion(Seccion.Emprendimientos);   // para que se vea la marca nueva
-                    return marca;
-                }
-                SeccionEditarPerfil editar = new SeccionEditarPerfil();
-                editar.PerfilActualizado += (s, e) => CargarFotoPerfil();
-                return editar;
-            }
+                case Seccion.PersonalizarPerfil:   // Editar Perfil (se abre desde Ver Perfil)
+                    SeccionEditarPerfil editar = new SeccionEditarPerfil();
+                    editar.PerfilActualizado += (s, e) => CargarFotoPerfil();
+                    return editar;
 
-            // Ver perfil
-            if (emprendedor)
-            {
-                SeccionProducto producto = new SeccionProducto();
-                producto.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
-                producto.CrearMarca += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
-                return producto;
+                case Seccion.MisMarcas:
+                    SeccionMisMarcas marcas = new SeccionMisMarcas(SeccionMisMarcas.Modos.MisMarcas);
+                    marcas.EditarMarca += (s, id) => AbrirEditarMarca(id);
+                    marcas.AbrirEmprendimiento += (s, id) => AbrirProducto(id, Seccion.MisMarcas);
+                    return marcas;
+
+                case Seccion.Favoritos:
+                    SeccionMisMarcas favoritos = new SeccionMisMarcas(SeccionMisMarcas.Modos.Favoritos);
+                    favoritos.AbrirEmprendimiento += (s, id) => AbrirProducto(id, Seccion.Favoritos);
+                    return favoritos;
+
+                default:   // Ver Perfil
+                    SeccionPerfilInversor perfil = new SeccionPerfilInversor();
+                    perfil.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
+                    perfil.EditarPerfil += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
+                    return perfil;
             }
-            SeccionPerfilInversor perfil = new SeccionPerfilInversor();
-            perfil.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
-            perfil.EditarPerfil += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
-            return perfil;
         }
 
         // Borra una sección guardada para que la próxima vez se vuelva a crear (y a leer de la base)
@@ -236,28 +251,102 @@ namespace PITCHR
             this.Hide();
         }
 
-        // Dropdown Perfil
+        // Dropdown Perfil (frames "ClickPerfilInversor" y "ClickPerfilEmprendedor" del Figma):
+        //   Inversor:    Ver Perfil · Favoritos · Cerrar Sesión
+        //   Emprendedor: Ver Perfil · Mis Marcas · Favoritos · Cerrar Sesión
         private void PerfilPictureBox_Click(object sender, EventArgs e)
         {
+            if (_menuPerfil != null) _menuPerfil.Dispose();
             _menuPerfil = new ContextMenuStrip();
-            _menuPerfil.Font = new Font(FuenteInstalada("Plus Jakarta Sans") ? "Plus Jakarta Sans" : "Segoe UI", 14f, FontStyle.Regular, GraphicsUnit.Pixel);
+            _menuPerfil.Font = new Font(FuenteInstalada("Plus Jakarta Sans") ? "Plus Jakarta Sans" : "Segoe UI", 16f * _escala, FontStyle.Bold, GraphicsUnit.Pixel);
             _menuPerfil.ShowImageMargin = false;
-            _menuPerfil.Padding = new Padding(4, 6, 4, 6);
+            _menuPerfil.Padding = Padding.Empty;
+            _menuPerfil.Renderer = new MenuPerfilRenderer();
 
-            // Encabezado: nombre de usuario y tipo de cuenta
-            ToolStripLabel encabezado = new ToolStripLabel("@" + Sesion.Usuario + (Sesion.Rol == 1 ? "  ·  Emprendedor" : "  ·  Inversionista"));
-            encabezado.ForeColor = Color.Gray;
-            _menuPerfil.Items.Add(encabezado);
-            _menuPerfil.Items.Add(new ToolStripSeparator());
+            this.AgregarOpcion("Ver Perfil", () => MostrarSeccion(Seccion.VerPerfil));
+            if (Sesion.Rol == 1) this.AgregarOpcion("Mis Marcas", () => MostrarSeccion(Seccion.MisMarcas));
+            this.AgregarOpcion("Favoritos", () => MostrarSeccion(Seccion.Favoritos));
+            ToolStripItem cerrar = this.AgregarOpcion("Cerrar Sesión", CerrarSesion);
+            cerrar.Tag = "salir";   // el renderer le dibuja el ícono de salir a la derecha
 
-            _menuPerfil.Items.Add("Personalizar perfil", null, (s, a) => MostrarSeccion(Seccion.PersonalizarPerfil));
-            _menuPerfil.Items.Add("Ver perfil", null, (s, a) => MostrarSeccion(Seccion.VerPerfil));
-            _menuPerfil.Items.Add(new ToolStripSeparator());
-            ToolStripItem cerrar = _menuPerfil.Items.Add("Cerrar sesión", null, (s, a) => CerrarSesion());
-            cerrar.ForeColor = Color.FromArgb(220, 38, 38);
-            foreach (ToolStripItem item in _menuPerfil.Items) item.Padding = new Padding(8, 6, 8, 6);
+            // Esquinas redondeadas como en el Figma
+            Size tamano = _menuPerfil.PreferredSize;
+            using (GraphicsPath ruta = Redondeado(new RectangleF(0, 0, tamano.Width, tamano.Height), 20 * _escala))
+                _menuPerfil.Region = new Region(ruta);
 
-            _menuPerfil.Show(PerfilPictureBox, new Point(PerfilPictureBox.Width - _menuPerfil.PreferredSize.Width, PerfilPictureBox.Height + 4));
+            _menuPerfil.Show(PerfilPictureBox, new Point(PerfilPictureBox.Width - tamano.Width, PerfilPictureBox.Height + 4));
+        }
+
+        // Agrega una opción al menú de perfil (con una línea gris arriba, menos la primera)
+        private ToolStripItem AgregarOpcion(string texto, Action accion)
+        {
+            if (_menuPerfil.Items.Count > 0) _menuPerfil.Items.Add(new ToolStripSeparator());
+            ToolStripMenuItem opcion = new ToolStripMenuItem(texto, null, (s, a) => accion());
+            opcion.AutoSize = false;
+            opcion.Size = new Size((int)(210 * _escala), (int)(40 * _escala));
+            opcion.Padding = new Padding((int)(9 * _escala), 0, 0, 0);
+            _menuPerfil.Items.Add(opcion);
+            return opcion;
+        }
+
+        /// <summary>Dibuja el menú de perfil como en el Figma: fondo blanco, texto gris, líneas grises y el ícono de salir.</summary>
+        private class MenuPerfilRenderer : ToolStripProfessionalRenderer
+        {
+            private static readonly Color GrisTexto = Color.FromArgb(174, 172, 172);   // #AEACAC
+            private static readonly Color GrisLinea = Color.FromArgb(225, 225, 225);
+
+            protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+            {
+                e.Graphics.Clear(Color.White);
+            }
+
+            protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+            {
+                // Sin borde: las esquinas redondeadas las da la Region del menú
+            }
+
+            protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
+            {
+                int y = e.Item.Height / 2;
+                using (Pen linea = new Pen(GrisLinea))
+                    e.Graphics.DrawLine(linea, 0, y, e.ToolStrip.Width, y);
+            }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                Color fondo = e.Item.Selected ? Color.FromArgb(244, 246, 250) : Color.White;
+                using (SolidBrush b = new SolidBrush(fondo))
+                    e.Graphics.FillRectangle(b, new Rectangle(Point.Empty, e.Item.Size));
+            }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                Color color = e.Item.Selected ? Color.FromArgb(110, 110, 110) : GrisTexto;
+                Rectangle area = new Rectangle(e.Item.Padding.Left, 0, e.Item.Width, e.Item.Height);
+                TextRenderer.DrawText(e.Graphics, e.Text, e.TextFont, area, color,
+                    TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.SingleLine);
+
+                if ((e.Item.Tag as string) == "salir") DibujarIconoSalir(e.Graphics, e.Item, color);
+            }
+
+            // Ícono de "salir": un marco abierto a la derecha y una flecha que sale
+            private static void DibujarIconoSalir(Graphics g, ToolStripItem item, Color color)
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                float h = item.Height * 0.5f, x = item.Width - h * 1.9f, y = (item.Height - h) / 2f;
+                using (Pen lapiz = new Pen(color, Math.Max(1.5f, h / 11f)))
+                {
+                    lapiz.StartCap = LineCap.Round;
+                    lapiz.EndCap = LineCap.Round;
+                    float w = h * 0.62f;
+                    g.DrawLines(lapiz, new[] { new PointF(x + w, y + h * 0.28f), new PointF(x + w, y), new PointF(x, y),
+                                               new PointF(x, y + h), new PointF(x + w, y + h), new PointF(x + w, y + h * 0.72f) });
+                    float cy = y + h / 2f, fin = x + h * 1.25f;
+                    g.DrawLine(lapiz, x + h * 0.4f, cy, fin, cy);
+                    g.DrawLine(lapiz, fin, cy, fin - h * 0.22f, cy - h * 0.22f);
+                    g.DrawLine(lapiz, fin, cy, fin - h * 0.22f, cy + h * 0.22f);
+                }
+            }
         }
 
         private void CerrarSesion()

@@ -8,8 +8,9 @@ using System.Windows.Forms;
 namespace PITCHR
 {
     /// <summary>
-    /// Panel "Actualización de Datos" (Personalizar perfil del INVERSOR).
-    /// Lee y actualiza su fila en integrative.investor.
+    /// Panel "Actualización de Datos" (Editar perfil). Sirve para los DOS roles:
+    /// si inició sesión un inversor usa la tabla investor; si es emprendedor, la tabla entrepreneur.
+    /// Del emprendedor, el nombre, la descripción y la foto son los que salen como "Founder" en la página de producto.
     /// </summary>
     public partial class SeccionEditarPerfil : SeccionBase
     {
@@ -17,8 +18,8 @@ namespace PITCHR
         private MySqlDataAdapter investorsDA = new MySqlDataAdapter();  //Extraer
         private DataTable investortable = new DataTable();              //Almacenar
 
-        // Mientras no inicien sesión (para probar el panel), se usa este idInvestor. Debe existir en la tabla investor.
-        private const int IdInversorDePrueba = 1;
+        // Mientras no inicien sesión (para probar el panel), se usa este id. Debe existir en la tabla.
+        private const int IdDePrueba = 1;
 
         private string _fotoGuardada;    // nombre del archivo en la columna imageProfile
         private string _fotoNueva;       // foto recién elegida que todavía no se guarda
@@ -33,10 +34,15 @@ namespace PITCHR
             PrepararDiseño();   // estilo del Figma (ver región de abajo)
         }
 
-        private int IdInversor()
+        // ¿Quién inició sesión? Según su rol se usa una tabla u otra (las dos tienen las mismas columnas).
+        private bool EsEmprendedor { get { return Sesion.Activa && Sesion.Rol == 1; } }
+        private string Tabla { get { return EsEmprendedor ? "integrative.entrepreneur" : "integrative.investor"; } }
+        private string ColumnaId { get { return EsEmprendedor ? "idEntrepreneur" : "idInvestor"; } }
+
+        private int IdUsuario()
         {
-            if (Sesion.Activa && Sesion.Rol == 0) return Sesion.IdUsuario;
-            return IdInversorDePrueba;
+            if (Sesion.Activa) return Sesion.IdUsuario;
+            return IdDePrueba;
         }
 
         private void SeccionEditarPerfil_Load(object sender, EventArgs e)
@@ -47,6 +53,7 @@ namespace PITCHR
                 return;
             }
 
+            TipoCuentaLabel.Text = EsEmprendedor ? "Emprendedor" : "Inversionista";
             this.LoadDBCommands();
             this.LoadData();
         }
@@ -55,15 +62,15 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             investorsDA.SelectCommand = new MySqlCommand(
-                "SELECT idInvestor, name, lastName, `user`, city, email, rfc, imageProfile, description " +
-                "FROM integrative.investor WHERE idInvestor = @idInvestor");
+                "SELECT name, lastName, `user`, city, email, rfc, imageProfile, description " +
+                "FROM " + Tabla + " WHERE " + ColumnaId + " = @id");
 
             // La contraseña solo se cambia si escribieron una nueva (si no, se deja la que ya tenía)
             investorsDA.UpdateCommand = new MySqlCommand(
-                "UPDATE integrative.investor SET name = @name, lastName = @lastName, `user` = @user, city = @city, " +
+                "UPDATE " + Tabla + " SET name = @name, lastName = @lastName, `user` = @user, city = @city, " +
                 "email = @email, rfc = @rfc, imageProfile = @imageProfile, description = @description, " +
                 "`password` = IF(@password = '', `password`, @password) " +
-                "WHERE idInvestor = @idInvestor");
+                "WHERE " + ColumnaId + " = @id");
         }
 
         // ==================== LEER (SELECT) ====================
@@ -72,7 +79,7 @@ namespace PITCHR
             dbconn = new DBConn();
             investorsDA.SelectCommand.Connection = dbconn.dbConnection;
             investorsDA.SelectCommand.Parameters.Clear();
-            investorsDA.SelectCommand.Parameters.AddWithValue("@idInvestor", this.IdInversor());
+            investorsDA.SelectCommand.Parameters.AddWithValue("@id", this.IdUsuario());
             try
             {
                 investortable.Clear();
@@ -135,7 +142,7 @@ namespace PITCHR
                     investorsDA.UpdateCommand.Connection.Open();
                     investorsDA.UpdateCommand.Parameters.Clear();
                     investorsDA.UpdateCommand.Parameters.AddRange(new[] {
-                        new MySqlParameter("@idInvestor", this.IdInversor()),
+                        new MySqlParameter("@id", this.IdUsuario()),
                         new MySqlParameter("@name", NombreTextBox.Text.Trim()),
                         new MySqlParameter("@lastName", ApellidoTextBox.Text.Trim()),
                         new MySqlParameter("@user", UsuarioTextBox.Text.Trim()),
@@ -204,7 +211,7 @@ namespace PITCHR
         }
 
         // ==================== EVITAR DUPLICADOS ====================
-        // Revisa los otros inversores (sin contarse a sí mismo) y TODOS los emprendedores.
+        // Revisa inversores y emprendedores, sin contarse a sí mismo.
         private bool ExistenDuplicados()
         {
             string usuario = UsuarioTextBox.Text.Trim();
@@ -218,14 +225,15 @@ namespace PITCHR
                 {
                     MySqlCommand buscar = new MySqlCommand(
                         "SELECT `user`, email, rfc FROM integrative.investor " +
-                        "WHERE (`user` = @user OR email = @email OR rfc = @rfc) AND idInvestor <> @idInvestor " +
+                        "WHERE (`user` = @user OR email = @email OR rfc = @rfc) AND NOT (@soyEmprendedor = 0 AND idInvestor = @id) " +
                         "UNION ALL " +
                         "SELECT `user`, email, rfc FROM integrative.entrepreneur " +
-                        "WHERE `user` = @user OR email = @email OR rfc = @rfc", dbTemp.dbConnection);
+                        "WHERE (`user` = @user OR email = @email OR rfc = @rfc) AND NOT (@soyEmprendedor = 1 AND idEntrepreneur = @id)", dbTemp.dbConnection);
                     buscar.Parameters.AddWithValue("@user", usuario);
                     buscar.Parameters.AddWithValue("@email", email);
                     buscar.Parameters.AddWithValue("@rfc", rfc);
-                    buscar.Parameters.AddWithValue("@idInvestor", this.IdInversor());
+                    buscar.Parameters.AddWithValue("@id", this.IdUsuario());
+                    buscar.Parameters.AddWithValue("@soyEmprendedor", EsEmprendedor ? 1 : 0);
                     dbTemp.dbConnection.Open();
                     using (MySqlDataReader lector = buscar.ExecuteReader())
                     {
@@ -363,7 +371,7 @@ namespace PITCHR
             }
         }
 
-        /// <summary>Tarjeta "Cuenta activa · Inversionista": degradado azul con anillos.</summary>
+        /// <summary>Tarjeta "Cuenta activa": azul para inversionista, naranja-rosa para emprendedor.</summary>
         private void CuentaActivaPanel_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -373,7 +381,9 @@ namespace PITCHR
             RectangleF r = new RectangleF(0, 0, CuentaActivaPanel.Width - 1, CuentaActivaPanel.Height - 1);
             using (GraphicsPath ruta = Redondeado(r, 20 * k))
             {
-                using (LinearGradientBrush b = new LinearGradientBrush(r, Color.FromArgb(8, 120, 232), Color.FromArgb(14, 196, 233), 20f))
+                Color inicio = EsEmprendedor ? Color.FromArgb(248, 110, 56) : Color.FromArgb(8, 120, 232);
+                Color fin = EsEmprendedor ? Color.FromArgb(229, 11, 182) : Color.FromArgb(14, 196, 233);
+                using (LinearGradientBrush b = new LinearGradientBrush(r, inicio, fin, 20f))
                     g.FillPath(b, ruta);
                 Region anterior = g.Clip;
                 g.SetClip(ruta, CombineMode.Intersect);
