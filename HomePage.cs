@@ -150,7 +150,19 @@ namespace PITCHR
             SeccionProducto producto = new SeccionProducto(idEmprendimiento);
             producto.Regresar += (s, e) => MostrarSeccion(regresarA);
             producto.Contactar += (s, idEntrepreneur) => AbrirMensajesCon(idEntrepreneur);
+            producto.VerFundador += (s, idFundador) => AbrirPerfilFundador(idFundador, idEmprendimiento, regresarA);
             this.PonerEnContenido(producto);
+        }
+
+        // ==================== PERFIL DEL FUNDADOR (botón de perfil en la página de producto) ====================
+        // Al regresar, vuelve a la misma página de producto.
+        private void AbrirPerfilFundador(int idFundador, int idEmprendimiento, Seccion regresarA)
+        {
+            SeccionPerfilInversor perfil = new SeccionPerfilInversor(idFundador);
+            perfil.Regresar += (s, e) => AbrirProducto(idEmprendimiento, regresarA);
+            perfil.EnviarMensaje += (s, id) => AbrirMensajesCon(id);
+            perfil.EditarPerfil += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);   // si el fundador soy yo
+            this.PonerEnContenido(perfil);
         }
 
         // ==================== EDITAR MARCA (botón EDITAR de "Mis Marcas") ====================

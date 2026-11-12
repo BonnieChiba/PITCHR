@@ -224,7 +224,7 @@
             this.FundadorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(100)))));
             this.FundadorLabel.Location = new System.Drawing.Point(22, 22);
             this.FundadorLabel.Name = "FundadorLabel";
-            this.FundadorLabel.Size = new System.Drawing.Size(300, 30);
+            this.FundadorLabel.Size = new System.Drawing.Size(290, 30);
             this.FundadorLabel.TabIndex = 14;
             this.FundadorLabel.Text = "FUNDADOR";
             // 
@@ -236,7 +236,7 @@
             this.FundadorNombreLabel.ForeColor = System.Drawing.Color.Black;
             this.FundadorNombreLabel.Location = new System.Drawing.Point(22, 52);
             this.FundadorNombreLabel.Name = "FundadorNombreLabel";
-            this.FundadorNombreLabel.Size = new System.Drawing.Size(300, 32);
+            this.FundadorNombreLabel.Size = new System.Drawing.Size(290, 32);
             this.FundadorNombreLabel.TabIndex = 15;
             this.FundadorNombreLabel.Text = "NOMBRE APELLIDO";
             // 
@@ -250,9 +250,9 @@
             this.ContactarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ContactarBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.ContactarBoton.ForeColor = System.Drawing.Color.White;
-            this.ContactarBoton.Location = new System.Drawing.Point(10, 100);
+            this.ContactarBoton.Location = new System.Drawing.Point(10, 104);
             this.ContactarBoton.Name = "ContactarBoton";
-            this.ContactarBoton.Size = new System.Drawing.Size(162, 70);
+            this.ContactarBoton.Size = new System.Drawing.Size(152, 62);
             this.ContactarBoton.TabIndex = 16;
             this.ContactarBoton.Text = "CONTACTAR";
             this.ContactarBoton.UseVisualStyleBackColor = false;
@@ -268,9 +268,9 @@
             this.PerfilBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PerfilBoton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.PerfilBoton.ForeColor = System.Drawing.Color.White;
-            this.PerfilBoton.Location = new System.Drawing.Point(172, 100);
+            this.PerfilBoton.Location = new System.Drawing.Point(164, 104);
             this.PerfilBoton.Name = "PerfilBoton";
-            this.PerfilBoton.Size = new System.Drawing.Size(158, 70);
+            this.PerfilBoton.Size = new System.Drawing.Size(140, 62);
             this.PerfilBoton.TabIndex = 17;
             this.PerfilBoton.Text = "PERFIL";
             this.PerfilBoton.UseVisualStyleBackColor = false;

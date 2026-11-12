@@ -33,6 +33,7 @@ namespace PITCHR
         public event EventHandler Regresar;
         public event EventHandler CrearMarca;
         public event EventHandler<int> Contactar;   // manda el idEntrepreneur del fundador
+        public event EventHandler<int> VerFundador; // botón del perfil del fundador (manda su idEntrepreneur)
 
         private int _idFundador = 0;
 
@@ -195,8 +196,9 @@ namespace PITCHR
                 if (CrearMarca != null) CrearMarca(this, EventArgs.Empty);
                 return;
             }
-            // Aquí se abrirá el perfil del fundador (frame "porfileFounder").
-            MessageBox.Show("El perfil del fundador estará disponible próximamente.", "PitchR");
+            // Abre el perfil del fundador (frame "porfileFounder")
+            if (_idFundador == 0) return;
+            if (VerFundador != null) VerFundador(this, _idFundador);
         }
 
         private void RegresarBoton_Click(object sender, EventArgs e)
@@ -413,9 +415,19 @@ namespace PITCHR
             using (GraphicsPath ruta = Redondeado(r, 14 * k))
             {
                 g.FillPath(Brushes.White, ruta);
+            }
+
+            // Foto del fundador: empieza SIEMPRE después de los botones y del nombre (se mide en dónde quedaron
+            // de verdad en esta pantalla). Así nada se le encima: lo que no cabe de la foto se recorta.
+            float margen = 12 * k;
+            float inicio = Math.Max(Math.Max(ContactarBoton.Right, PerfilBoton.Right), FundadorNombreLabel.Right) + margen;
+            float ancho = r.Width - inicio - margen;
+            if (ancho < 20 * k) return;   // ventana demasiado angosta: mejor no dibujar la foto que encimarla
+            RectangleF foto = new RectangleF(inicio, margen, ancho, r.Height - margen * 2);
+            using (GraphicsPath rutaFoto = Redondeado(foto, 14 * k))
+            {
                 Region anterior = g.Clip;
-                g.SetClip(ruta, CombineMode.Intersect);
-                RectangleF foto = new RectangleF(334 * k, 0, r.Width - 334 * k + 1, r.Height + 1);
+                g.SetClip(rutaFoto, CombineMode.Intersect);
                 if (_fotoFundador != null)
                 {
                     DibujarCubriendo(g, _fotoFundador, foto);

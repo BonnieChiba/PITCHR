@@ -8,8 +8,9 @@ using System.Windows.Forms;
 namespace PITCHR
 {
     /// <summary>
-    /// Panel "Ver perfil" (frame "myProfile"): foto, nombre, @usuario y descripción.
-    /// Sirve para los DOS roles: lee la fila de quien inició sesión en investor o en entrepreneur.
+    /// Panel "Ver perfil" (frames "myProfile" y "porfileFounder"): foto, nombre, @usuario y descripción.
+    ///  • Mi perfil (sin id): lee la fila de quien inició sesión (investor o entrepreneur) y muestra "Editar Perfil".
+    ///  • Perfil del fundador (con idEntrepreneur, desde la página de producto): lee ese emprendedor y muestra "Enviar Mensaje".
     /// </summary>
     public partial class SeccionPerfilInversor : SeccionBase
     {
@@ -22,14 +23,34 @@ namespace PITCHR
 
         private Image _foto;
 
-        /// <summary>Avisos para HomePage: la flecha de regresar y el botón "Editar Perfil".</summary>
+        // idEntrepreneur del fundador que se está viendo. 0 = es mi propio perfil.
+        private readonly int _idFundador;
+
+        /// <summary>Avisos para HomePage: la flecha de regresar, "Editar Perfil" y "Enviar Mensaje".</summary>
         public event EventHandler Regresar;
         public event EventHandler EditarPerfil;
+        public event EventHandler<int> EnviarMensaje;   // manda el idEntrepreneur del fundador
 
-        public SeccionPerfilInversor()
+        public SeccionPerfilInversor() : this(0)
+        {
+        }
+
+        public SeccionPerfilInversor(int idFundador)
         {
             InitializeComponent();
+            _idFundador = idFundador;
             PrepararDiseno();   // estilo del Figma (ver región de abajo)
+        }
+
+        // ¿Estoy viendo el perfil de un fundador? (si el fundador soy yo, es mi propio perfil)
+        private bool VerFundador
+        {
+            get
+            {
+                if (_idFundador == 0) return false;
+                bool soyYo = Sesion.Activa && Sesion.Rol == 1 && Sesion.IdUsuario == _idFundador;
+                return !soyYo;
+            }
         }
 
         // Según el rol se usa una tabla u otra (las dos tienen las mismas columnas)
@@ -57,7 +78,7 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             investorsDA.SelectCommand = new MySqlCommand(
-                EsEmprendedor
+                (EsEmprendedor || VerFundador)
                     ? "SELECT name, lastName, `user`, description, imageProfile FROM integrative.entrepreneur WHERE idEntrepreneur = @id"
                     : "SELECT name, lastName, `user`, description, imageProfile FROM integrative.investor WHERE idInvestor = @id");
         }
@@ -67,7 +88,7 @@ namespace PITCHR
             dbconn = new DBConn();
             investorsDA.SelectCommand.Connection = dbconn.dbConnection;
             investorsDA.SelectCommand.Parameters.Clear();
-            investorsDA.SelectCommand.Parameters.AddWithValue("@id", this.IdUsuario());
+            investorsDA.SelectCommand.Parameters.AddWithValue("@id", VerFundador ? _idFundador : this.IdUsuario());
             try
             {
                 investortable.Clear();
@@ -89,18 +110,35 @@ namespace PITCHR
             UsuarioLabel.Text = "@" + Convert.ToString(fila["user"]);
 
             string descripcion = Convert.ToString(fila["description"]);
-            DescripcionLabel.Text = string.IsNullOrWhiteSpace(descripcion)
-                ? "Aún no tienes descripción. Agrégala en \"Editar Perfil\"."
-                : descripcion;
+            if (string.IsNullOrWhiteSpace(descripcion))
+            {
+                descripcion = VerFundador
+                    ? "Este emprendedor aún no tiene descripción."
+                    : "Aún no tienes descripción. Agrégala en \"Editar Perfil\".";
+            }
+            DescripcionLabel.Text = descripcion;
 
             _foto = CargarImagen(Convert.ToString(fila["imageProfile"]));
             FotoPanel.Invalidate();
         }
 
         // ==================== BOTONES ====================
+        // En mi perfil es "Editar Perfil"; en el de un fundador es "Enviar Mensaje"
         private void EditarBoton_Click(object sender, EventArgs e)
         {
-            if (EditarPerfil != null) EditarPerfil(this, EventArgs.Empty);
+            if (!VerFundador)
+            {
+                if (EditarPerfil != null) EditarPerfil(this, EventArgs.Empty);
+                return;
+            }
+
+            // Igual que CONTACTAR en la página de producto: solo un inversionista puede escribirle al fundador
+            if (!Sesion.Activa || Sesion.Rol != 0)
+            {
+                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "PitchR");
+                return;
+            }
+            if (EnviarMensaje != null) EnviarMensaje(this, _idFundador);
         }
 
         private void RegresarBoton_Click(object sender, EventArgs e)
@@ -113,7 +151,8 @@ namespace PITCHR
 
         private void PrepararDiseno()
         {
-            HacerPildora(EditarBoton, AzulBoton);
+            if (VerFundador) EditarBoton.Text = "Enviar Mensaje";
+            HacerPildora(EditarBoton, VerFundador ? Naranja : AzulBoton);   // naranja para "Enviar Mensaje", como en el Figma
             ActivarDobleBuffer(TarjetaPanel);
             ActivarDobleBuffer(FotoPanel);
             TarjetaPanel.Paint += TarjetaPanel_Paint;
