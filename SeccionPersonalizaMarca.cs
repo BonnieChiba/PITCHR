@@ -413,7 +413,9 @@ namespace PITCHR
 
         private readonly Dictionary<Control, Rectangle> _posicionesOriginales = new Dictionary<Control, Rectangle>();
         private readonly Dictionary<Control, Font> _fuentesOriginales = new Dictionary<Control, Font>();
-        private float _escala = 1f;
+        private float _escala = 1f;      // para letras, bordes y esquinas (la menor de las dos)
+        private float _escalaX = 1f;     // a lo ancho: la sección se estira para llenar la ventana
+        private float _escalaY = 1f;     // a lo alto
         private float _margenX, _margenY;
 
         private const int EM_SETCUEBANNER = 0x1501;
@@ -513,9 +515,14 @@ namespace PITCHR
             Size cliente = ClientSize;
             if (cliente.Width < 50 || cliente.Height < 50) return;   // ventana minimizada
 
-            _escala = Math.Min(cliente.Width / AnchoFigma, cliente.Height / AltoFigma);
-            _margenX = (cliente.Width - AnchoFigma * _escala) / 2f;
-            _margenY = (cliente.Height - AltoFigma * _escala) / 2f;
+            // La sección se estira a lo ancho para aprovechar la ventana (hasta 1.4 veces más ancha que alta,
+            // para que no se deforme demasiado en pantallas muy anchas). Las letras usan la escala menor.
+            _escalaY = cliente.Height / AltoFigma;
+            _escalaX = Math.Min(cliente.Width / AnchoFigma, _escalaY * 1.4f);
+            if (_escalaX < _escalaY) _escalaY = Math.Max(_escalaX, Math.Min(_escalaY, _escalaX * 1.15f));
+            _escala = Math.Min(_escalaX, _escalaY);
+            _margenX = (cliente.Width - AnchoFigma * _escalaX) / 2f;
+            _margenY = (cliente.Height - AltoFigma * _escalaY) / 2f;
 
             SuspendLayout();
             BackgroundMarca.Bounds = new Rectangle(0, 0, cliente.Width, cliente.Height);
@@ -524,11 +531,12 @@ namespace PITCHR
                 Control c = par.Key;
                 Rectangle r = par.Value;
                 bool directo = c.Parent == BackgroundMarca;
+                bool cuadrado = c == RegresarBoton;   // el botón redondo no se estira
                 c.Bounds = new Rectangle(
-                    (int)Math.Round(r.X * _escala + (directo ? _margenX : 0)),
-                    (int)Math.Round(r.Y * _escala + (directo ? _margenY : 0)),
-                    (int)Math.Round(r.Width * _escala),
-                    (int)Math.Round(r.Height * _escala));
+                    (int)Math.Round(r.X * _escalaX + (directo ? _margenX : 0)),
+                    (int)Math.Round(r.Y * _escalaY + (directo ? _margenY : 0)),
+                    (int)Math.Round(r.Width * (cuadrado ? _escala : _escalaX)),
+                    (int)Math.Round(r.Height * (cuadrado ? _escala : _escalaY)));
                 c.Font = EscalarFuente(_fuentesOriginales[c], _escala);
             }
             // La lista de categorías se dibuja a mano: su alto sigue al tamaño de la letra
@@ -612,7 +620,7 @@ namespace PITCHR
             Graphics g = e.Graphics;
             Calidad(g);
             g.Clear(FondoPagina);
-            float k = _escala;
+            float k = _escala, kx = _escalaX, ky = _escalaY;
 
             RectangleF tarjeta = new RectangleF(1, 0, TarjetaPanel.Width - 3, TarjetaPanel.Height - 6 * k);
             for (int i = 6; i >= 1; i--)
@@ -632,11 +640,11 @@ namespace PITCHR
                 g.SetClip(ruta, CombineMode.Intersect);
                 // Columna derecha (productos) con fondo lila muy claro
                 using (SolidBrush b = new SolidBrush(FondoDerecha))
-                    g.FillRectangle(b, 495 * k, 60 * k, tarjeta.Width, tarjeta.Height);
+                    g.FillRectangle(b, 495 * kx, 60 * ky, tarjeta.Width, tarjeta.Height);
                 using (Pen linea = new Pen(LineaSuave, Math.Max(1f, 0.8f * k)))
                 {
-                    g.DrawLine(linea, 0, 60 * k, tarjeta.Width, 60 * k);
-                    g.DrawLine(linea, 495 * k, 60 * k, 495 * k, tarjeta.Height);
+                    g.DrawLine(linea, 0, 60 * ky, tarjeta.Width, 60 * ky);
+                    g.DrawLine(linea, 495 * kx, 60 * ky, 495 * kx, tarjeta.Height);
                 }
                 g.Clip = anterior;
 
@@ -645,22 +653,22 @@ namespace PITCHR
             }
 
             // Números de sección
-            Numero(g, "01", new RectangleF(24 * k, 75 * k, 24 * k, 24 * k), k);
-            Numero(g, "02", new RectangleF(24 * k, 298 * k, 24 * k, 24 * k), k);
-            Numero(g, "03", new RectangleF(519 * k, 75 * k, 24 * k, 24 * k), k);
+            Numero(g, "01", new RectangleF(24 * kx, 75 * ky, 24 * k, 24 * k), k);
+            Numero(g, "02", new RectangleF(24 * kx, 340 * ky, 24 * k, 24 * k), k);
+            Numero(g, "03", new RectangleF(519 * kx, 75 * ky, 24 * k, 24 * k), k);
 
             // Tarjetitas de los 3 productos
             float[] yProducto = { 110, 232, 354 };
             for (int i = 0; i < 3; i++)
             {
-                RectangleF caja = new RectangleF(519 * k, yProducto[i] * k, 534 * k, 112 * k);
+                RectangleF caja = new RectangleF(519 * kx, yProducto[i] * ky, 534 * kx, 112 * ky);
                 using (GraphicsPath p = Redondeado(caja, 7 * k))
                 using (Pen borde = new Pen(Color.FromArgb(228, 226, 236), Math.Max(1f, 0.8f * k)))
                 {
                     g.FillPath(Brushes.White, p);
                     g.DrawPath(borde, p);
                 }
-                Numero(g, "0" + (i + 1), new RectangleF(530 * k, (yProducto[i] + 11) * k, 30 * k, 30 * k), k);
+                Numero(g, "0" + (i + 1), new RectangleF(530 * kx, (yProducto[i] + 11) * ky, 30 * k, 30 * k), k);
             }
 
             // Caja de Categoría: mismo alto y estilo que la de "Nombre Emprendimiento", a su lado
@@ -843,9 +851,10 @@ namespace PITCHR
                 using (Pen anillo = new Pen(Color.FromArgb(64, 248, 245, 56), 9.6f * k))
                 {
                     float d = 70 * k, m = 4.8f * k;
-                    g.DrawEllipse(anillo, 376 * k + m, 4 * k + m, d - 2 * m, d - 2 * m);
-                    g.DrawEllipse(anillo, 306 * k + m, 40 * k + m, d - 2 * m, d - 2 * m);
-                    g.DrawEllipse(anillo, 376 * k + m, 84 * k + m, d - 2 * m, d - 2 * m);
+                    // anillos pegados a la derecha de la tarjeta (aunque se estire)
+                    g.DrawEllipse(anillo, r.Width - 70 * k + m, 4 * k + m, d - 2 * m, d - 2 * m);
+                    g.DrawEllipse(anillo, r.Width - 140 * k + m, 40 * k + m, d - 2 * m, d - 2 * m);
+                    g.DrawEllipse(anillo, r.Width - 70 * k + m, 84 * k + m, d - 2 * m, d - 2 * m);
                 }
                 g.Clip = anterior;
             }

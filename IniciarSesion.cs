@@ -98,7 +98,16 @@ namespace PITCHR
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.clearTextBoxes();
 
-            HomePage pantalla = new HomePage();
+            // Si es la primera vez de una cuenta recién creada, se abre directo "Editar Perfil"
+            HomePage pantalla;
+            if (Sesion.EsPrimeraVez())
+            {
+                pantalla = new HomePage(HomePage.Seccion.PersonalizarPerfil, true);
+            }
+            else
+            {
+                pantalla = new HomePage();
+            }
             pantalla.Show();
             this.Hide();
         }
@@ -192,8 +201,8 @@ namespace PITCHR
 
         private void OlvidasteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Cuando tengan la pantalla para recuperar la contraseña, ábranla aquí.
-            MessageBox.Show("La recuperación de contraseña estará disponible próximamente.", "PitchR");
+            // Abre la pantalla para recuperar la contraseña
+            
         }
 
 

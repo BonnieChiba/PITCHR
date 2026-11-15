@@ -27,6 +27,16 @@ namespace PITCHR
 
         /// <summary>Avisa a HomePage que se guardaron los cambios (para actualizar la foto de la barra).</summary>
         public event EventHandler PerfilActualizado;
+        public event EventHandler Omitido;   // botón "Omitir" (solo la primera vez, cuando la cuenta es nueva)
+
+        private bool _primeraVez;
+
+        // La primera vez el botón Cancelar se convierte en "Omitir" (para llenar el perfil después)
+        public void ModoPrimeraVez()
+        {
+            _primeraVez = true;
+            CancelarBoton.Text = "Omitir";
+        }
 
         public SeccionEditarPerfil()
         {
@@ -270,6 +280,13 @@ namespace PITCHR
         // Cancelar: descarta lo que no se guardó y vuelve a mostrar lo que hay en la base
         private void CancelarBoton_Click(object sender, EventArgs e)
         {
+            if (_primeraVez)
+            {
+                _primeraVez = false;
+                CancelarBoton.Text = "Cancelar";
+                if (Omitido != null) Omitido(this, EventArgs.Empty);
+                return;
+            }
             this.LoadData();
         }
 

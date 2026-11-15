@@ -135,7 +135,7 @@
             this.NombreLabel.BackColor = System.Drawing.Color.Transparent;
             this.NombreLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.NombreLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(91)))), ((int)(((byte)(106)))));
-            this.NombreLabel.Location = new System.Drawing.Point(24, 107);
+            this.NombreLabel.Location = new System.Drawing.Point(24, 112);
             this.NombreLabel.Name = "NombreLabel";
             this.NombreLabel.Size = new System.Drawing.Size(218, 16);
             this.NombreLabel.TabIndex = 4;
@@ -147,7 +147,7 @@
             this.BrandTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.BrandTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.BrandTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(40)))));
-            this.BrandTextBox.Location = new System.Drawing.Point(34, 133);
+            this.BrandTextBox.Location = new System.Drawing.Point(34, 140);
             this.BrandTextBox.Name = "BrandTextBox";
             this.BrandTextBox.Size = new System.Drawing.Size(198, 19);
             this.BrandTextBox.TabIndex = 5;
@@ -158,7 +158,7 @@
             this.CategoriaLabel.BackColor = System.Drawing.Color.Transparent;
             this.CategoriaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.CategoriaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(91)))), ((int)(((byte)(106)))));
-            this.CategoriaLabel.Location = new System.Drawing.Point(252, 107);
+            this.CategoriaLabel.Location = new System.Drawing.Point(252, 112);
             this.CategoriaLabel.Name = "CategoriaLabel";
             this.CategoriaLabel.Size = new System.Drawing.Size(218, 16);
             this.CategoriaLabel.TabIndex = 6;
@@ -180,7 +180,7 @@
             "Naturaleza",
             "Salud",
             "Startup"});
-            this.CategoryComboBox.Location = new System.Drawing.Point(262, 131);
+            this.CategoryComboBox.Location = new System.Drawing.Point(262, 138);
             this.CategoryComboBox.Name = "CategoryComboBox";
             this.CategoryComboBox.Size = new System.Drawing.Size(198, 21);
             this.CategoryComboBox.TabIndex = 7;
@@ -190,7 +190,7 @@
             this.DescCortaLabel.BackColor = System.Drawing.Color.Transparent;
             this.DescCortaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.DescCortaLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(91)))), ((int)(((byte)(106)))));
-            this.DescCortaLabel.Location = new System.Drawing.Point(24, 163);
+            this.DescCortaLabel.Location = new System.Drawing.Point(24, 180);
             this.DescCortaLabel.Name = "DescCortaLabel";
             this.DescCortaLabel.Size = new System.Drawing.Size(300, 16);
             this.DescCortaLabel.TabIndex = 8;
@@ -202,7 +202,7 @@
             this.ShortDescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ShortDescriptionTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.ShortDescriptionTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(40)))));
-            this.ShortDescriptionTextBox.Location = new System.Drawing.Point(34, 189);
+            this.ShortDescriptionTextBox.Location = new System.Drawing.Point(34, 208);
             this.ShortDescriptionTextBox.Name = "ShortDescriptionTextBox";
             this.ShortDescriptionTextBox.Size = new System.Drawing.Size(426, 19);
             this.ShortDescriptionTextBox.TabIndex = 9;
@@ -213,7 +213,7 @@
             this.DescripcionLabel.BackColor = System.Drawing.Color.Transparent;
             this.DescripcionLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.DescripcionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(91)))), ((int)(((byte)(106)))));
-            this.DescripcionLabel.Location = new System.Drawing.Point(24, 219);
+            this.DescripcionLabel.Location = new System.Drawing.Point(24, 248);
             this.DescripcionLabel.Name = "DescripcionLabel";
             this.DescripcionLabel.Size = new System.Drawing.Size(300, 16);
             this.DescripcionLabel.TabIndex = 10;
@@ -225,9 +225,9 @@
             this.DescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DescriptionTextBox.Font = new System.Drawing.Font("Plus Jakarta Sans", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DescriptionTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(40)))));
-            this.DescriptionTextBox.Location = new System.Drawing.Point(34, 244);
+            this.DescriptionTextBox.Location = new System.Drawing.Point(34, 276);
             this.DescriptionTextBox.Name = "DescriptionTextBox";
-            this.DescriptionTextBox.Size = new System.Drawing.Size(426, 38);
+            this.DescriptionTextBox.Size = new System.Drawing.Size(426, 40);
             this.DescriptionTextBox.TabIndex = 11;
             this.DescriptionTextBox.Tag = "Describe tu marca, su propósito y lo que la hace diferente...";
             this.DescriptionTextBox.Multiline = true;
@@ -237,7 +237,7 @@
             this.GaleriaLabel.BackColor = System.Drawing.Color.Transparent;
             this.GaleriaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.GaleriaLabel.ForeColor = System.Drawing.Color.Black;
-            this.GaleriaLabel.Location = new System.Drawing.Point(57, 297);
+            this.GaleriaLabel.Location = new System.Drawing.Point(57, 338);
             this.GaleriaLabel.Name = "GaleriaLabel";
             this.GaleriaLabel.Size = new System.Drawing.Size(300, 16);
             this.GaleriaLabel.TabIndex = 12;
@@ -249,7 +249,7 @@
             this.GaleriaSubLabel.BackColor = System.Drawing.Color.Transparent;
             this.GaleriaSubLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.GaleriaSubLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(112)))), ((int)(((byte)(125)))));
-            this.GaleriaSubLabel.Location = new System.Drawing.Point(57, 313);
+            this.GaleriaSubLabel.Location = new System.Drawing.Point(57, 354);
             this.GaleriaSubLabel.Name = "GaleriaSubLabel";
             this.GaleriaSubLabel.Size = new System.Drawing.Size(300, 14);
             this.GaleriaSubLabel.TabIndex = 13;
@@ -260,9 +260,9 @@
             // 
             this.ImageHomePanel.BackColor = System.Drawing.Color.Transparent;
             this.ImageHomePanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ImageHomePanel.Location = new System.Drawing.Point(24, 333);
+            this.ImageHomePanel.Location = new System.Drawing.Point(24, 376);
             this.ImageHomePanel.Name = "ImageHomePanel";
-            this.ImageHomePanel.Size = new System.Drawing.Size(174, 49);
+            this.ImageHomePanel.Size = new System.Drawing.Size(174, 56);
             this.ImageHomePanel.TabIndex = 14;
             this.ImageHomePanel.Click += new System.EventHandler(this.ElegirImagen_Click);
             // 
@@ -270,9 +270,9 @@
             // 
             this.Image2Panel.BackColor = System.Drawing.Color.Transparent;
             this.Image2Panel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Image2Panel.Location = new System.Drawing.Point(205, 333);
+            this.Image2Panel.Location = new System.Drawing.Point(205, 376);
             this.Image2Panel.Name = "Image2Panel";
-            this.Image2Panel.Size = new System.Drawing.Size(129, 49);
+            this.Image2Panel.Size = new System.Drawing.Size(129, 56);
             this.Image2Panel.TabIndex = 15;
             this.Image2Panel.Click += new System.EventHandler(this.ElegirImagen_Click);
             // 
@@ -280,9 +280,9 @@
             // 
             this.Image3Panel.BackColor = System.Drawing.Color.Transparent;
             this.Image3Panel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Image3Panel.Location = new System.Drawing.Point(341, 333);
+            this.Image3Panel.Location = new System.Drawing.Point(341, 376);
             this.Image3Panel.Name = "Image3Panel";
-            this.Image3Panel.Size = new System.Drawing.Size(129, 49);
+            this.Image3Panel.Size = new System.Drawing.Size(129, 56);
             this.Image3Panel.TabIndex = 16;
             this.Image3Panel.Click += new System.EventHandler(this.ElegirImagen_Click);
             // 
@@ -291,7 +291,7 @@
             this.CuentaActivaLabel.BackColor = System.Drawing.Color.Transparent;
             this.CuentaActivaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.CuentaActivaLabel.ForeColor = System.Drawing.Color.White;
-            this.CuentaActivaLabel.Location = new System.Drawing.Point(16, 52);
+            this.CuentaActivaLabel.Location = new System.Drawing.Point(16, 24);
             this.CuentaActivaLabel.Name = "CuentaActivaLabel";
             this.CuentaActivaLabel.Size = new System.Drawing.Size(260, 18);
             this.CuentaActivaLabel.TabIndex = 0;
@@ -303,7 +303,7 @@
             this.TipoCuentaLabel.BackColor = System.Drawing.Color.Transparent;
             this.TipoCuentaLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.TipoCuentaLabel.ForeColor = System.Drawing.Color.White;
-            this.TipoCuentaLabel.Location = new System.Drawing.Point(13, 72);
+            this.TipoCuentaLabel.Location = new System.Drawing.Point(13, 44);
             this.TipoCuentaLabel.Name = "TipoCuentaLabel";
             this.TipoCuentaLabel.Size = new System.Drawing.Size(300, 34);
             this.TipoCuentaLabel.TabIndex = 1;
@@ -315,9 +315,9 @@
             this.CuentaActivaPanel.BackColor = System.Drawing.Color.White;
             this.CuentaActivaPanel.Controls.Add(this.TipoCuentaLabel);
             this.CuentaActivaPanel.Controls.Add(this.CuentaActivaLabel);
-            this.CuentaActivaPanel.Location = new System.Drawing.Point(24, 403);
+            this.CuentaActivaPanel.Location = new System.Drawing.Point(24, 452);
             this.CuentaActivaPanel.Name = "CuentaActivaPanel";
-            this.CuentaActivaPanel.Size = new System.Drawing.Size(446, 144);
+            this.CuentaActivaPanel.Size = new System.Drawing.Size(446, 95);
             this.CuentaActivaPanel.TabIndex = 17;
             // 
             // ProductosLabel

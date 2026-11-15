@@ -123,6 +123,7 @@ namespace PITCHR
                     investortable.Clear();
                     investorsDA.Fill(investortable);
                     maxID = Convert.ToInt32(investortable.Compute("MAX(idInvestor)", ""));
+                    Sesion.GuardarCuentaNueva(maxID, this.role);   // al iniciar sesión lo manda a editar su perfil
 
                     this.clearTextBoxes();
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);

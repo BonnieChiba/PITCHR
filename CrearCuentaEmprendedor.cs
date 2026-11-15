@@ -124,6 +124,7 @@ namespace PITCHR
                     entrepreneurtable.Clear();
                     entrepreneursDA.Fill(entrepreneurtable);
                     maxID = Convert.ToInt32(entrepreneurtable.Compute("MAX(idEntrepreneur)", ""));
+                    Sesion.GuardarCuentaNueva(maxID, this.role);   // al iniciar sesión lo manda a editar su perfil
 
                     this.clearTextBoxes();
                     MessageBox.Show("Registro insertado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);

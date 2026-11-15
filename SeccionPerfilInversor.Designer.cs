@@ -68,9 +68,9 @@
             this.NombreLabel.AutoEllipsis = true;
             this.NombreLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 46F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.NombreLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(96)))), ((int)(((byte)(214)))));
-            this.NombreLabel.Location = new System.Drawing.Point(10, 296);
+            this.NombreLabel.Location = new System.Drawing.Point(10, 292);
             this.NombreLabel.Name = "NombreLabel";
-            this.NombreLabel.Size = new System.Drawing.Size(550, 62);
+            this.NombreLabel.Size = new System.Drawing.Size(550, 64);
             this.NombreLabel.TabIndex = 2;
             this.NombreLabel.Text = "NOMBRE APELLIDO";
             this.NombreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -80,9 +80,9 @@
             this.UsuarioLabel.BackColor = System.Drawing.Color.Transparent;
             this.UsuarioLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.UsuarioLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.UsuarioLabel.Location = new System.Drawing.Point(10, 358);
+            this.UsuarioLabel.Location = new System.Drawing.Point(10, 356);
             this.UsuarioLabel.Name = "UsuarioLabel";
-            this.UsuarioLabel.Size = new System.Drawing.Size(550, 36);
+            this.UsuarioLabel.Size = new System.Drawing.Size(550, 46);
             this.UsuarioLabel.TabIndex = 3;
             this.UsuarioLabel.Text = "@usuario";
             this.UsuarioLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -92,9 +92,9 @@
             this.DescripcionLabel.BackColor = System.Drawing.Color.Transparent;
             this.DescripcionLabel.Font = new System.Drawing.Font("Plus Jakarta Sans", 19F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DescripcionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.DescripcionLabel.Location = new System.Drawing.Point(50, 402);
+            this.DescripcionLabel.Location = new System.Drawing.Point(50, 406);
             this.DescripcionLabel.Name = "DescripcionLabel";
-            this.DescripcionLabel.Size = new System.Drawing.Size(470, 168);
+            this.DescripcionLabel.Size = new System.Drawing.Size(470, 164);
             this.DescripcionLabel.TabIndex = 4;
             this.DescripcionLabel.Text = "Aquí va la descripción del perfil.";
             this.DescripcionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;

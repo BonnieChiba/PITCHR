@@ -25,6 +25,15 @@ namespace PITCHR
         {
         }
 
+        // true cuando la cuenta se acaba de crear: después de guardar el perfil,
+        // el emprendedor pasa a crear su primera marca y el inversor a Emprendimientos.
+        private bool _primeraVez;
+
+        public HomePage(Seccion seccionInicial, bool primeraVez) : this(seccionInicial)
+        {
+            _primeraVez = primeraVez;
+        }
+
         public HomePage(Seccion seccionInicial)
         {
             InitializeComponent();
@@ -207,6 +216,9 @@ namespace PITCHR
                 case Seccion.PersonalizarPerfil:   // Editar Perfil (se abre desde Ver Perfil)
                     SeccionEditarPerfil editar = new SeccionEditarPerfil();
                     editar.PerfilActualizado += (s, e) => CargarFotoPerfil();
+                    editar.PerfilActualizado += (s, e) => SiguientePasoPrimeraVez();
+                    editar.Omitido += (s, e) => SiguientePasoPrimeraVez();
+                    if (_primeraVez) editar.ModoPrimeraVez();   // "Cancelar" cambia a "Omitir"
                     return editar;
 
                 case Seccion.MisMarcas:
@@ -225,6 +237,31 @@ namespace PITCHR
                     perfil.Regresar += (s, e) => MostrarSeccion(Seccion.Emprendimientos);
                     perfil.EditarPerfil += (s, e) => MostrarSeccion(Seccion.PersonalizarPerfil);
                     return perfil;
+            }
+        }
+
+        // Primera vez: después de guardar el perfil
+        private void SiguientePasoPrimeraVez()
+        {
+            if (!_primeraVez) return;
+            _primeraVez = false;
+
+            if (Sesion.Rol == 1)
+            {
+                DialogResult respuesta = MessageBox.Show("¿Quieres crear tu primera marca ahora?\nSi eliges No, puedes hacerlo después desde Mis Marcas.",
+                    "PitchR", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (respuesta == DialogResult.Yes)
+                {
+                    this.AbrirEditarMarca(0);   // 0 = marca nueva
+                }
+                else
+                {
+                    this.MostrarSeccion(Seccion.Emprendimientos);   // omitió la marca
+                }
+            }
+            else
+            {
+                this.MostrarSeccion(Seccion.Emprendimientos);
             }
         }
 
