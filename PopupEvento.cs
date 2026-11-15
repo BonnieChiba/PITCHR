@@ -21,7 +21,7 @@ namespace PITCHR
 
         private readonly Evento _evento;
         private readonly float _k;
-        private readonly BotonCircular _botonRegresar;
+        private readonly PictureBox _botonRegresar;
         private bool _corazonEncima;
 
         /// <summary>Se dispara al marcar o desmarcar el evento como favorito.</summary>
@@ -43,11 +43,15 @@ namespace PITCHR
             using (GraphicsPath ruta = CarruselEventos.Redondeado(new RectangleF(0, 0, ClientSize.Width, ClientSize.Height), 22 * _k))
                 Region = new Region(ruta);
 
-            _botonRegresar = new BotonCircular
+            // El mismo botón de regresar de Iniciar sesión y Crear cuenta (PictureBox transparente)
+            _botonRegresar = new PictureBox
             {
-                Icono = BotonCircular.Iconos.Regresar,
+                BackColor = Color.Transparent,
                 Bounds = new Rectangle((int)(42 * _k), (int)(558 * _k), (int)(BotonCircular.TamanoRegresar * _k), (int)(BotonCircular.TamanoRegresar * _k))
             };
+            // Usa la imagen del botón de regresar guardada en el .resx de Iniciar sesión
+            BotonCircular.PonerImagenRegresar(_botonRegresar);   // la imagen del botón de Iniciar sesión
+            BotonCircular.HacerBotonRegresar(_botonRegresar);
             _botonRegresar.Click += (s, e) => Close();
             Controls.Add(_botonRegresar);
         }

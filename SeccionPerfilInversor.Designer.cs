@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.RegresarBoton = new System.Windows.Forms.Button();
+            this.RegresarBoton = new System.Windows.Forms.PictureBox();
             this.FotoPanel = new System.Windows.Forms.Panel();
             this.NombreLabel = new System.Windows.Forms.Label();
             this.UsuarioLabel = new System.Windows.Forms.Label();
@@ -37,6 +37,7 @@
             this.TarjetaPanel = new System.Windows.Forms.Panel();
             this.FondoPanel = new System.Windows.Forms.Panel();
             this.FotoPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegresarBoton)).BeginInit();
             this.TarjetaPanel.SuspendLayout();
             this.FondoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -45,18 +46,12 @@
             // 
             this.RegresarBoton.BackColor = System.Drawing.Color.Transparent;
             this.RegresarBoton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.RegresarBoton.FlatAppearance.BorderSize = 0;
-            this.RegresarBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.RegresarBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.RegresarBoton.ForeColor = System.Drawing.Color.White;
+            this.RegresarBoton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.RegresarBoton.Location = new System.Drawing.Point(28, 28);
             this.RegresarBoton.Name = "RegresarBoton";
             this.RegresarBoton.Size = new System.Drawing.Size(52, 52);
             this.RegresarBoton.TabIndex = 0;
-            this.RegresarBoton.Text = "";
-            this.RegresarBoton.UseVisualStyleBackColor = false;
+            this.RegresarBoton.TabStop = false;
             this.RegresarBoton.Click += new System.EventHandler(this.RegresarBoton_Click);
             // 
             // FotoPanel
@@ -159,13 +154,14 @@
             this.TarjetaPanel.PerformLayout();
             this.FondoPanel.ResumeLayout(false);
             this.FondoPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegresarBoton)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button RegresarBoton;
+        private System.Windows.Forms.PictureBox RegresarBoton;
         private System.Windows.Forms.Panel FotoPanel;
         private System.Windows.Forms.Label NombreLabel;
         private System.Windows.Forms.Label UsuarioLabel;

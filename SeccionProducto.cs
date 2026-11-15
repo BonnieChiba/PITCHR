@@ -227,7 +227,8 @@ namespace PITCHR
             SobrePanel.Paint += SobrePanel_Paint;
             GaleriaPanel.Paint += GaleriaPanel_Paint;
             FundadorPanel.Paint += FundadorPanel_Paint;
-            BotonCircular.HacerBotonRegresar(RegresarBoton, GrisFranja);
+            BotonCircular.PonerImagenRegresar(RegresarBoton);   // la imagen del botón de Iniciar sesión
+            BotonCircular.HacerBotonRegresar(RegresarBoton);   // el mismo botón de regresar de Iniciar sesión y Crear cuenta
             FlechaIzquierdaBoton.Paint += Flecha_Paint;
             FlechaDerechaBoton.Paint += Flecha_Paint;
             foreach (Button b in new[] { FlechaIzquierdaBoton, FlechaDerechaBoton })

@@ -192,7 +192,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1280, 828);
+            this.ClientSize = new System.Drawing.Size(1280, 832);
             this.Controls.Add(this.IniciarSesionLink);
             this.Controls.Add(this.YaTienesCuentaLabel);
             this.Controls.Add(this.RegresarPictureBox);
@@ -200,10 +200,11 @@
             this.Controls.Add(this.InversorPanel);
             this.Controls.Add(this.EnfoqueLabel);
             this.Controls.Add(this.TituloLabel);
-            this.MinimumSize = new System.Drawing.Size(660, 460);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "IniciaAqui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PitchR";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.IniciaAqui_FormClosed);
             this.InversorPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.InversorPictureBox)).EndInit();

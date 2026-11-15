@@ -124,13 +124,34 @@ namespace PITCHR
         }
 
         /// <summary>
+        /// Le pone a un PictureBox la imagen del botón de regresar de Iniciar sesión (está en IniciarSesion.resx).
+        /// Así todas las pantallas usan exactamente el mismo botón sin necesitar la imagen en su propio .resx.
+        /// </summary>
+        public static void PonerImagenRegresar(PictureBox foto)
+        {
+            try
+            {
+                var recursos = new System.ComponentModel.ComponentResourceManager(typeof(IniciarSesion));
+                foto.Image = (Image)recursos.GetObject("RegresarPictureBox.Image");
+                foto.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+            catch (Exception)
+            {
+                // si no se encuentra, HacerBotonRegresar lo dibuja con código
+            }
+        }
+
+        /// <summary>
         /// Convierte cualquier control (PictureBox o Button) en el botón de regresar de Pitcher:
         /// quita su imagen/estilo propio, lo dibuja con DibujarRegresar y le pone efecto al pasar el mouse.
         /// </summary>
         public static void HacerBotonRegresar(Control control, Color fondo = default(Color))
         {
+            // Si el PictureBox ya trae la imagen del botón (la del Figma, guardada en el .resx de su pantalla),
+            // se usa esa imagen tal cual, como en Iniciar sesión. Si no trae imagen, se dibuja con código.
             PictureBox foto = control as PictureBox;
-            if (foto != null) foto.Image = null;
+            bool conImagen = foto != null && foto.Image != null;
+            if (conImagen) foto.SizeMode = PictureBoxSizeMode.Zoom;
             Button boton = control as Button;
             if (boton != null)
             {
@@ -164,6 +185,10 @@ namespace PITCHR
                     if (detras.A < 255) detras = Color.White;
                     e.Graphics.Clear(detras);
                 }
+
+                // Si trae la imagen del Figma, se deja tal cual (sin sombreado al pasar el mouse;
+                // solo cambia a la manita), igual que el botón original de Iniciar sesión.
+                if (conImagen) return;
                 DibujarRegresar(e.Graphics, control.ClientRectangle, encima);
             };
         }

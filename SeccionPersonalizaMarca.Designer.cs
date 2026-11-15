@@ -64,12 +64,13 @@
             this.CancelarBoton = new System.Windows.Forms.Button();
             this.GuardarBoton = new System.Windows.Forms.Button();
             this.TarjetaPanel = new System.Windows.Forms.Panel();
-            this.RegresarBoton = new System.Windows.Forms.Button();
+            this.RegresarBoton = new System.Windows.Forms.PictureBox();
             this.EmprendimientoLabel = new System.Windows.Forms.Label();
             this.TituloLabel = new System.Windows.Forms.Label();
             this.SubtituloLabel = new System.Windows.Forms.Label();
             this.BackgroundMarca = new System.Windows.Forms.Panel();
             this.ImageHomePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RegresarBoton)).BeginInit();
             this.Image2Panel.SuspendLayout();
             this.Image3Panel.SuspendLayout();
             this.CuentaActivaPanel.SuspendLayout();
@@ -543,18 +544,12 @@
             // 
             this.RegresarBoton.BackColor = System.Drawing.Color.Transparent;
             this.RegresarBoton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.RegresarBoton.FlatAppearance.BorderSize = 0;
-            this.RegresarBoton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.RegresarBoton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.RegresarBoton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RegresarBoton.Font = new System.Drawing.Font("Plus Jakarta Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.RegresarBoton.ForeColor = System.Drawing.Color.White;
+            this.RegresarBoton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.RegresarBoton.Location = new System.Drawing.Point(91, 19);
             this.RegresarBoton.Name = "RegresarBoton";
             this.RegresarBoton.Size = new System.Drawing.Size(52, 52);
             this.RegresarBoton.TabIndex = 3;
-            this.RegresarBoton.Text = "";
-            this.RegresarBoton.UseVisualStyleBackColor = false;
+            this.RegresarBoton.TabStop = false;
             this.RegresarBoton.Click += new System.EventHandler(this.RegresarBoton_Click);
             // 
             // EmprendimientoLabel
@@ -637,6 +632,7 @@
             this.BackgroundMarca.ResumeLayout(false);
             this.BackgroundMarca.PerformLayout();
 
+            ((System.ComponentModel.ISupportInitialize)(this.RegresarBoton)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -678,7 +674,7 @@
         private System.Windows.Forms.Button CancelarBoton;
         private System.Windows.Forms.Button GuardarBoton;
         private System.Windows.Forms.Panel TarjetaPanel;
-        private System.Windows.Forms.Button RegresarBoton;
+        private System.Windows.Forms.PictureBox RegresarBoton;
         private System.Windows.Forms.Label EmprendimientoLabel;
         private System.Windows.Forms.Label TituloLabel;
         private System.Windows.Forms.Label SubtituloLabel;

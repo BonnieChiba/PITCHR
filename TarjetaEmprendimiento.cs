@@ -175,7 +175,11 @@ namespace PITCHR
                     TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
 
                 float yDesc = rTitulo.Bottom + (_forma == Formas.Vertical ? 8 : 14) * k;
-                float altoDesc = (_forma == Formas.Vertical ? 46 : 70) * k;
+                // La descripción ocupa renglones COMPLETOS (2 en la tarjeta vertical, 3 en la horizontal);
+                // lo que no cabe termina en "…" en vez de verse cortado a la mitad del renglón.
+                int renglones = _forma == Formas.Vertical ? 2 : 3;
+                int altoRenglon = TextRenderer.MeasureText(g, "Bgjy", fDesc, Size.Empty, TextFormatFlags.NoPadding).Height;
+                float altoDesc = renglones * altoRenglon;
                 Rectangle rDesc = Rectangle.Round(new RectangleF(textos.X, yDesc, textos.Width, altoDesc));
                 TextRenderer.DrawText(g, _descripcion, fDesc, rDesc, Color.FromArgb(30, 30, 30),
                     TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);

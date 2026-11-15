@@ -157,7 +157,8 @@ namespace PITCHR
             ActivarDobleBuffer(FotoPanel);
             TarjetaPanel.Paint += TarjetaPanel_Paint;
             FotoPanel.Paint += FotoPanel_Paint;
-            BotonCircular.HacerBotonRegresar(RegresarBoton, Color.White);
+            BotonCircular.PonerImagenRegresar(RegresarBoton);   // la imagen del botón de Iniciar sesión
+            BotonCircular.HacerBotonRegresar(RegresarBoton);   // el mismo botón de regresar de Iniciar sesión y Crear cuenta
             PrepararEscalado(FondoPanel);
         }
 

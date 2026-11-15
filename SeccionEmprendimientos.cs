@@ -374,6 +374,7 @@ namespace PITCHR
 
             // Texto guía del buscador (viene de la propiedad Tag)
             BuscarTextBox.HandleCreated += (s, e) => PonerTextoGuia(BuscarTextBox);
+            BuscarTextBox.AutoSize = false;   // su alto lo decide AjustarATamano (así "Buscar" no se corta abajo)
             BuscarTextBox.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; AplicarBusquedaYFiltro(); } };
 
             // Eventos del diseño: se conectan aquí (no en el diseñador) para que Visual Studio no los borre.
@@ -522,6 +523,15 @@ namespace PITCHR
                                          (int)Math.Round(r.Width * _escala), (int)Math.Round(r.Height * _escala));
                 if (!(c is TarjetaEmprendimiento)) c.Font = EscalarFuente(_fuentesOriginales[c], _escala);
             }
+            // Buscador: la letra se centra dentro de la píldora gris (va de y = 2 a y = 55 del diseño)
+            // y el cuadro de texto termina antes del borde azul de abajo, para no taparlo.
+            int altoLetra = TextRenderer.MeasureText("Bgjy", BuscarTextBox.Font).Height;
+            float pildoraArriba = 2 * _escala, pildoraAbajo = 55 * _escala;
+            int arriba = (int)Math.Round(pildoraArriba + (pildoraAbajo - pildoraArriba - altoLetra) / 2f);
+            int abajo = (int)Math.Floor(pildoraAbajo - 3 * _escala);   // deja libre el borde azul
+            BuscarTextBox.Top = arriba;
+            BuscarTextBox.Height = Math.Max(1, Math.Min(abajo - arriba, Math.Max(altoLetra, abajo - arriba)));
+
             Contenido.Bounds = new Rectangle(AutoScrollPosition.X, AutoScrollPosition.Y,
                                              (int)Math.Round(AnchoFigma * _escala), (int)Math.Round(altoDiseno * _escala));
             Contenido.ResumeLayout(true);

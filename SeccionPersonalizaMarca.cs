@@ -451,7 +451,8 @@ namespace PITCHR
                 b.MouseEnter += (s, e) => b.Invalidate();
                 b.MouseLeave += (s, e) => b.Invalidate();
             }
-            BotonCircular.HacerBotonRegresar(RegresarBoton, FondoFranja);   // el mismo botón de regresar de toda la app
+            BotonCircular.PonerImagenRegresar(RegresarBoton);   // la imagen del botón de Iniciar sesión
+            BotonCircular.HacerBotonRegresar(RegresarBoton);   // el mismo botón de regresar de Iniciar sesión y Crear cuenta
 
             // Lista de categorías: se dibuja a mano para mostrar "Elige una categoría" cuando está vacía
             CategoryComboBox.DrawMode = DrawMode.OwnerDrawFixed;
@@ -532,8 +533,38 @@ namespace PITCHR
             }
             // La lista de categorías se dibuja a mano: su alto sigue al tamaño de la letra
             CategoryComboBox.ItemHeight = Math.Max(10, (int)Math.Round(19 * _escala));
+            this.EvitarTextosCortados();
             ResumeLayout(true);
             BackgroundMarca.Invalidate(true);
+        }
+
+        /// <summary>
+        /// La letra Plus Jakarta Sans es un poco más alta de lo que Windows calcula, y al escalar
+        /// los textos se cortaban por abajo. Aquí cada Label y cada caja de texto se hace del alto
+        /// que su letra necesita de verdad (la caja redondeada de atrás crece con ella).
+        /// </summary>
+        private void EvitarTextosCortados()
+        {
+            foreach (Control c in _posicionesOriginales.Keys)
+            {
+                Label etiqueta = c as Label;
+                if (etiqueta != null && !string.IsNullOrEmpty(etiqueta.Text))
+                {
+                    int alto = TextRenderer.MeasureText(etiqueta.Text, etiqueta.Font, new Size(Math.Max(1, etiqueta.Width), int.MaxValue),
+                        TextFormatFlags.WordBreak).Height;
+                    if (etiqueta.Height < alto) etiqueta.Height = alto;
+                    continue;
+                }
+
+                TextBox caja = c as TextBox;
+                if (caja == null) continue;
+                int renglon = TextRenderer.MeasureText("Bgjy", caja.Font).Height;
+                int necesario = caja.Multiline
+                    ? renglon * 2 + (int)Math.Ceiling(4 * _escala)    // Descripción: 2 renglones completos (lo demás con scroll)
+                    : renglon + (int)Math.Ceiling(2 * _escala);       // una sola línea
+                caja.AutoSize = false;
+                if (caja.Height < necesario) caja.Height = necesario;
+            }
         }
 
         private static readonly Dictionary<string, Font> CacheFuentes = new Dictionary<string, Font>();
