@@ -201,8 +201,10 @@ namespace PITCHR
 
         private void OlvidasteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Abre la pantalla para recuperar la contraseña
-            
+            RecuperarContrasena Pantalla = new RecuperarContrasena();
+            Pantalla.Show();
+            this.Hide();
+
         }
 
 

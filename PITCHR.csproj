@@ -118,6 +118,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecuperarContrasena.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecuperarContrasena.Designer.cs">
+      <DependentUpon>RecuperarContrasena.cs</DependentUpon>
+    </Compile>
     <Compile Include="SeccionEmprendimientos.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,8 +188,14 @@
     </Compile>
     <Compile Include="TarjetaEmprendimiento.cs" />
     <Compile Include="TarjetaNoticia.cs" />
+    <EmbeddedResource Include="RecuperarContrasena.resx">
+      <DependentUpon>RecuperarContrasena.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SeccionMensajes.resx">
       <DependentUpon>SeccionMensajes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SeccionPerfilInversor.resx">
+      <DependentUpon>SeccionPerfilInversor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SeccionPersonalizaMarca.resx">
       <DependentUpon>SeccionPersonalizaMarca.cs</DependentUpon>
