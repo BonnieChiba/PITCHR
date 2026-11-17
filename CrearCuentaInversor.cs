@@ -407,6 +407,8 @@ namespace PITCHR
             RegistrarseBoton.Paint += RegistrarseBoton_Paint;
             TerminosCheckbox.Paint += TerminosCheckbox_Paint;
             TerminosCheckbox.CheckedChanged += TerminosCheckbox_CheckedChanged;
+            // "ver Terminos y condiciones": abre el popup; si presiona "Aceptar" se marca la casilla
+            TerminosLink.LinkClicked += (s, e) => { if (PopupTerminos.Mostrar(this)) TerminosCheckbox.Checked = true; };
             Resize += CrearCuentaInversor_Resize;
 
             // Se guardan las posiciones y fuentes del diseñador (1280 × 832) para escalarlas después.

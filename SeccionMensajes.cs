@@ -530,8 +530,13 @@ namespace PITCHR
             ChatPanel.Bounds = new Rectangle(ChatPanel.Left, ChatPanel.Top, derecha - ChatPanel.Left, (int)(_caja.Y - 38 * k) - ChatPanel.Top);
             SinChatLabel.Bounds = ChatPanel.Bounds;
             EnviarBoton.Location = new Point((int)Math.Round(_caja.Right - 52 * k), (int)Math.Round(_caja.Y + 4 * k));
-            MensajeTextBox.Bounds = new Rectangle((int)Math.Round(_caja.X + 30 * k), (int)Math.Round(_caja.Y + (_caja.Height - MensajeTextBox.Height) / 2f),
-                (int)Math.Round(_caja.Width - 30 * k - 62 * k), MensajeTextBox.Height);
+            // Plus Jakarta Sans dibuja la "g", "p", "y" más abajo de lo que dice su alto: la caja se hace un poco más alta
+            // (sin AutoSize) para que no se corten, y se centra según el alto de la letra, no el de la caja.
+            MensajeTextBox.AutoSize = false;
+            int altoLetra = MensajeTextBox.Font.Height;
+            int altoCaja = altoLetra + (int)Math.Ceiling(MensajeTextBox.Font.Size * 0.4f);
+            MensajeTextBox.Bounds = new Rectangle((int)Math.Round(_caja.X + 30 * k), (int)Math.Round(_caja.Y + (_caja.Height - altoLetra) / 2f),
+                (int)Math.Round(_caja.Width - 30 * k - 62 * k), altoCaja);
             EditandoLabel.Location = new Point((int)Math.Round(_caja.X + 23 * k), (int)Math.Round(_caja.Y - 32 * k));
 
             // "Mensajes" en 70 px; si en esta computadora la fuente es más ancha, se achica hasta que quepa

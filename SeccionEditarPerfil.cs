@@ -322,13 +322,33 @@ namespace PITCHR
             FotoPanel.MouseLeave += (s, e) => FotoPanel.Invalidate();
 
             PrepararEscalado(FondoPanel);
+            // Va después de PrepararEscalado para correr ya que la base acomodó y escaló todo
+            Resize += (s, e) => AgrandarCajas();
+            Load += (s, e) => AgrandarCajas();
         }
 
-        // Recuadro redondeado alrededor de cada TextBox (el TextBox no tiene borde)
+        // Plus Jakarta Sans dibuja la "g", "p", "y" más abajo de lo que dice su alto y el TextBox de un
+        // renglón las corta. Se le quita el AutoSize y se hace un poco más alto (el recuadro no cambia).
+        private void AgrandarCajas()
+        {
+            foreach (Control control in TarjetaPanel.Controls)
+            {
+                TextBox caja = control as TextBox;
+                if (caja == null || caja.Multiline) continue;
+                caja.AutoSize = false;
+                caja.Height = caja.Font.Height + (int)Math.Ceiling(caja.Font.Size * 0.4f);
+            }
+            TarjetaPanel.Invalidate();
+        }
+
+        // Recuadro redondeado alrededor de cada TextBox (el TextBox no tiene borde).
+        // En los de un renglón se usa el alto de la letra, no el del TextBox (que es más alto para las colitas).
         private RectangleF Caja(Control campo)
         {
             float k = Escala;
-            return new RectangleF(campo.Left - 14 * k, campo.Top - 10 * k, campo.Width + 28 * k, campo.Height + 20 * k);
+            TextBox caja = campo as TextBox;
+            int alto = caja != null && !caja.Multiline ? caja.Font.Height : campo.Height;
+            return new RectangleF(campo.Left - 14 * k, campo.Top - 10 * k, campo.Width + 28 * k, alto + 20 * k);
         }
 
         /// <summary>Tarjeta blanca con encabezado gris y los recuadros de los campos.</summary>
