@@ -102,6 +102,17 @@ namespace PITCHR
             Invalidate();
         }
 
+        /// <summary>Pone al centro (sin animación) el evento con ese Id.</summary>
+        public void CentrarEn(int idEvento)
+        {
+            int indice = _eventos.FindIndex(ev => ev.Id == idEvento);
+            if (indice < 0) return;
+            _animacion.Stop();
+            _desplazamiento = _destino = indice * Paso;
+            if (_avanceAutomatico.Enabled) { _avanceAutomatico.Stop(); _avanceAutomatico.Start(); }
+            Invalidate();
+        }
+
         /// <summary>Mueve el carrusel una o más tarjetas (positivo = a la derecha).</summary>
         public void Mover(int tarjetas)
         {

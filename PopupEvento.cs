@@ -54,6 +54,88 @@ namespace PITCHR
             BotonCircular.HacerBotonRegresar(_botonRegresar);
             _botonRegresar.Click += (s, e) => Close();
             Controls.Add(_botonRegresar);
+
+            // Nombre, descripción, fecha y horario van en una zona desplazable:
+            // si la descripción es larga aparece la barra (o se usa la rueda del mouse) en vez de cortarse.
+            _desplazable = new PopupTerminos.PanelDesplazable
+            {
+                AutoScroll = true,
+                BackColor = Color.White,
+                Bounds = Rectangle.Round(new RectangleF(30 * _k, 318 * _k, 488 * _k, 228 * _k))
+            };
+            int ancho = _desplazable.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+            _desplazable.Controls.Add(new TextoEvento(_evento, _k, ancho));
+            _desplazable.MouseEnter += (s, e) => _desplazable.Focus();
+            Controls.Add(_desplazable);
+            Shown += (s, e) => _desplazable.Focus();
+        }
+
+        private readonly PopupTerminos.PanelDesplazable _desplazable;
+
+        /// <summary>Dibuja nombre, descripción, fecha y horario del evento. Su alto es el de todo el texto.</summary>
+        private class TextoEvento : Control
+        {
+            private readonly Evento _evento;
+            private readonly float _k;
+            private readonly Font _fTitulo, _fDescripcion, _fFecha;
+            private readonly string _descripcion;
+            private int _altoTitulo, _altoDescripcion, _altoFecha;
+
+            private const TextFormatFlags Centrado = TextFormatFlags.HorizontalCenter | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.NoPadding;
+            private const TextFormatFlags Parrafo = TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.NoPadding;
+
+            public TextoEvento(Evento evento, float k, int ancho)
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+                BackColor = Color.White;
+                _evento = evento;
+                _k = k;
+                _fTitulo = CarruselEventos.Fuente(38 * k, FontStyle.Bold);
+                _fDescripcion = CarruselEventos.Fuente(19 * k, FontStyle.Regular);
+                _fFecha = CarruselEventos.Fuente(23 * k, FontStyle.Bold);
+                _descripcion = string.IsNullOrWhiteSpace(evento.DescripcionCompleta) ? evento.Descripcion : evento.DescripcionCompleta;
+
+                _altoTitulo = TextRenderer.MeasureText(evento.Nombre ?? "", _fTitulo, new Size(ancho, 0), Centrado).Height;
+                _altoDescripcion = TextRenderer.MeasureText(_descripcion ?? "", _fDescripcion, new Size(AnchoDescripcion(ancho), 0), Parrafo).Height;
+                _altoFecha = TextRenderer.MeasureText("Bgjy", _fFecha, Size.Empty, Centrado).Height;
+                Size = new Size(ancho, Posiciones(out _, out _, out _));
+            }
+
+            private int AnchoDescripcion(int ancho) { return ancho - (int)(60 * _k); }
+
+            // Calcula dónde va cada texto y regresa el alto total
+            private int Posiciones(out int yDescripcion, out int yFecha, out int yHorario)
+            {
+                yDescripcion = (int)(_altoTitulo + 8 * _k);
+                yFecha = (int)(yDescripcion + _altoDescripcion + 12 * _k);
+                yHorario = (int)(yFecha + _altoFecha + 14 * _k);
+                bool conHorario = !string.IsNullOrWhiteSpace(_evento.Horario);
+                return (int)((conHorario ? yHorario + _altoFecha : yFecha + _altoFecha) + 10 * _k);
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                Graphics g = e.Graphics;
+                g.Clear(BackColor);
+                int yDescripcion, yFecha, yHorario;
+                Posiciones(out yDescripcion, out yFecha, out yHorario);
+                int colchon = (int)(10 * _k);   // para que no se corten la "g", "p", "y"
+
+                TextRenderer.DrawText(g, _evento.Nombre ?? "", _fTitulo, new Rectangle(0, 0, Width, _altoTitulo + colchon), Negro, Centrado);
+                TextRenderer.DrawText(g, _descripcion ?? "", _fDescripcion,
+                    new Rectangle((int)(30 * _k), yDescripcion, AnchoDescripcion(Width), _altoDescripcion + colchon), Negro, Parrafo);
+                TextRenderer.DrawText(g, _evento.Fecha ?? "", _fFecha, new Rectangle(0, yFecha, Width, _altoFecha + colchon), Negro, Centrado);
+                if (!string.IsNullOrWhiteSpace(_evento.Horario))
+                    TextRenderer.DrawText(g, _evento.Horario, _fFecha, new Rectangle(0, yHorario, Width, _altoFecha + colchon), Negro, Centrado);
+            }
+
+            protected override void OnMouseDown(MouseEventArgs e) { Parent?.Focus(); base.OnMouseDown(e); }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing) { _fTitulo.Dispose(); _fDescripcion.Dispose(); _fFecha.Dispose(); }
+                base.Dispose(disposing);
+            }
         }
 
         /// <summary>Abre el popup centrado sobre la ventana que contiene a "origen".</summary>
@@ -131,22 +213,7 @@ namespace PITCHR
                 g.Clip = anterior;
             }
 
-            TextFormatFlags centrado = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis;
-
-            using (Font fTitulo = CarruselEventos.Fuente(38 * k, FontStyle.Bold))
-                CarruselEventos.Texto(g, _evento.Nombre, fTitulo, new RectangleF(30 * k, 328 * k, 480 * k, 52 * k), Negro, centrado);
-
-            string descripcion = string.IsNullOrWhiteSpace(_evento.DescripcionCompleta) ? _evento.Descripcion : _evento.DescripcionCompleta;
-            using (Font fDescripcion = CarruselEventos.Fuente(19 * k, FontStyle.Regular))
-                CarruselEventos.Texto(g, descripcion, fDescripcion, new RectangleF(70 * k, 386 * k, 410 * k, 72 * k), Negro,
-                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
-
-            using (Font fFecha = CarruselEventos.Fuente(23 * k, FontStyle.Bold))
-            {
-                CarruselEventos.Texto(g, _evento.Fecha, fFecha, new RectangleF(30 * k, 466 * k, 480 * k, 38 * k), Negro, centrado);
-                if (!string.IsNullOrWhiteSpace(_evento.Horario))
-                    CarruselEventos.Texto(g, _evento.Horario, fFecha, new RectangleF(30 * k, 521 * k, 480 * k, 38 * k), Negro, centrado);
-            }
+            // Nombre, descripción, fecha y horario los dibuja TextoEvento dentro de la zona desplazable
 
             CarruselEventos.DibujarCorazon(g, Corazon, _evento.Favorito, k * 1.15f);
 

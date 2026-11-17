@@ -28,6 +28,10 @@ namespace PITCHR
             SiguienteBoton.Click += (s, e) => Carrusel.Mover(1);
             _eventos = CargarEventos();
             Carrusel.MostrarEventos(_eventos);
+
+            // Cada vez que se abre Eventos (HomePage la vuelve a poner en pantalla), PitchR Fest queda al centro
+            Carrusel.CentrarEn(IdPitchRFest);
+            ParentChanged += (s, e) => { if (Parent != null) Carrusel.CentrarEn(IdPitchRFest); };
         }
 
         public const int IdPitchRFest = 3;
@@ -65,13 +69,13 @@ namespace PITCHR
         {
             return new List<Evento>
             {
-                new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de Octubre 2026",
+                new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de junio 2027",
                            Imagen("FarmersMarket"), Color.FromArgb(96, 119, 74))
                 {
                     DescripcionCompleta = "Mercado agricultor en Distrito 1 con productos frescos de productores locales.",
                     Horario = "9:00am - 3:00pm"
                 },
-                new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de Octubre 2026",
+                new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de mayo 2027",
                            Imagen("JapanMarket"), Color.FromArgb(240, 74, 120))
                 {
                     DescripcionCompleta = "Mercado de emprendimientos locales con temáticas asiáticas y japonesas.",
@@ -82,6 +86,18 @@ namespace PITCHR
                 {
                     DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de invertir.",
                     Horario = "10:00am - 6:00pm"
+                },
+                new Evento(4, "Scrub Daddy Fest", "Evento de productos de limpieza.", "24 de Enero de 2027",
+                           Imagen("ScrubDaddyFest"), Color.FromArgb(250, 204, 21))
+                {
+                    DescripcionCompleta = "Evento de productos de limpieza con demostraciones, juegos y regalos.",
+                    Horario = "10:00am - 6:00pm"
+                },
+                new Evento(5, "XV de Ruby", "Celebración de XV años.", "12 de Abril de 2027",
+                           Imagen("XVRuby"), Color.FromArgb(124, 58, 237))
+                {
+                    DescripcionCompleta = "Celebración de XV años con cena, música, baile y convivencia con familia y amigos.",
+                    Horario = "7:00pm - 2:00am"
                 },
             };
         }
