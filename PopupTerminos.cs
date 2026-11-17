@@ -85,7 +85,7 @@ namespace PITCHR
         private readonly PanelDesplazable _desplazable;
 
         /// <summary>Panel con AutoScroll que puede tomar el foco, para que la rueda del mouse lo mueva.</summary>
-        private class PanelDesplazable : Panel
+        internal class PanelDesplazable : Panel   // también lo usa PopupEvento
         {
             public PanelDesplazable()
             {
