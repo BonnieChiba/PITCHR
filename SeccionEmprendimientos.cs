@@ -293,9 +293,13 @@ namespace PITCHR
         }
 
         // ==================== PENDIENTES (todavía sin conexión a otras pantallas) ====================
+        // Aviso para HomePage: "abran Eventos con el popup de este evento" (manda el Id del evento).
+        public event EventHandler<int> AbrirEvento;
+
         private void VerMasBoton_Click(object sender, EventArgs e)
         {
-            // Aquí se abrirá la pantalla de eventos (el anuncio es fijo).
+            // El anuncio del banner es el PitchR Fest
+            AbrirEvento?.Invoke(this, SeccionEventos.IdPitchRFest);
         }
 
         // Aviso para HomePage: "abran la página de producto de este emprendimiento" (manda su idEntrepreneurship).

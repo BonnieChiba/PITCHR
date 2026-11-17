@@ -171,18 +171,21 @@ namespace PITCHR
             using (Font fDesc = Fuente("Plus Jakarta Sans", 17 * k, FontStyle.Regular))
             {
                 Rectangle rTitulo = Rectangle.Round(new RectangleF(textos.X, textos.Y, textos.Width, fTitulo.Height * 1.1f));
+                // NoClipping: Plus Jakarta Sans baja la "p", "g", "y" más allá del alto que reporta la fuente
                 TextRenderer.DrawText(g, _titulo, fTitulo, rTitulo, Color.Black,
-                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding | TextFormatFlags.NoClipping);
 
                 float yDesc = rTitulo.Bottom + (_forma == Formas.Vertical ? 8 : 14) * k;
                 // La descripción ocupa renglones COMPLETOS (2 en la tarjeta vertical, 3 en la horizontal);
                 // lo que no cabe termina en "…" en vez de verse cortado a la mitad del renglón.
                 int renglones = _forma == Formas.Vertical ? 2 : 3;
                 int altoRenglon = TextRenderer.MeasureText(g, "Bgjy", fDesc, Size.Empty, TextFormatFlags.NoPadding).Height;
-                float altoDesc = renglones * altoRenglon;
+                // Medio renglón extra para que no se corten las letras con colita; TextBoxControl evita
+                // que ese espacio extra muestre la parte de arriba de un renglón que no cabe.
+                float altoDesc = renglones * altoRenglon + altoRenglon * 0.5f;
                 Rectangle rDesc = Rectangle.Round(new RectangleF(textos.X, yDesc, textos.Width, altoDesc));
                 TextRenderer.DrawText(g, _descripcion, fDesc, rDesc, Color.FromArgb(30, 30, 30),
-                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding | TextFormatFlags.TextBoxControl);
             }
 
             DibujarEtiqueta(g, k, t);

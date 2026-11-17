@@ -334,7 +334,8 @@ namespace PITCHR
         // Clic en "ver Terminos y condiciones"
         private void TerminosLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MessageBox.Show("Aquí van los Términos y Condiciones de PitchR.", "Términos y Condiciones");
+            // Si presiona "Aceptar" se marca la casilla; con el botón de regresar se cierra sin cambiarla
+            if (PopupTerminos.Mostrar(this)) TerminosCheckbox.Checked = true;
         }
 
 

@@ -148,8 +148,16 @@ namespace PITCHR
                 default:
                     SeccionEmprendimientos emprendimientos = new SeccionEmprendimientos();
                     emprendimientos.AbrirEmprendimiento += (s, id) => this.AbrirProducto(id);
+                    emprendimientos.AbrirEvento += (s, id) => this.AbrirEvento(id);
                     return emprendimientos;
             }
+        }
+
+        // ==================== EVENTO (Ver más del banner) ====================
+        private void AbrirEvento(int idEvento)
+        {
+            this.MostrarSeccion(Seccion.Eventos);
+            ((SeccionEventos)_secciones[Seccion.Eventos]).AbrirEvento(idEvento);
         }
 
         // ==================== PÁGINA DE PRODUCTO (clic en tarjeta) ====================
@@ -323,7 +331,8 @@ namespace PITCHR
             using (GraphicsPath ruta = Redondeado(new RectangleF(0, 0, tamano.Width, tamano.Height), 20 * _escala))
                 _menuPerfil.Region = new Region(ruta);
 
-            _menuPerfil.Show(PerfilPictureBox, new Point(PerfilPictureBox.Width - tamano.Width, PerfilPictureBox.Height + 4));
+            // Centrado debajo del botón de perfil
+            _menuPerfil.Show(PerfilPictureBox, new Point((PerfilPictureBox.Width - tamano.Width) / 2, PerfilPictureBox.Height + 4));
         }
 
         // Agrega una opción al menú de perfil (con una línea gris arriba, menos la primera)

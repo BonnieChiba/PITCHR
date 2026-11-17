@@ -26,7 +26,20 @@ namespace PITCHR
             Carrusel.EventoClick += Evento_Click;
             AnteriorBoton.Click += (s, e) => Carrusel.Mover(-1);
             SiguienteBoton.Click += (s, e) => Carrusel.Mover(1);
-            Carrusel.MostrarEventos(CargarEventos());
+            _eventos = CargarEventos();
+            Carrusel.MostrarEventos(_eventos);
+        }
+
+        public const int IdPitchRFest = 3;
+        private readonly List<Evento> _eventos;
+
+        /// <summary>Abre el popup de un evento por su Id (lo usa el "Ver más" del banner de Emprendimientos).</summary>
+        public void AbrirEvento(int idEvento)
+        {
+            Evento evento = _eventos.Find(ev => ev.Id == idEvento);
+            if (evento == null) return;
+            // Espera a que la sección ya esté en pantalla para que el popup tome bien el tamaño
+            BeginInvoke((Action)(() => Evento_Click(this, evento)));
         }
 
         // ==================== EVENTOS ====================
@@ -38,21 +51,21 @@ namespace PITCHR
             return new List<Evento>
             {
                 new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de Octubre 2026",
-                           SeccionBase.CargarImagen("farmers_market.jpg"), Color.FromArgb(96, 119, 74))
+                           SeccionBase.CargarImagen("farmers_market.png"), Color.FromArgb(96, 119, 74))
                 {
                     DescripcionCompleta = "Mercado agricultor en Distrito 1 con productos frescos de productores locales.",
                     Horario = "9:00am - 3:00pm"
                 },
                 new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de Octubre 2026",
-                           SeccionBase.CargarImagen("japan_market.jpg"), Color.FromArgb(240, 74, 120))
+                           SeccionBase.CargarImagen("japan_market.png"), Color.FromArgb(240, 74, 120))
                 {
                     DescripcionCompleta = "Mercado de emprendimientos locales con temáticas asiáticas y japonesas.",
                     Horario = "11:00am - 8:00pm"
                 },
-                new Evento(3, "Scrub Daddy Fest", "Evento de productos de limpieza.", "3 de Enero de 2027",
-                           SeccionBase.CargarImagen("scrub_daddy_fest.jpg"), Color.FromArgb(56, 160, 230))
+                new Evento(IdPitchRFest, "PitchR Fest", "Evento de presentación de emprendimientos.", "3 de Enero de 2027",
+                           SeccionBase.CargarImagen("pitchr_fest.png"), Color.FromArgb(56, 160, 230))
                 {
-                    DescripcionCompleta = "Evento de productos de limpieza con demostraciones, juegos y regalos.",
+                    DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de invertir.",
                     Horario = "10:00am - 6:00pm"
                 },
             };
