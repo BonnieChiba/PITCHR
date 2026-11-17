@@ -194,6 +194,9 @@
     <EmbeddedResource Include="RecuperarContrasena.resx">
       <DependentUpon>RecuperarContrasena.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SeccionEventos.resx">
+      <DependentUpon>SeccionEventos.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SeccionMensajes.resx">
       <DependentUpon>SeccionMensajes.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,17 +252,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Imagenes\farmers_market.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\japan_market.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\pitchr_fest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

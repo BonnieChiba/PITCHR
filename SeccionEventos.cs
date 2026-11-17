@@ -45,25 +45,40 @@ namespace PITCHR
         // ==================== EVENTOS ====================
         // Por ahora la lista es fija. Cuando exista la tabla de eventos en la base,
         // aquí va el SELECT y cada fila se convierte en un Evento (igual que en SeccionNoticias).
-        // La imagen puede ser un archivo de la carpeta Imagenes o un enlace (http...); si no existe se dibuja un degradado.
+        // Las imágenes vienen de SeccionEventos.resx (van dentro del programa, no hace falta tener las fotos).
+        // Si alguna no se encuentra, se dibuja un degradado con el color del evento.
+        /// <summary>Lee una imagen guardada en SeccionEventos.resx (null si no existe).</summary>
+        private static Image Imagen(string nombre)
+        {
+            try
+            {
+                var recursos = new System.ComponentModel.ComponentResourceManager(typeof(SeccionEventos));
+                return recursos.GetObject(nombre) as Image;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         private List<Evento> CargarEventos()
         {
             return new List<Evento>
             {
                 new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de Octubre 2026",
-                           SeccionBase.CargarImagen("farmers_market.png"), Color.FromArgb(96, 119, 74))
+                           Imagen("FarmersMarket"), Color.FromArgb(96, 119, 74))
                 {
                     DescripcionCompleta = "Mercado agricultor en Distrito 1 con productos frescos de productores locales.",
                     Horario = "9:00am - 3:00pm"
                 },
                 new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de Octubre 2026",
-                           SeccionBase.CargarImagen("japan_market.png"), Color.FromArgb(240, 74, 120))
+                           Imagen("JapanMarket"), Color.FromArgb(240, 74, 120))
                 {
                     DescripcionCompleta = "Mercado de emprendimientos locales con temáticas asiáticas y japonesas.",
                     Horario = "11:00am - 8:00pm"
                 },
                 new Evento(IdPitchRFest, "PitchR Fest", "Evento de presentación de emprendimientos.", "3 de Enero de 2027",
-                           SeccionBase.CargarImagen("pitchr_fest.png"), Color.FromArgb(56, 160, 230))
+                           Imagen("PitchRFest"), Color.FromArgb(56, 160, 230))
                 {
                     DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de invertir.",
                     Horario = "10:00am - 6:00pm"
