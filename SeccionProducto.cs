@@ -179,13 +179,18 @@ namespace PITCHR
         // ==================== BOTONES ====================
         private void ContactarBoton_Click(object sender, EventArgs e)
         {
-            // Solo un inversionista puede empezar una conversación con el fundador
-            if (!Sesion.Activa || Sesion.Rol != 0)
+            // Inversionistas y emprendedores pueden escribirle al fundador
+            if (!Sesion.Activa)
             {
-                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "PitchR");
+                MessageBox.Show("Inicia sesión para enviarle un mensaje al fundador.", "PitchR");
                 return;
             }
             if (_idFundador == 0) return;
+            if (Sesion.Rol == 1 && Sesion.IdUsuario == _idFundador)
+            {
+                MessageBox.Show("Esta es tu marca, no puedes enviarte mensajes a ti mismo.", "PitchR");
+                return;
+            }
             if (Contactar != null) Contactar(this, _idFundador);
         }
 
