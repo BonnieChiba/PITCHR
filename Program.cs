@@ -16,6 +16,13 @@ namespace PITCHR
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Animación de inicio con el logo (se salta con clic o cualquier tecla)
+            using (PantallaInicio inicio = new PantallaInicio())
+            {
+                inicio.ShowDialog();
+            }
+
             Application.Run(new HomePage());
         }
     }

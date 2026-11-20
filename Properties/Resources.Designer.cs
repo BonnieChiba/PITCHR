@@ -67,5 +67,16 @@ namespace PITCHR.Properties
                 resourceCulture = value;
             }
         }
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static global::System.Drawing.Bitmap LogoPitchr
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("LogoPitchr", resourceCulture);
+                return ((global::System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
