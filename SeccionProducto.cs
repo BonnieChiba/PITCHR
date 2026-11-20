@@ -37,8 +37,11 @@ namespace PITCHR
         public event EventHandler CrearMarca;
         public event EventHandler<int> Contactar;   // manda el idEntrepreneur del fundador
         public event EventHandler<int> VerFundador; // botón del perfil del fundador (manda su idEntrepreneur)
+        public event EventHandler<int> EditarMarca; // el dueño quiere editar su marca (manda el idEntrepreneurship)
 
         private int _idFundador = 0;
+        private int _idMarca = 0;          // idEntrepreneurship de la marca que se está viendo
+        private bool _esMiMarca = false;   // true si el emprendedor que inició sesión es el dueño
 
         public SeccionProducto()
         {
@@ -77,7 +80,7 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             entrepreneurshipDA.SelectCommand = new MySqlCommand(
-                "SELECT e.idEntrepreneur, e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
+                "SELECT e.idEntrepreneurship, e.idEntrepreneur, e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
                 "e.productName1, e.productName2, e.productName3, e.productImage1, e.productImage2, e.productImage3, " +
                 "en.name, en.lastName, en.imageProfile " +
                 "FROM integrative.entrepreneurship e " +
@@ -118,6 +121,11 @@ namespace PITCHR
         {
             _tieneMarca = true;
             _idFundador = Convert.ToInt32(fila["idEntrepreneur"]);
+            _idMarca = Convert.ToInt32(fila["idEntrepreneurship"]);
+
+            // Si es mi propia marca: en lugar de CONTACTAR aparece EDITAR MARCA
+            _esMiMarca = Sesion.Activa && Sesion.Rol == 1 && Sesion.IdUsuario == _idFundador;
+            ContactarBoton.Text = _esMiMarca ? "EDITAR MARCA" : "CONTACTAR";
             MarcaLabel.Text = Convert.ToString(fila["brand"]);
             CategoriaLabel.Text = Convert.ToString(fila["category"]).ToUpper();
             LikesLabel.Text = Convert.ToString(fila["likes"]);
@@ -206,6 +214,13 @@ namespace PITCHR
         // ==================== BOTONES ====================
         private void ContactarBoton_Click(object sender, EventArgs e)
         {
+            // Si es mi marca, el botón es EDITAR MARCA
+            if (_esMiMarca)
+            {
+                if (EditarMarca != null) EditarMarca(this, _idMarca);
+                return;
+            }
+
             // Inversionistas y emprendedores pueden escribirle al fundador
             if (!Sesion.Activa)
             {
@@ -213,11 +228,6 @@ namespace PITCHR
                 return;
             }
             if (_idFundador == 0) return;
-            if (Sesion.Rol == 1 && Sesion.IdUsuario == _idFundador)
-            {
-                MessageBox.Show("Esta es tu marca, no puedes enviarte mensajes a ti mismo.", "PitchR");
-                return;
-            }
             if (Contactar != null) Contactar(this, _idFundador);
         }
 

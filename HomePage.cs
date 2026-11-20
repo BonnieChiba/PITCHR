@@ -168,6 +168,8 @@ namespace PITCHR
             producto.Regresar += (s, e) => MostrarSeccion(regresarA);
             producto.Contactar += (s, idEntrepreneur) => AbrirMensajesCon(idEntrepreneur);
             producto.VerFundador += (s, idFundador) => AbrirPerfilFundador(idFundador, idEmprendimiento, regresarA);
+            // Si es su propia marca: EDITAR MARCA, y al regresar vuelve a esta misma página de producto
+            producto.EditarMarca += (s, idMarca) => AbrirEditarMarca(idMarca, () => AbrirProducto(idEmprendimiento, regresarA));
             this.PonerEnContenido(producto);
         }
 
@@ -184,10 +186,15 @@ namespace PITCHR
 
         // ==================== EDITAR MARCA (botón EDITAR de "Mis Marcas") ====================
         // idEmprendimiento = 0 es una marca nueva
-        private void AbrirEditarMarca(int idEmprendimiento)
+        // alRegresar: a dónde lleva la flecha (si es null, a Mis Marcas)
+        private void AbrirEditarMarca(int idEmprendimiento, Action alRegresar = null)
         {
             SeccionPersonalizaMarca marca = new SeccionPersonalizaMarca(idEmprendimiento);
-            marca.Regresar += (s, e) => MostrarSeccion(Seccion.MisMarcas);
+            marca.Regresar += (s, e) =>
+            {
+                if (alRegresar != null) alRegresar();
+                else MostrarSeccion(Seccion.MisMarcas);
+            };
             marca.MarcaGuardada += (s, e) => OlvidarSeccion(Seccion.Emprendimientos);   // para que se vea la marca nueva
             this.PonerEnContenido(marca);
         }
