@@ -25,6 +25,9 @@ namespace PITCHR
         // Imágenes que se van a dibujar
         private Image _logo, _fotoFundador;
         private readonly Image[] _productos = new Image[3];
+        // Qué producto (0, 1 o 2) se dibuja en cada cuadro; -1 = cuadro oculto.
+        // Así, si la marca tiene 0, 1 o 2 productos, solo se muestran esos cuadros (pegados a la derecha).
+        private readonly int[] _mapaProductos = { 0, 1, 2 };
         private readonly List<Image> _galeria = new List<Image>();   // imageHome, image2 e image3
         private int _imagenActual = 0;
         private bool _tieneMarca = false;
@@ -124,12 +127,16 @@ namespace PITCHR
             _logo = CargarImagen(Convert.ToString(fila["imageHome"]));
             _fotoFundador = CargarImagen(Convert.ToString(fila["imageProfile"]));
 
-            Label[] nombres = { Producto1Label, Producto2Label, Producto3Label };
+            // Productos: solo cuentan los que tienen nombre o imagen
+            string[] nombresProductos = new string[3];
+            List<int> conProducto = new List<int>();
             for (int i = 0; i < 3; i++)
             {
-                nombres[i].Text = Convert.ToString(fila["productName" + (i + 1)]);
+                nombresProductos[i] = Convert.ToString(fila["productName" + (i + 1)]).Trim();
                 _productos[i] = CargarImagen(Convert.ToString(fila["productImage" + (i + 1)]));
+                if (nombresProductos[i].Length > 0 || _productos[i] != null) conProducto.Add(i);
             }
+            this.AcomodarProductos(conProducto, nombresProductos);
 
             // Galería: las imágenes generales de la marca que sí existan
             _galeria.Clear();
@@ -154,11 +161,31 @@ namespace PITCHR
             LikesLabel.Text = "";
             SobreTextoLabel.Text = "Crea tu marca en \"Personalizar perfil\" para que los inversionistas la puedan ver.";
             FundadorNombreLabel.Text = Sesion.Activa ? Sesion.Usuario.ToUpper() : "";
-            foreach (Label nombre in new[] { Producto1Label, Producto2Label, Producto3Label }) nombre.Text = "";
+            this.AcomodarProductos(new List<int>(), new string[3]);   // sin marca no hay productos
             FlechaIzquierdaBoton.Visible = false;
             FlechaDerechaBoton.Visible = false;
             PerfilBoton.Text = "CREAR MARCA";
             FondoPanel.Invalidate(true);
+        }
+
+        // Muestra solo los cuadros de los productos que existen. Los cuadros visibles quedan
+        // pegados a la derecha: con 1 producto se usa el 3er cuadro, con 2 productos el 2º y el 3º.
+        private void AcomodarProductos(List<int> conProducto, string[] nombresProductos)
+        {
+            Panel[] cuadros = { Producto1Panel, Producto2Panel, Producto3Panel };
+            Label[] nombres = { Producto1Label, Producto2Label, Producto3Label };
+            int vacios = 3 - conProducto.Count;
+
+            for (int j = 0; j < 3; j++)
+            {
+                int posicion = j - vacios;   // posición dentro de la lista de productos que sí existen
+                bool visible = posicion >= 0;
+                _mapaProductos[j] = visible ? conProducto[posicion] : -1;
+                nombres[j].Text = visible ? nombresProductos[conProducto[posicion]] : "";
+                cuadros[j].Visible = visible;
+                nombres[j].Visible = visible;
+                cuadros[j].Invalidate();
+            }
         }
 
         // ==================== GALERÍA ====================
@@ -332,7 +359,8 @@ namespace PITCHR
         private void Producto_Paint(object sender, PaintEventArgs e)
         {
             Panel panel = (Panel)sender;
-            int indice = panel == Producto1Panel ? 0 : panel == Producto2Panel ? 1 : 2;
+            int indice = _mapaProductos[panel == Producto1Panel ? 0 : panel == Producto2Panel ? 1 : 2];
+            if (indice < 0) return;   // cuadro oculto (la marca no tiene ese producto)
             Graphics g = e.Graphics;
             Calidad(g);
             g.Clear(GrisFranja);
