@@ -42,6 +42,7 @@ namespace PITCHR
         private int _idFundador = 0;
         private int _idMarca = 0;          // idEntrepreneurship de la marca que se está viendo
         private bool _esMiMarca = false;   // true si el emprendedor que inició sesión es el dueño
+        private bool _tengoLike = false;   // true si la persona que inició sesión ya le dio like (corazón lleno)
 
         public SeccionProducto()
         {
@@ -129,6 +130,8 @@ namespace PITCHR
             MarcaLabel.Text = Convert.ToString(fila["brand"]);
             CategoriaLabel.Text = Convert.ToString(fila["category"]).ToUpper();
             LikesLabel.Text = Convert.ToString(fila["likes"]);
+            try { _tengoLike = LikesEmprendimiento.TieneLike(_idMarca); }
+            catch (Exception) { _tengoLike = false; }
             SobreTextoLabel.Text = Convert.ToString(fila["description"]);
             FundadorNombreLabel.Text = (Convert.ToString(fila["name"]) + " " + Convert.ToString(fila["lastName"])).Trim().ToUpper();
 
@@ -248,6 +251,41 @@ namespace PITCHR
             if (Regresar != null) Regresar(this, EventArgs.Empty);
         }
 
+        // ==================== LIKE ====================
+        // El mismo like que el corazón de la tarjeta en Emprendimientos (ver LikesEmprendimiento):
+        // si lo das aquí, al regresar la tarjeta ya sale con el corazón lleno, y al revés.
+        private void Corazon_Click()
+        {
+            if (!_tieneMarca || _idMarca == 0) return;
+            if (!LikesEmprendimiento.PuedeDarLike()) return;
+            try
+            {
+                int total = LikesEmprendimiento.Alternar(_idMarca, _tengoLike);
+                _tengoLike = !_tengoLike;
+                LikesLabel.Text = total.ToString();
+                FondoPanel.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo guardar el like:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Zona del corazón (a la izquierda del número de likes), un poco más grande para que sea fácil picarle
+        private RectangleF ZonaCorazon()
+        {
+            float k = Escala;
+            return new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
+        }
+
+        private bool SobreCorazon(Point p)
+        {
+            if (!_tieneMarca || LikesLabel.Text.Length == 0) return false;
+            RectangleF zona = ZonaCorazon();
+            zona.Inflate(6 * Escala, 6 * Escala);
+            return zona.Contains(p);
+        }
+
 
         #region Diseño del Figma (no es necesario modificar esta parte)
 
@@ -262,6 +300,11 @@ namespace PITCHR
                 ActivarDobleBuffer(c);
 
             FondoPanel.Paint += FondoPanel_Paint;
+            // Corazón de likes: se le puede picar al corazón o al número
+            FondoPanel.MouseClick += (s, e) => { if (e.Button == MouseButtons.Left && SobreCorazon(e.Location)) Corazon_Click(); };
+            FondoPanel.MouseMove += (s, e) => FondoPanel.Cursor = SobreCorazon(e.Location) ? Cursors.Hand : Cursors.Default;
+            LikesLabel.Cursor = Cursors.Hand;
+            LikesLabel.Click += (s, e) => Corazon_Click();
             LogoPanel.Paint += LogoPanel_Paint;
             Producto1Panel.Paint += Producto_Paint;
             Producto2Panel.Paint += Producto_Paint;
@@ -322,8 +365,7 @@ namespace PITCHR
             // Corazón (a la izquierda del número de likes); se dibuja siempre que haya número
             if (LikesLabel.Visible && LikesLabel.Text.Length > 0)
             {
-                RectangleF corazon = new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
-                DibujarCorazon(g, corazon, k);
+                DibujarCorazon(g, ZonaCorazon(), k, _tengoLike);
             }
 
             // Etiqueta naranja de la categoría (CategoriaLabel tiene AutoSize: mide lo que su texto).
@@ -337,7 +379,8 @@ namespace PITCHR
             }
         }
 
-        private static void DibujarCorazon(Graphics g, RectangleF r, float k)
+        // Corazón lleno (rojo, como en las tarjetas) si ya le dio like; si no, solo el contorno
+        private static void DibujarCorazon(Graphics g, RectangleF r, float k, bool lleno)
         {
             float x = r.X, y = r.Y, w = r.Width, h = r.Height;
             using (GraphicsPath p = new GraphicsPath())
@@ -347,6 +390,11 @@ namespace PITCHR
                 p.AddBezier(x + w * 0.50f, y + h * 0.28f, x + w * 0.58f, y + h * 0.08f, x + w * 0.84f, y + h * 0.08f, x + w * 0.92f, y + h * 0.26f);
                 p.AddBezier(x + w * 0.92f, y + h * 0.26f, x + w * 0.98f, y + h * 0.40f, x + w * 0.90f, y + h * 0.58f, x + w * 0.50f, y + h * 0.86f);
                 p.CloseFigure();
+                if (lleno)
+                {
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(232, 59, 59))) g.FillPath(b, p);
+                    return;
+                }
                 using (Pen pen = new Pen(Color.FromArgb(90, 90, 90), Math.Max(1.5f, 2.2f * k))) g.DrawPath(pen, p);
             }
         }

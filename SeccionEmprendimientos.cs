@@ -99,27 +99,14 @@ namespace PITCHR
         }
 
         // ==================== LIKES ====================
-        // Tabla integrative.entrepreneurshipLike: un renglón por cada like (emprendimiento + persona + rol).
+        // La lógica está en LikesEmprendimiento (la usa también la página del emprendimiento, SeccionProducto).
         // Así nadie puede dar like dos veces y el corazón se queda lleno la próxima vez que entre.
-        // La columna likes de entrepreneurship guarda el total, que es lo que se ve en la página de producto.
         private void CargarMisLikes()
         {
             _misLikes.Clear();
-            if (!Sesion.Activa) return;
             try
             {
-                using (DBConn dbTemp = new DBConn())
-                {
-                    MySqlCommand buscar = new MySqlCommand(
-                        "SELECT idEntrepreneurship FROM integrative.entrepreneurshipLike WHERE idUser = @yo AND role = @rol", dbTemp.dbConnection);
-                    buscar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
-                    buscar.Parameters.AddWithValue("@rol", Sesion.Rol);
-                    dbTemp.dbConnection.Open();
-                    using (MySqlDataReader lector = buscar.ExecuteReader())
-                    {
-                        while (lector.Read()) _misLikes.Add(Convert.ToInt32(lector["idEntrepreneurship"]));
-                    }
-                }
+                _misLikes = LikesEmprendimiento.MisLikes();
             }
             catch (Exception ex)
             {
@@ -131,37 +118,13 @@ namespace PITCHR
         // Después se actualiza el total en entrepreneurship.likes contando los likes que tiene.
         private void Corazon_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Activa)
-            {
-                MessageBox.Show("Inicia sesión para darle like a un emprendimiento.", "PitchR", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (!LikesEmprendimiento.PuedeDarLike()) return;
 
             int id = ((TarjetaEmprendimiento)sender).Datos.Id;
             bool yaTeniaLike = _misLikes.Contains(id);
             try
             {
-                using (DBConn dbTemp = new DBConn())
-                {
-                    dbTemp.dbConnection.Open();
-
-                    MySqlCommand cambiar = new MySqlCommand(yaTeniaLike
-                        ? "DELETE FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id AND idUser = @yo AND role = @rol"
-                        : "INSERT IGNORE INTO integrative.entrepreneurshipLike (idEntrepreneurship, idUser, role) VALUES (@id, @yo, @rol)",
-                        dbTemp.dbConnection);
-                    cambiar.Parameters.AddWithValue("@id", id);
-                    cambiar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
-                    cambiar.Parameters.AddWithValue("@rol", Sesion.Rol);
-                    cambiar.ExecuteNonQuery();
-
-                    MySqlCommand total = new MySqlCommand(
-                        "UPDATE integrative.entrepreneurship SET likes = " +
-                        "(SELECT COUNT(*) FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id) " +
-                        "WHERE idEntrepreneurship = @id", dbTemp.dbConnection);
-                    total.Parameters.AddWithValue("@id", id);
-                    total.ExecuteNonQuery();
-                }
-
+                LikesEmprendimiento.Alternar(id, yaTeniaLike);
                 if (yaTeniaLike) _misLikes.Remove(id); else _misLikes.Add(id);
                 this.PintarCorazones();
             }

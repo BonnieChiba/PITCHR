@@ -213,6 +213,22 @@ namespace PITCHR
             using (GraphicsPath ruta = Redondeado(area, 30 * k))
             using (SolidBrush relleno = new SolidBrush(color))
                 g.FillPath(relleno, ruta);
+
+            // Sombrita ovalada debajo del ícono de Inversor, igual a la que ya trae el foco de Emprendedor en su imagen.
+            // Se ve a través del PictureBox porque su fondo es transparente.
+            if (tarjeta == InversorPanel)
+            {
+                Rectangle icono = InversorPictureBox.Bounds;
+                // Misma medida que la del foco y con orillas difuminadas (varias capas encimadas, de grande a chica)
+                float ancho = icono.Width * 0.47f, alto = icono.Height * 0.07f;
+                float cx = icono.X + icono.Width / 2f, cy = icono.Bottom - icono.Height * 0.055f;
+                for (int i = 0; i < 4; i++)
+                {
+                    float w = ancho * (1f - i * 0.12f), h = alto * (1f - i * 0.18f);
+                    using (SolidBrush sombra = new SolidBrush(Color.FromArgb(14, 0, 0, 0)))
+                        g.FillEllipse(sombra, cx - w / 2f, cy - h / 2f, w, h);
+                }
+            }
         }
 
         private static GraphicsPath Redondeado(RectangleF r, float radio)

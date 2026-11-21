@@ -72,14 +72,14 @@ namespace PITCHR
 
         private readonly PopupTerminos.PanelDesplazable _desplazable;
 
-        /// <summary>Dibuja nombre, descripción, fecha y horario del evento. Su alto es el de todo el texto.</summary>
+        /// <summary>Dibuja nombre, descripción, fecha, horario y lugar del evento. Su alto es el de todo el texto.</summary>
         private class TextoEvento : Control
         {
             private readonly Evento _evento;
             private readonly float _k;
-            private readonly Font _fTitulo, _fDescripcion, _fFecha;
+            private readonly Font _fTitulo, _fDescripcion, _fFecha, _fLugar;
             private readonly string _descripcion;
-            private int _altoTitulo, _altoDescripcion, _altoFecha;
+            private int _altoTitulo, _altoDescripcion, _altoFecha, _altoLugar;
 
             private const TextFormatFlags Centrado = TextFormatFlags.HorizontalCenter | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.NoPadding;
             private const TextFormatFlags Parrafo = TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.NoPadding;
@@ -93,32 +93,38 @@ namespace PITCHR
                 _fTitulo = CarruselEventos.Fuente(38 * k, FontStyle.Bold);
                 _fDescripcion = CarruselEventos.Fuente(19 * k, FontStyle.Regular);
                 _fFecha = CarruselEventos.Fuente(23 * k, FontStyle.Bold);
+                _fLugar = CarruselEventos.Fuente(20 * k, FontStyle.Bold);
                 _descripcion = string.IsNullOrWhiteSpace(evento.DescripcionCompleta) ? evento.Descripcion : evento.DescripcionCompleta;
 
                 _altoTitulo = TextRenderer.MeasureText(evento.Nombre ?? "", _fTitulo, new Size(ancho, 0), Centrado).Height;
                 _altoDescripcion = TextRenderer.MeasureText(_descripcion ?? "", _fDescripcion, new Size(AnchoDescripcion(ancho), 0), Parrafo).Height;
                 _altoFecha = TextRenderer.MeasureText("Bgjy", _fFecha, Size.Empty, Centrado).Height;
-                Size = new Size(ancho, Posiciones(out _, out _, out _));
+                _altoLugar = string.IsNullOrWhiteSpace(evento.Lugar) ? 0
+                    : TextRenderer.MeasureText(evento.Lugar, _fLugar, new Size(AnchoDescripcion(ancho), 0), Centrado).Height;
+                Size = new Size(ancho, Posiciones(out _, out _, out _, out _));
             }
 
             private int AnchoDescripcion(int ancho) { return ancho - (int)(60 * _k); }
 
             // Calcula dónde va cada texto y regresa el alto total
-            private int Posiciones(out int yDescripcion, out int yFecha, out int yHorario)
+            private int Posiciones(out int yDescripcion, out int yFecha, out int yHorario, out int yLugar)
             {
                 yDescripcion = (int)(_altoTitulo + 8 * _k);
                 yFecha = (int)(yDescripcion + _altoDescripcion + 12 * _k);
                 yHorario = (int)(yFecha + _altoFecha + 14 * _k);
                 bool conHorario = !string.IsNullOrWhiteSpace(_evento.Horario);
-                return (int)((conHorario ? yHorario + _altoFecha : yFecha + _altoFecha) + 10 * _k);
+                int fin = conHorario ? yHorario + _altoFecha : yFecha + _altoFecha;
+                yLugar = (int)(fin + 8 * _k);
+                if (_altoLugar > 0) fin = yLugar + _altoLugar;
+                return (int)(fin + 10 * _k);
             }
 
             protected override void OnPaint(PaintEventArgs e)
             {
                 Graphics g = e.Graphics;
                 g.Clear(BackColor);
-                int yDescripcion, yFecha, yHorario;
-                Posiciones(out yDescripcion, out yFecha, out yHorario);
+                int yDescripcion, yFecha, yHorario, yLugar;
+                Posiciones(out yDescripcion, out yFecha, out yHorario, out yLugar);
                 int colchon = (int)(10 * _k);   // para que no se corten la "g", "p", "y"
 
                 TextRenderer.DrawText(g, _evento.Nombre ?? "", _fTitulo, new Rectangle(0, 0, Width, _altoTitulo + colchon), Negro, Centrado);
@@ -127,13 +133,16 @@ namespace PITCHR
                 TextRenderer.DrawText(g, _evento.Fecha ?? "", _fFecha, new Rectangle(0, yFecha, Width, _altoFecha + colchon), Negro, Centrado);
                 if (!string.IsNullOrWhiteSpace(_evento.Horario))
                     TextRenderer.DrawText(g, _evento.Horario, _fFecha, new Rectangle(0, yHorario, Width, _altoFecha + colchon), Negro, Centrado);
+                if (_altoLugar > 0)
+                    TextRenderer.DrawText(g, _evento.Lugar, _fLugar,
+                        new Rectangle((int)(30 * _k), yLugar, AnchoDescripcion(Width), _altoLugar + colchon), Negro, Centrado);
             }
 
             protected override void OnMouseDown(MouseEventArgs e) { Parent?.Focus(); base.OnMouseDown(e); }
 
             protected override void Dispose(bool disposing)
             {
-                if (disposing) { _fTitulo.Dispose(); _fDescripcion.Dispose(); _fFecha.Dispose(); }
+                if (disposing) { _fTitulo.Dispose(); _fDescripcion.Dispose(); _fFecha.Dispose(); _fLugar.Dispose(); }
                 base.Dispose(disposing);
             }
         }
@@ -188,6 +197,7 @@ namespace PITCHR
         {
             base.OnMouseClick(e);
             if (e.Button != MouseButtons.Left || !Corazon.Contains(e.Location)) return;
+            if (!CarruselEventos.PuedeDarLike()) return;
             _evento.Favorito = !_evento.Favorito;
             Invalidate();
             FavoritoCambiado?.Invoke(this, _evento);
