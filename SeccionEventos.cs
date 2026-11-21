@@ -86,7 +86,7 @@ namespace PITCHR
                 new Evento(IdPitchRFest, "PitchR Fest", "Evento de presentación de emprendimientos.", "3 de Enero de 2027",
                            Imagen("PitchRFest"), Color.FromArgb(56, 160, 230))
                 {
-                    DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de invertir.",
+                    DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de dar el siguiente paso.",
                     Horario = "10:00am - 6:00pm",
                     Lugar = "UTCH BIS, Carretera Chihuahua-Aldama Km 3, Colinas del León, Chihuahua"
                 },

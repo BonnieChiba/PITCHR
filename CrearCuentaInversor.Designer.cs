@@ -253,7 +253,7 @@ namespace PITCHR
             this.InvierteText.Size = new System.Drawing.Size(520, 285);
             this.InvierteText.UseCompatibleTextRendering = true;
             this.InvierteText.TabIndex = 1;
-            this.InvierteText.Text = "Invierte\r\nComparte\r\nExpande";
+            this.InvierteText.Text = "Conecta\r\nComparte\r\nExpande";
             this.InvierteText.Click += new System.EventHandler(this.InvierteText_Click);
             // 
             // ChihuahuaText

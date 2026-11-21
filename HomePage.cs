@@ -359,6 +359,12 @@ namespace PITCHR
         {
             private static readonly Color GrisTexto = Color.FromArgb(174, 172, 172);   // #AEACAC
             private static readonly Color GrisLinea = Color.FromArgb(225, 225, 225);
+            // "Cerrar Sesión" en rojo: es una acción de salida y así contrasta con el resto (contraste AA sobre blanco)
+            private static readonly Color RojoSalir = Color.FromArgb(211, 47, 47);        // #D32F2F
+            private static readonly Color RojoSalirHover = Color.FromArgb(183, 28, 28);   // #B71C1C
+            private static readonly Color FondoSalirHover = Color.FromArgb(253, 236, 236); // #FDECEC
+
+            private static bool EsSalir(ToolStripItem item) { return (item.Tag as string) == "salir"; }
 
             protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
             {
@@ -379,19 +385,22 @@ namespace PITCHR
 
             protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
             {
-                Color fondo = e.Item.Selected ? Color.FromArgb(244, 246, 250) : Color.White;
+                Color hover = EsSalir(e.Item) ? FondoSalirHover : Color.FromArgb(244, 246, 250);
+                Color fondo = e.Item.Selected ? hover : Color.White;
                 using (SolidBrush b = new SolidBrush(fondo))
                     e.Graphics.FillRectangle(b, new Rectangle(Point.Empty, e.Item.Size));
             }
 
             protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
             {
-                Color color = e.Item.Selected ? Color.FromArgb(110, 110, 110) : GrisTexto;
+                Color color = EsSalir(e.Item)
+                    ? (e.Item.Selected ? RojoSalirHover : RojoSalir)
+                    : (e.Item.Selected ? Color.FromArgb(110, 110, 110) : GrisTexto);
                 Rectangle area = new Rectangle(e.Item.Padding.Left, 0, e.Item.Width, e.Item.Height);
                 TextRenderer.DrawText(e.Graphics, e.Text, e.TextFont, area, color,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.SingleLine);
 
-                if ((e.Item.Tag as string) == "salir") DibujarIconoSalir(e.Graphics, e.Item, color);
+                if (EsSalir(e.Item)) DibujarIconoSalir(e.Graphics, e.Item, color);
             }
 
             // Ícono de "salir": un marco abierto a la derecha y una flecha que sale
