@@ -168,6 +168,8 @@ namespace PITCHR
             producto.Regresar += (s, e) => MostrarSeccion(regresarA);
             producto.Contactar += (s, idEntrepreneur) => AbrirMensajesCon(idEntrepreneur);
             producto.VerFundador += (s, idFundador) => AbrirPerfilFundador(idFundador, idEmprendimiento, regresarA);
+            // Si es su propia marca: EDITAR MARCA, y al regresar vuelve a esta misma página de producto
+            producto.EditarMarca += (s, idMarca) => AbrirEditarMarca(idMarca, () => AbrirProducto(idEmprendimiento, regresarA));
             this.PonerEnContenido(producto);
         }
 
@@ -184,10 +186,15 @@ namespace PITCHR
 
         // ==================== EDITAR MARCA (botón EDITAR de "Mis Marcas") ====================
         // idEmprendimiento = 0 es una marca nueva
-        private void AbrirEditarMarca(int idEmprendimiento)
+        // alRegresar: a dónde lleva la flecha (si es null, a Mis Marcas)
+        private void AbrirEditarMarca(int idEmprendimiento, Action alRegresar = null)
         {
             SeccionPersonalizaMarca marca = new SeccionPersonalizaMarca(idEmprendimiento);
-            marca.Regresar += (s, e) => MostrarSeccion(Seccion.MisMarcas);
+            marca.Regresar += (s, e) =>
+            {
+                if (alRegresar != null) alRegresar();
+                else MostrarSeccion(Seccion.MisMarcas);
+            };
             marca.MarcaGuardada += (s, e) => OlvidarSeccion(Seccion.Emprendimientos);   // para que se vea la marca nueva
             this.PonerEnContenido(marca);
         }
@@ -462,6 +469,9 @@ namespace PITCHR
             }
             Resize += (s, e) => AjustarATamano();
 
+            // Botón de Iniciar Sesión un poco más ancho para que el texto no quede pegado a las orillas
+            IniciarSesionBoton.Bounds = new Rectangle(392, 9, 146, 60);
+
             // Se guardan las posiciones y fuentes del diseñador para escalarlas 
             GuardarOriginales(BarraPanel);
             Load += (s, e) => AjustarATamano();
@@ -536,10 +546,10 @@ namespace PITCHR
         {
             bool hay;
             if (Instaladas.TryGetValue(nombre, out hay)) return hay;
-            hay = false;
-            using (InstalledFontCollection fuentes = new InstalledFontCollection())
-                foreach (FontFamily familia in fuentes.Families)
-                    if (string.Equals(familia.Name, nombre, StringComparison.OrdinalIgnoreCase)) { hay = true; break; }
+            // Se pide la fuente y se revisa si Windows la encontró
+            // (así también funciona cuando la fuente se instaló solo para tu usuario)
+            using (Font prueba = new Font(nombre, 12f))
+                hay = string.Equals(prueba.Name, nombre, StringComparison.OrdinalIgnoreCase);
             Instaladas[nombre] = hay;
             return hay;
         }
@@ -574,8 +584,20 @@ namespace PITCHR
             using (GraphicsPath ruta = Redondeado(area, area.Height / 2f))
             using (SolidBrush b = new SolidBrush(encima ? ControlPaint.Light(AzulClaro, 0.15f) : AzulClaro))
                 g.FillPath(b, ruta);
-            TextRenderer.DrawText(g, boton.Text, boton.Font, Rectangle.Round(area), boton.ForeColor,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+            // Letra Plus Jakarta Sans que se hace más chica si no cabe, para dejar aire a los lados de la píldora
+            string nombre = FuenteInstalada("Plus Jakarta Sans") ? "Plus Jakarta Sans" : "Segoe UI";
+            float pixeles = area.Height * 0.32f;
+            float anchoLibre = area.Width - 24 * k;
+            Font letra = new Font(nombre, Math.Max(1f, pixeles), FontStyle.Bold, GraphicsUnit.Pixel);
+            while (pixeles > 6 && TextRenderer.MeasureText(boton.Text, letra).Width > anchoLibre)
+            {
+                letra.Dispose();
+                pixeles -= 0.5f;
+                letra = new Font(nombre, pixeles, FontStyle.Bold, GraphicsUnit.Pixel);
+            }
+            using (letra)
+                TextRenderer.DrawText(g, boton.Text, letra, Rectangle.Round(area), Color.White,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
         }
 
         /// <summary>Foto de perfil .</summary>

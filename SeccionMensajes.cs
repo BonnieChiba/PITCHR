@@ -14,7 +14,11 @@ namespace PITCHR
     ///
     /// Tabla integrative.message:
     ///   idMessage, idInvestor, idEntrepreneur, senderRole (0 = lo escribió el inversor, 1 = el emprendedor), content, date
-    /// Una conversación es siempre UN inversor con UN emprendedor.
+    /// Ahí van las conversaciones de UN inversor con UN emprendedor.
+    ///
+    /// La misma tabla guarda también los mensajes entre DOS emprendedores:
+    ///   idInvestor = NULL, idEntrepreneur = quién lo escribió, idEntrepreneur2 = quién lo recibe, senderRole = 1
+    /// (en los mensajes con un inversor, idEntrepreneur2 se queda en NULL)
     ///
     /// Crear = Enviar  ·  Leer = abrir una conversación  ·  Actualizar = clic derecho en un mensaje tuyo → Editar.
     /// Los mensajes NO se pueden borrar (se guardan como evidencia). Si se editan, se guarda cuándo (editedDate).
@@ -31,6 +35,7 @@ namespace PITCHR
         private class Conversacion
         {
             public int IdOtro;          // idEntrepreneur o idInvestor de la otra persona
+            public int RolOtro;         // 0 = la otra persona es inversor, 1 = es emprendedor
             public string Nombre;
             public Image Foto;
             public string Ultimo;       // último mensaje
@@ -50,6 +55,8 @@ namespace PITCHR
         private readonly List<Conversacion> _conversaciones = new List<Conversacion>();
         private readonly List<Mensaje> _mensajes = new List<Mensaje>();
         private int _idOtro = 0;           // conversación abierta (0 = ninguna)
+        private int _rolOtro = 1;          // rol de la otra persona de la conversación abierta
+        private MySqlDataAdapter messageEmpDA = new MySqlDataAdapter();   // mensajes entre dos emprendedores
         private int _idEditando = 0;       // mensaje que se está editando (0 = ninguno)
         private string _usuarioCargado = "";   // para saber si cambió la sesión
         private RectangleF _caja;              // dónde se dibuja la caja redondeada para escribir
@@ -67,6 +74,18 @@ namespace PITCHR
         private bool SoyInversor()
         {
             return Sesion.Rol == 0;
+        }
+
+        // ¿La conversación abierta es entre dos emprendedores? (son las filas con idEntrepreneur2)
+        private bool EntreEmprendedores()
+        {
+            return !SoyInversor() && _rolOtro == 1;
+        }
+
+        // Adaptador de la conversación abierta
+        private MySqlDataAdapter AdaptadorActual()
+        {
+            return EntreEmprendedores() ? messageEmpDA : messageDA;
         }
 
         private int IdInvestor()
@@ -102,14 +121,28 @@ namespace PITCHR
             string tablaOtra = SoyInversor() ? "integrative.entrepreneur" : "integrative.investor";
 
             // LEER: con quién he hablado y cuál fue el último mensaje de cada conversación
-            conversacionesDA.SelectCommand = new MySqlCommand(
-                "SELECT o." + otra + " AS idOtro, o.name, o.lastName, o.imageProfile, m.content, m.`date` " +
+            string conInversorEmprendedor =
+                "SELECT o." + otra + " AS idOtro, " + (SoyInversor() ? 1 : 0) + " AS rolOtro, o.name, o.lastName, o.imageProfile, m.content, m.`date` " +
                 "FROM integrative.message m " +
                 "INNER JOIN " + tablaOtra + " o ON o." + otra + " = m." + otra + " " +
                 "WHERE m." + mia + " = @yo " +
                 "AND m.idMessage = (SELECT MAX(m2.idMessage) FROM integrative.message m2 " +
-                "                   WHERE m2.idInvestor = m.idInvestor AND m2.idEntrepreneur = m.idEntrepreneur) " +
-                "ORDER BY m.idMessage DESC");
+                "                   WHERE m2.idInvestor = m.idInvestor AND m2.idEntrepreneur = m.idEntrepreneur) ";
+
+            // Un emprendedor también tiene las conversaciones con otros emprendedores (filas con idEntrepreneur2).
+            // La otra persona es la que NO soy yo: si yo lo mandé, es idEntrepreneur2; si me lo mandaron, es idEntrepreneur.
+            string conEmprendedores =
+                "SELECT o.idEntrepreneur AS idOtro, 1 AS rolOtro, o.name, o.lastName, o.imageProfile, e.content, e.`date` " +
+                "FROM integrative.message e " +
+                "INNER JOIN integrative.entrepreneur o ON o.idEntrepreneur = IF(e.idEntrepreneur = @yo, e.idEntrepreneur2, e.idEntrepreneur) " +
+                "WHERE e.idEntrepreneur2 IS NOT NULL AND (e.idEntrepreneur = @yo OR e.idEntrepreneur2 = @yo) " +
+                "AND e.idMessage = (SELECT MAX(e2.idMessage) FROM integrative.message e2 " +
+                "                   WHERE (e2.idEntrepreneur = e.idEntrepreneur AND e2.idEntrepreneur2 = e.idEntrepreneur2) " +
+                "                      OR (e2.idEntrepreneur = e.idEntrepreneur2 AND e2.idEntrepreneur2 = e.idEntrepreneur)) ";
+
+            conversacionesDA.SelectCommand = new MySqlCommand(SoyInversor()
+                ? conInversorEmprendedor + "ORDER BY `date` DESC"
+                : conInversorEmprendedor + "UNION ALL " + conEmprendedores + "ORDER BY `date` DESC");
 
             // LEER: los mensajes de una conversación
             messageDA.SelectCommand = new MySqlCommand(
@@ -125,6 +158,19 @@ namespace PITCHR
             messageDA.UpdateCommand = new MySqlCommand(
                 "UPDATE integrative.message SET content = @content, editedDate = NOW() WHERE idMessage = @idMessage");
 
+            // Lo mismo, pero para una conversación entre dos emprendedores.
+            // senderRole se calcula: 1 si lo escribí yo, 0 si lo escribió el otro (así ShowMensajes funciona igual).
+            messageEmpDA.SelectCommand = new MySqlCommand(
+                "SELECT idMessage, IF(idEntrepreneur = @yo, 1, 0) AS senderRole, content, `date`, editedDate FROM integrative.message " +
+                "WHERE (idEntrepreneur = @yo AND idEntrepreneur2 = @otro) OR (idEntrepreneur = @otro AND idEntrepreneur2 = @yo) ORDER BY `date`, idMessage");
+
+            messageEmpDA.InsertCommand = new MySqlCommand(
+                "INSERT INTO integrative.message (idInvestor, idEntrepreneur, idEntrepreneur2, senderRole, content, `date`) " +
+                "VALUES (NULL, @yo, @otro, 1, @content, NOW())");
+
+            messageEmpDA.UpdateCommand = new MySqlCommand(
+                "UPDATE integrative.message SET content = @content, editedDate = NOW() WHERE idMessage = @idMessage");
+
             // No hay DELETE: los mensajes no se pueden borrar para mantener evidencia de las conversaciones.
         }
 
@@ -138,6 +184,7 @@ namespace PITCHR
             {
                 _usuarioCargado = usuario;
                 _idOtro = 0;
+                _rolOtro = SoyInversor() ? 1 : 0;
             }
 
             this.LoadDBCommands();   // las consultas dependen de si es inversor o emprendedor
@@ -158,8 +205,12 @@ namespace PITCHR
             }
 
             // Si ya había una conversación abierta, se vuelve a leer; si no, se abre la más reciente
-            if (_idOtro == 0 && _conversaciones.Count > 0) _idOtro = _conversaciones[0].IdOtro;
-            this.AbrirConversacion(_idOtro);
+            if (_idOtro == 0 && _conversaciones.Count > 0)
+            {
+                _idOtro = _conversaciones[0].IdOtro;
+                _rolOtro = _conversaciones[0].RolOtro;
+            }
+            this.AbrirConversacion(_idOtro, _rolOtro);
         }
 
         private Image LeerMiFoto()
@@ -182,6 +233,7 @@ namespace PITCHR
             {
                 Conversacion c = new Conversacion();
                 c.IdOtro = Convert.ToInt32(fila["idOtro"]);
+                c.RolOtro = Convert.ToInt32(fila["rolOtro"]);
                 c.Nombre = (Convert.ToString(fila["name"]) + " " + Convert.ToString(fila["lastName"])).Trim();
                 c.Foto = CargarImagen(Convert.ToString(fila["imageProfile"]));
                 c.Ultimo = Convert.ToString(fila["content"]);
@@ -189,19 +241,24 @@ namespace PITCHR
                 _conversaciones.Add(c);
             }
             SinConversacionesLabel.Visible = _conversaciones.Count == 0;
-            SinConversacionesLabel.Text = SoyInversor()
-                ? "Aún no tienes conversaciones.\nEntra a un emprendimiento y presiona CONTACTAR."
-                : "Aún no tienes conversaciones.\nAquí aparecerán los mensajes de los inversionistas.";
+            SinConversacionesLabel.Text = "Aún no tienes conversaciones.\nEntra a un emprendimiento y presiona CONTACTAR.";
             this.AcomodarListas();
         }
 
         /// <summary>
-        /// Abre la conversación con esa persona (idEntrepreneur si soy inversor, idInvestor si soy emprendedor).
+        /// Abre la conversación con un emprendedor (idEntrepreneur).
         /// HomePage la usa para el botón CONTACTAR de la página de producto.
         /// </summary>
-        public void AbrirConversacion(int idOtro)
+        public void AbrirConversacion(int idEmprendedor)
+        {
+            this.AbrirConversacion(idEmprendedor, 1);
+        }
+
+        // Abre la conversación con esa persona. rolOtro: 0 = inversor, 1 = emprendedor
+        private void AbrirConversacion(int idOtro, int rolOtro)
         {
             _idOtro = idOtro;
+            _rolOtro = rolOtro;
             this.CancelarEdicion();
 
             bool hayChat = _idOtro > 0;
@@ -218,7 +275,7 @@ namespace PITCHR
             }
 
             // Si es alguien nuevo (vino de CONTACTAR), se agrega arriba de la lista mientras se manda el primer mensaje
-            Conversacion actual = _conversaciones.Find(c => c.IdOtro == _idOtro);
+            Conversacion actual = _conversaciones.Find(c => c.IdOtro == _idOtro && c.RolOtro == _rolOtro);
             if (actual == null)
             {
                 actual = this.BuscarPersona(_idOtro);
@@ -231,14 +288,23 @@ namespace PITCHR
             ContactoFotoPanel.Invalidate();
 
             if (dbconn == null) dbconn = new DBConn();
-            messageDA.SelectCommand.Connection = dbconn.dbConnection;
-            messageDA.SelectCommand.Parameters.Clear();
-            messageDA.SelectCommand.Parameters.AddWithValue("@idInvestor", this.IdInvestor());
-            messageDA.SelectCommand.Parameters.AddWithValue("@idEntrepreneur", this.IdEntrepreneur());
+            MySqlDataAdapter adaptador = this.AdaptadorActual();
+            adaptador.SelectCommand.Connection = dbconn.dbConnection;
+            adaptador.SelectCommand.Parameters.Clear();
+            if (EntreEmprendedores())
+            {
+                adaptador.SelectCommand.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
+                adaptador.SelectCommand.Parameters.AddWithValue("@otro", _idOtro);
+            }
+            else
+            {
+                adaptador.SelectCommand.Parameters.AddWithValue("@idInvestor", this.IdInvestor());
+                adaptador.SelectCommand.Parameters.AddWithValue("@idEntrepreneur", this.IdEntrepreneur());
+            }
             try
             {
                 messagetable.Clear();
-                messageDA.Fill(messagetable);
+                adaptador.Fill(messagetable);
                 this.ShowMensajes(messagetable);
             }
             catch (Exception ex)
@@ -251,8 +317,8 @@ namespace PITCHR
         // Nombre y foto de alguien con quien todavía no hay mensajes
         private Conversacion BuscarPersona(int idOtro)
         {
-            string tabla = SoyInversor() ? "integrative.entrepreneur" : "integrative.investor";
-            string columnaId = SoyInversor() ? "idEntrepreneur" : "idInvestor";
+            string tabla = _rolOtro == 1 ? "integrative.entrepreneur" : "integrative.investor";
+            string columnaId = _rolOtro == 1 ? "idEntrepreneur" : "idInvestor";
             try
             {
                 using (DBConn dbTemp = new DBConn())
@@ -266,6 +332,7 @@ namespace PITCHR
                         if (lector.Read() == false) return null;
                         Conversacion c = new Conversacion();
                         c.IdOtro = idOtro;
+                        c.RolOtro = _rolOtro;
                         c.Nombre = (lector["name"].ToString() + " " + lector["lastName"].ToString()).Trim();
                         c.Foto = CargarImagen(lector["imageProfile"].ToString());
                         c.Ultimo = "Nueva conversación";
@@ -353,7 +420,19 @@ namespace PITCHR
             {
                 using (DBConn dbTemp = new DBConn())
                 {
-                    if (_idEditando == 0)
+                    if (_idEditando == 0 && EntreEmprendedores())
+                    {
+                        messageEmpDA.InsertCommand.Connection = dbTemp.dbConnection;
+                        messageEmpDA.InsertCommand.Parameters.Clear();
+                        messageEmpDA.InsertCommand.Parameters.AddRange(new[] {
+                            new MySqlParameter("@yo", Sesion.IdUsuario),
+                            new MySqlParameter("@otro", _idOtro),
+                            new MySqlParameter("@content", MensajeTextBox.Text.Trim())
+                        });
+                        dbTemp.dbConnection.Open();
+                        messageEmpDA.InsertCommand.ExecuteNonQuery();
+                    }
+                    else if (_idEditando == 0)
                     {
                         messageDA.InsertCommand.Connection = dbTemp.dbConnection;
                         messageDA.InsertCommand.Parameters.Clear();
@@ -368,14 +447,15 @@ namespace PITCHR
                     }
                     else
                     {
-                        messageDA.UpdateCommand.Connection = dbTemp.dbConnection;
-                        messageDA.UpdateCommand.Parameters.Clear();
-                        messageDA.UpdateCommand.Parameters.AddRange(new[] {
+                        MySqlDataAdapter adaptador = this.AdaptadorActual();
+                        adaptador.UpdateCommand.Connection = dbTemp.dbConnection;
+                        adaptador.UpdateCommand.Parameters.Clear();
+                        adaptador.UpdateCommand.Parameters.AddRange(new[] {
                             new MySqlParameter("@content", MensajeTextBox.Text.Trim()),
                             new MySqlParameter("@idMessage", _idEditando)
                         });
                         dbTemp.dbConnection.Open();
-                        messageDA.UpdateCommand.ExecuteNonQuery();
+                        adaptador.UpdateCommand.ExecuteNonQuery();
                     }
                 }
                 this.clearTextBoxes();
@@ -452,7 +532,7 @@ namespace PITCHR
         {
             int indice = (int)(e.Y / (AltoFila * Escala));
             if (indice < 0 || indice >= _conversaciones.Count) return;
-            this.AbrirConversacion(_conversaciones[indice].IdOtro);
+            this.AbrirConversacion(_conversaciones[indice].IdOtro, _conversaciones[indice].RolOtro);
             ConversacionesLista.Invalidate();
         }
 
@@ -625,7 +705,7 @@ namespace PITCHR
             {
                 Conversacion c = _conversaciones[i];
                 float y = i * AltoFila * k;
-                if (c.IdOtro == _idOtro)
+                if (c.IdOtro == _idOtro && c.RolOtro == _rolOtro)
                     using (SolidBrush sel = new SolidBrush(GrisCaja)) g.FillRectangle(sel, 0, y, ConversacionesLista.Width, AltoFila * k);
                 using (Pen linea = new Pen(Color.FromArgb(217, 217, 217), Math.Max(1f, k)))
                     g.DrawLine(linea, 0, y + AltoFila * k - 1, ConversacionesLista.Width, y + AltoFila * k - 1);

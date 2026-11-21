@@ -25,6 +25,9 @@ namespace PITCHR
         // Imágenes que se van a dibujar
         private Image _logo, _fotoFundador;
         private readonly Image[] _productos = new Image[3];
+        // Qué producto (0, 1 o 2) se dibuja en cada cuadro; -1 = cuadro oculto.
+        // Así, si la marca tiene 0, 1 o 2 productos, solo se muestran esos cuadros (pegados a la derecha).
+        private readonly int[] _mapaProductos = { 0, 1, 2 };
         private readonly List<Image> _galeria = new List<Image>();   // imageHome, image2 e image3
         private int _imagenActual = 0;
         private bool _tieneMarca = false;
@@ -34,8 +37,12 @@ namespace PITCHR
         public event EventHandler CrearMarca;
         public event EventHandler<int> Contactar;   // manda el idEntrepreneur del fundador
         public event EventHandler<int> VerFundador; // botón del perfil del fundador (manda su idEntrepreneur)
+        public event EventHandler<int> EditarMarca; // el dueño quiere editar su marca (manda el idEntrepreneurship)
 
         private int _idFundador = 0;
+        private int _idMarca = 0;          // idEntrepreneurship de la marca que se está viendo
+        private bool _esMiMarca = false;   // true si el emprendedor que inició sesión es el dueño
+        private bool _tengoLike = false;   // true si la persona que inició sesión ya le dio like (corazón lleno)
 
         public SeccionProducto()
         {
@@ -74,7 +81,7 @@ namespace PITCHR
         private void LoadDBCommands()
         {
             entrepreneurshipDA.SelectCommand = new MySqlCommand(
-                "SELECT e.idEntrepreneur, e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
+                "SELECT e.idEntrepreneurship, e.idEntrepreneur, e.brand, e.category, e.likes, e.description, e.imageHome, e.image2, e.image3, " +
                 "e.productName1, e.productName2, e.productName3, e.productImage1, e.productImage2, e.productImage3, " +
                 "en.name, en.lastName, en.imageProfile " +
                 "FROM integrative.entrepreneurship e " +
@@ -115,21 +122,32 @@ namespace PITCHR
         {
             _tieneMarca = true;
             _idFundador = Convert.ToInt32(fila["idEntrepreneur"]);
+            _idMarca = Convert.ToInt32(fila["idEntrepreneurship"]);
+
+            // Si es mi propia marca: en lugar de CONTACTAR aparece EDITAR MARCA
+            _esMiMarca = Sesion.Activa && Sesion.Rol == 1 && Sesion.IdUsuario == _idFundador;
+            ContactarBoton.Text = _esMiMarca ? "EDITAR MARCA" : "CONTACTAR";
             MarcaLabel.Text = Convert.ToString(fila["brand"]);
             CategoriaLabel.Text = Convert.ToString(fila["category"]).ToUpper();
             LikesLabel.Text = Convert.ToString(fila["likes"]);
+            try { _tengoLike = LikesEmprendimiento.TieneLike(_idMarca); }
+            catch (Exception) { _tengoLike = false; }
             SobreTextoLabel.Text = Convert.ToString(fila["description"]);
             FundadorNombreLabel.Text = (Convert.ToString(fila["name"]) + " " + Convert.ToString(fila["lastName"])).Trim().ToUpper();
 
             _logo = CargarImagen(Convert.ToString(fila["imageHome"]));
             _fotoFundador = CargarImagen(Convert.ToString(fila["imageProfile"]));
 
-            Label[] nombres = { Producto1Label, Producto2Label, Producto3Label };
+            // Productos: solo cuentan los que tienen nombre o imagen
+            string[] nombresProductos = new string[3];
+            List<int> conProducto = new List<int>();
             for (int i = 0; i < 3; i++)
             {
-                nombres[i].Text = Convert.ToString(fila["productName" + (i + 1)]);
+                nombresProductos[i] = Convert.ToString(fila["productName" + (i + 1)]).Trim();
                 _productos[i] = CargarImagen(Convert.ToString(fila["productImage" + (i + 1)]));
+                if (nombresProductos[i].Length > 0 || _productos[i] != null) conProducto.Add(i);
             }
+            this.AcomodarProductos(conProducto, nombresProductos);
 
             // Galería: las imágenes generales de la marca que sí existan
             _galeria.Clear();
@@ -154,11 +172,31 @@ namespace PITCHR
             LikesLabel.Text = "";
             SobreTextoLabel.Text = "Crea tu marca en \"Personalizar perfil\" para que los inversionistas la puedan ver.";
             FundadorNombreLabel.Text = Sesion.Activa ? Sesion.Usuario.ToUpper() : "";
-            foreach (Label nombre in new[] { Producto1Label, Producto2Label, Producto3Label }) nombre.Text = "";
+            this.AcomodarProductos(new List<int>(), new string[3]);   // sin marca no hay productos
             FlechaIzquierdaBoton.Visible = false;
             FlechaDerechaBoton.Visible = false;
             PerfilBoton.Text = "CREAR MARCA";
             FondoPanel.Invalidate(true);
+        }
+
+        // Muestra solo los cuadros de los productos que existen. Los cuadros visibles quedan
+        // pegados a la derecha: con 1 producto se usa el 3er cuadro, con 2 productos el 2º y el 3º.
+        private void AcomodarProductos(List<int> conProducto, string[] nombresProductos)
+        {
+            Panel[] cuadros = { Producto1Panel, Producto2Panel, Producto3Panel };
+            Label[] nombres = { Producto1Label, Producto2Label, Producto3Label };
+            int vacios = 3 - conProducto.Count;
+
+            for (int j = 0; j < 3; j++)
+            {
+                int posicion = j - vacios;   // posición dentro de la lista de productos que sí existen
+                bool visible = posicion >= 0;
+                _mapaProductos[j] = visible ? conProducto[posicion] : -1;
+                nombres[j].Text = visible ? nombresProductos[conProducto[posicion]] : "";
+                cuadros[j].Visible = visible;
+                nombres[j].Visible = visible;
+                cuadros[j].Invalidate();
+            }
         }
 
         // ==================== GALERÍA ====================
@@ -179,10 +217,17 @@ namespace PITCHR
         // ==================== BOTONES ====================
         private void ContactarBoton_Click(object sender, EventArgs e)
         {
-            // Solo un inversionista puede empezar una conversación con el fundador
-            if (!Sesion.Activa || Sesion.Rol != 0)
+            // Si es mi marca, el botón es EDITAR MARCA
+            if (_esMiMarca)
             {
-                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "PitchR");
+                if (EditarMarca != null) EditarMarca(this, _idMarca);
+                return;
+            }
+
+            // Inversionistas y emprendedores pueden escribirle al fundador
+            if (!Sesion.Activa)
+            {
+                MessageBox.Show("Inicia sesión para enviarle un mensaje al fundador.", "PitchR");
                 return;
             }
             if (_idFundador == 0) return;
@@ -206,6 +251,41 @@ namespace PITCHR
             if (Regresar != null) Regresar(this, EventArgs.Empty);
         }
 
+        // ==================== LIKE ====================
+        // El mismo like que el corazón de la tarjeta en Emprendimientos (ver LikesEmprendimiento):
+        // si lo das aquí, al regresar la tarjeta ya sale con el corazón lleno, y al revés.
+        private void Corazon_Click()
+        {
+            if (!_tieneMarca || _idMarca == 0) return;
+            if (!LikesEmprendimiento.PuedeDarLike()) return;
+            try
+            {
+                int total = LikesEmprendimiento.Alternar(_idMarca, _tengoLike);
+                _tengoLike = !_tengoLike;
+                LikesLabel.Text = total.ToString();
+                FondoPanel.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo guardar el like:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Zona del corazón (a la izquierda del número de likes), un poco más grande para que sea fácil picarle
+        private RectangleF ZonaCorazon()
+        {
+            float k = Escala;
+            return new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
+        }
+
+        private bool SobreCorazon(Point p)
+        {
+            if (!_tieneMarca || LikesLabel.Text.Length == 0) return false;
+            RectangleF zona = ZonaCorazon();
+            zona.Inflate(6 * Escala, 6 * Escala);
+            return zona.Contains(p);
+        }
+
 
         #region Diseño del Figma (no es necesario modificar esta parte)
 
@@ -220,6 +300,11 @@ namespace PITCHR
                 ActivarDobleBuffer(c);
 
             FondoPanel.Paint += FondoPanel_Paint;
+            // Corazón de likes: se le puede picar al corazón o al número
+            FondoPanel.MouseClick += (s, e) => { if (e.Button == MouseButtons.Left && SobreCorazon(e.Location)) Corazon_Click(); };
+            FondoPanel.MouseMove += (s, e) => FondoPanel.Cursor = SobreCorazon(e.Location) ? Cursors.Hand : Cursors.Default;
+            LikesLabel.Cursor = Cursors.Hand;
+            LikesLabel.Click += (s, e) => Corazon_Click();
             LogoPanel.Paint += LogoPanel_Paint;
             Producto1Panel.Paint += Producto_Paint;
             Producto2Panel.Paint += Producto_Paint;
@@ -280,8 +365,7 @@ namespace PITCHR
             // Corazón (a la izquierda del número de likes); se dibuja siempre que haya número
             if (LikesLabel.Visible && LikesLabel.Text.Length > 0)
             {
-                RectangleF corazon = new RectangleF(LikesLabel.Left - 34 * k, LikesLabel.Top + 2 * k, 28 * k, 28 * k);
-                DibujarCorazon(g, corazon, k);
+                DibujarCorazon(g, ZonaCorazon(), k, _tengoLike);
             }
 
             // Etiqueta naranja de la categoría (CategoriaLabel tiene AutoSize: mide lo que su texto).
@@ -295,7 +379,8 @@ namespace PITCHR
             }
         }
 
-        private static void DibujarCorazon(Graphics g, RectangleF r, float k)
+        // Corazón lleno (rojo, como en las tarjetas) si ya le dio like; si no, solo el contorno
+        private static void DibujarCorazon(Graphics g, RectangleF r, float k, bool lleno)
         {
             float x = r.X, y = r.Y, w = r.Width, h = r.Height;
             using (GraphicsPath p = new GraphicsPath())
@@ -305,6 +390,11 @@ namespace PITCHR
                 p.AddBezier(x + w * 0.50f, y + h * 0.28f, x + w * 0.58f, y + h * 0.08f, x + w * 0.84f, y + h * 0.08f, x + w * 0.92f, y + h * 0.26f);
                 p.AddBezier(x + w * 0.92f, y + h * 0.26f, x + w * 0.98f, y + h * 0.40f, x + w * 0.90f, y + h * 0.58f, x + w * 0.50f, y + h * 0.86f);
                 p.CloseFigure();
+                if (lleno)
+                {
+                    using (SolidBrush b = new SolidBrush(Color.FromArgb(232, 59, 59))) g.FillPath(b, p);
+                    return;
+                }
                 using (Pen pen = new Pen(Color.FromArgb(90, 90, 90), Math.Max(1.5f, 2.2f * k))) g.DrawPath(pen, p);
             }
         }
@@ -327,7 +417,8 @@ namespace PITCHR
         private void Producto_Paint(object sender, PaintEventArgs e)
         {
             Panel panel = (Panel)sender;
-            int indice = panel == Producto1Panel ? 0 : panel == Producto2Panel ? 1 : 2;
+            int indice = _mapaProductos[panel == Producto1Panel ? 0 : panel == Producto2Panel ? 1 : 2];
+            if (indice < 0) return;   // cuadro oculto (la marca no tiene ese producto)
             Graphics g = e.Graphics;
             Calidad(g);
             g.Clear(GrisFranja);

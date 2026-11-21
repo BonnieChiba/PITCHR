@@ -132,10 +132,10 @@ namespace PITCHR
                 return;
             }
 
-            // Igual que CONTACTAR en la página de producto: solo un inversionista puede escribirle al fundador
-            if (!Sesion.Activa || Sesion.Rol != 0)
+            // Igual que CONTACTAR en la página de producto: inversionistas y emprendedores pueden escribirle
+            if (!Sesion.Activa)
             {
-                MessageBox.Show("Inicia sesión como inversionista para enviarle un mensaje al fundador.", "PitchR");
+                MessageBox.Show("Inicia sesión para enviarle un mensaje al fundador.", "PitchR");
                 return;
             }
             if (EnviarMensaje != null) EnviarMensaje(this, _idFundador);

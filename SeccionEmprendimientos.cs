@@ -99,27 +99,14 @@ namespace PITCHR
         }
 
         // ==================== LIKES ====================
-        // Tabla integrative.entrepreneurshipLike: un renglón por cada like (emprendimiento + persona + rol).
+        // La lógica está en LikesEmprendimiento (la usa también la página del emprendimiento, SeccionProducto).
         // Así nadie puede dar like dos veces y el corazón se queda lleno la próxima vez que entre.
-        // La columna likes de entrepreneurship guarda el total, que es lo que se ve en la página de producto.
         private void CargarMisLikes()
         {
             _misLikes.Clear();
-            if (!Sesion.Activa) return;
             try
             {
-                using (DBConn dbTemp = new DBConn())
-                {
-                    MySqlCommand buscar = new MySqlCommand(
-                        "SELECT idEntrepreneurship FROM integrative.entrepreneurshipLike WHERE idUser = @yo AND role = @rol", dbTemp.dbConnection);
-                    buscar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
-                    buscar.Parameters.AddWithValue("@rol", Sesion.Rol);
-                    dbTemp.dbConnection.Open();
-                    using (MySqlDataReader lector = buscar.ExecuteReader())
-                    {
-                        while (lector.Read()) _misLikes.Add(Convert.ToInt32(lector["idEntrepreneurship"]));
-                    }
-                }
+                _misLikes = LikesEmprendimiento.MisLikes();
             }
             catch (Exception ex)
             {
@@ -131,37 +118,13 @@ namespace PITCHR
         // Después se actualiza el total en entrepreneurship.likes contando los likes que tiene.
         private void Corazon_Click(object sender, EventArgs e)
         {
-            if (!Sesion.Activa)
-            {
-                MessageBox.Show("Inicia sesión para darle like a un emprendimiento.", "PitchR", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (!LikesEmprendimiento.PuedeDarLike()) return;
 
             int id = ((TarjetaEmprendimiento)sender).Datos.Id;
             bool yaTeniaLike = _misLikes.Contains(id);
             try
             {
-                using (DBConn dbTemp = new DBConn())
-                {
-                    dbTemp.dbConnection.Open();
-
-                    MySqlCommand cambiar = new MySqlCommand(yaTeniaLike
-                        ? "DELETE FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id AND idUser = @yo AND role = @rol"
-                        : "INSERT IGNORE INTO integrative.entrepreneurshipLike (idEntrepreneurship, idUser, role) VALUES (@id, @yo, @rol)",
-                        dbTemp.dbConnection);
-                    cambiar.Parameters.AddWithValue("@id", id);
-                    cambiar.Parameters.AddWithValue("@yo", Sesion.IdUsuario);
-                    cambiar.Parameters.AddWithValue("@rol", Sesion.Rol);
-                    cambiar.ExecuteNonQuery();
-
-                    MySqlCommand total = new MySqlCommand(
-                        "UPDATE integrative.entrepreneurship SET likes = " +
-                        "(SELECT COUNT(*) FROM integrative.entrepreneurshipLike WHERE idEntrepreneurship = @id) " +
-                        "WHERE idEntrepreneurship = @id", dbTemp.dbConnection);
-                    total.Parameters.AddWithValue("@id", id);
-                    total.ExecuteNonQuery();
-                }
-
+                LikesEmprendimiento.Alternar(id, yaTeniaLike);
                 if (yaTeniaLike) _misLikes.Remove(id); else _misLikes.Add(id);
                 this.PintarCorazones();
             }
@@ -523,18 +486,18 @@ namespace PITCHR
                 Control c = par.Key;
                 Rectangle r = par.Value;
                 if (c == Contenido) continue;
-                c.Bounds = new Rectangle((int)Math.Round(r.X * _escala), (int)Math.Round(r.Y * _escala),
-                                         (int)Math.Round(r.Width * _escala), (int)Math.Round(r.Height * _escala));
-                if (!(c is TarjetaEmprendimiento)) c.Font = EscalarFuente(_fuentesOriginales[c], _escala);
+
+                // Solo se cambia lo que de verdad cambió (así nada "brinca" al mover el carrusel)
+                if (!(c is TarjetaEmprendimiento))
+                {
+                    Font fuente = EscalarFuente(_fuentesOriginales[c], _escala);
+                    if (c.Font != fuente) c.Font = fuente;
+                }
+                Rectangle nuevo = new Rectangle((int)Math.Round(r.X * _escala), (int)Math.Round(r.Y * _escala),
+                                                (int)Math.Round(r.Width * _escala), (int)Math.Round(r.Height * _escala));
+                if (c == BuscarTextBox) nuevo = PosicionBuscador(nuevo);
+                if (c.Bounds != nuevo) c.Bounds = nuevo;
             }
-            // Buscador: la letra se centra dentro de la píldora gris (va de y = 2 a y = 55 del diseño)
-            // y el cuadro de texto termina antes del borde azul de abajo, para no taparlo.
-            int altoLetra = TextRenderer.MeasureText("Bgjy", BuscarTextBox.Font).Height;
-            float pildoraArriba = 2 * _escala, pildoraAbajo = 55 * _escala;
-            int arriba = (int)Math.Round(pildoraArriba + (pildoraAbajo - pildoraArriba - altoLetra) / 2f);
-            int abajo = (int)Math.Floor(pildoraAbajo - 3 * _escala);   // deja libre el borde azul
-            BuscarTextBox.Top = arriba;
-            BuscarTextBox.Height = Math.Max(1, Math.Min(abajo - arriba, Math.Max(altoLetra, abajo - arriba)));
 
             Contenido.Bounds = new Rectangle(AutoScrollPosition.X, AutoScrollPosition.Y,
                                              (int)Math.Round(AnchoFigma * _escala), (int)Math.Round(altoDiseno * _escala));
@@ -542,6 +505,19 @@ namespace PITCHR
             ResumeLayout(true);
             Contenido.Invalidate(true);
             _ajustando = false;
+        }
+
+        // Buscador: la letra se centra dentro de la píldora gris (va de y = 2 a y = 55 del diseño)
+        // y el cuadro de texto termina antes del borde azul de abajo, para no taparlo.
+        // Se calcula de una sola vez, para que "Buscar" no se mueva cuando se recalcula el diseño.
+        private Rectangle PosicionBuscador(Rectangle escalado)
+        {
+            int altoLetra = TextRenderer.MeasureText("Bgjy", BuscarTextBox.Font).Height;
+            float pildoraArriba = 2 * _escala, pildoraAbajo = 55 * _escala;
+            int arriba = (int)Math.Round(pildoraArriba + (pildoraAbajo - pildoraArriba - altoLetra) / 2f);
+            int abajo = (int)Math.Floor(pildoraAbajo - 3 * _escala);   // deja libre el borde azul
+            int alto = Math.Max(1, Math.Min(abajo - arriba, Math.Max(altoLetra, abajo - arriba)));
+            return new Rectangle(escalado.X, arriba, escalado.Width, alto);
         }
 
         private static readonly Dictionary<string, Font> CacheFuentes = new Dictionary<string, Font>();

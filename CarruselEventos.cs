@@ -19,6 +19,7 @@ namespace PITCHR
         public string Descripcion { get; set; }
         public string Fecha { get; set; }        // texto tal como se muestra, ej. "13 de Octubre 2026"
         public string Horario { get; set; }      // ej. "11:00am - 8:00pm" (se muestra en el popup)
+        public string Lugar { get; set; }        // dirección del evento (se muestra en el popup, debajo del horario)
         public string DescripcionCompleta { get; set; }   // texto largo del popup; si está vacío se usa Descripcion
         public Image Imagen { get; set; }        // si es null se dibuja un degradado con ColorFondo
         public Color ColorFondo { get; set; }
@@ -244,6 +245,7 @@ namespace PITCHR
             Evento evento = _eventos[Indice(j)];
             if (Corazon(Tarjeta(j)).Contains(e.Location))
             {
+                if (!PuedeDarLike()) return;
                 evento.Favorito = !evento.Favorito;
                 Invalidate();
                 FavoritoCambiado?.Invoke(this, evento);
@@ -318,6 +320,14 @@ namespace PITCHR
                       TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis);
 
             DibujarCorazon(g, Corazon(t), ev.Favorito, k);
+        }
+
+        /// <summary>Sin sesión iniciada no se puede dar like: muestra el aviso y regresa false.</summary>
+        internal static bool PuedeDarLike()
+        {
+            if (Sesion.Activa) return true;
+            MessageBox.Show("Inicia sesión para darle like a un evento.", "PitchR");
+            return false;
         }
 
         internal static void DibujarImagen(Graphics g, Evento ev, RectangleF area)

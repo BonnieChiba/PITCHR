@@ -69,35 +69,40 @@ namespace PITCHR
         {
             return new List<Evento>
             {
-                new Evento(1, "Farmers Market", "Mercado agricultor en Distrito 1.", "13 de junio 2027",
-                           Imagen("FarmersMarket"), Color.FromArgb(96, 119, 74))
+                new Evento(1, "Premio Emprende", "Premiación estatal a startups.", "8 Dic 2026",
+                           Imagen("PremioEmprende"), Color.FromArgb(124, 58, 170))
                 {
-                    DescripcionCompleta = "Mercado agricultor en Distrito 1 con productos frescos de productores locales.",
-                    Horario = "9:00am - 3:00pm"
+                    DescripcionCompleta = "Ceremonia de premiación del Premio Chihuahua Emprende 2026, organizado por la Secretaría de Innovación y Desarrollo Económico (SIDE). Premia a los mejores emprendimientos del estado en 5 categorías: Visionario, Tradicional, Mujer Emprendedora, Sostenible e Impacto Social, con $100,000 al primer lugar y $50,000 al segundo en cada una.",
+                    Horario = "Horario por confirmar",
+                    Lugar = "Chihuahua capital (sede por confirmar)"
                 },
-                new Evento(2, "Japan Market", "Mercado de emprendimientos locales.", "24 de mayo 2027",
-                           Imagen("JapanMarket"), Color.FromArgb(240, 74, 120))
+                new Evento(2, "Tertulia Navideña", "Bazar navideño local.", "5 - 21 Dic 2026",
+                           Imagen("TertuliaNavidena"), Color.FromArgb(220, 38, 48))
                 {
-                    DescripcionCompleta = "Mercado de emprendimientos locales con temáticas asiáticas y japonesas.",
-                    Horario = "11:00am - 8:00pm"
+                    DescripcionCompleta = "Bazar navideño organizado por La Tertulia Bazar con emprendimientos y marcas locales. Ideal para comprar regalos y apoyar negocios de Chihuahua. Días: 5, 6, 12, 13, 19, 20 y 21 de diciembre.",
+                    Horario = "1:00pm - 8:00pm",
+                    Lugar = "Plaza Cantera Cinco, Av. de la Cantera 9301, La Haciendita, Chihuahua"
                 },
                 new Evento(IdPitchRFest, "PitchR Fest", "Evento de presentación de emprendimientos.", "3 de Enero de 2027",
                            Imagen("PitchRFest"), Color.FromArgb(56, 160, 230))
                 {
                     DescripcionCompleta = "Conoce los proyectos en vivo: presentaciones, demostraciones y conecta cara a cara con los fundadores antes de invertir.",
-                    Horario = "10:00am - 6:00pm"
+                    Horario = "10:00am - 6:00pm",
+                    Lugar = "UTCH BIS, Carretera Chihuahua-Aldama Km 3, Colinas del León, Chihuahua"
                 },
-                new Evento(4, "Scrub Daddy Fest", "Evento de productos de limpieza.", "24 de Enero de 2027",
-                           Imagen("ScrubDaddyFest"), Color.FromArgb(250, 204, 21))
+                new Evento(4, "Curso Cobranza", "Taller de COPARMEX.", "3 - 4 Dic 2026",
+                           Imagen("CursoCobranza"), Color.FromArgb(22, 128, 74))
                 {
-                    DescripcionCompleta = "Evento de productos de limpieza con demostraciones, juegos y regalos.",
-                    Horario = "10:00am - 6:00pm"
+                    DescripcionCompleta = "Curso-taller \"Crédito y Cobranza\" de COPARMEX Chihuahua: estrategias para reducir la morosidad, mejorar la recuperación de cartera y planear el próximo año. Imparte Lic. Marco Ruvalcaba. Costo: $2,500 - $3,828.",
+                    Horario = "9:00am - 2:00pm",
+                    Lugar = "COPARMEX Chihuahua, C. Juan Aldama 1800, Zona Centro, Chihuahua"
                 },
-                new Evento(5, "XV de Ruby", "Celebración de XV años.", "12 de Abril de 2027",
-                           Imagen("XVRuby"), Color.FromArgb(124, 58, 237))
+                new Evento(5, "Curso Finanzas", "Taller de COPARMEX.", "8 - 9 Dic 2026",
+                           Imagen("FinanzasNoFinancieros"), Color.FromArgb(16, 96, 60))
                 {
-                    DescripcionCompleta = "Celebración de XV años con cena, música, baile y convivencia con familia y amigos.",
-                    Horario = "7:00pm - 2:00am"
+                    DescripcionCompleta = "Curso \"Finanzas para no Financieros\" de COPARMEX Chihuahua sobre presupuesto y flujo de efectivo para emprendedores y dueños de negocio. Instructora: CP Angelina Solórzano. Costo: $2,650 - $4,060.",
+                    Horario = "9:00am - 2:00pm",
+                    Lugar = "COPARMEX Chihuahua, C. Juan Aldama 1800, Zona Centro, Chihuahua"
                 },
             };
         }
