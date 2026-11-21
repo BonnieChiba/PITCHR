@@ -266,7 +266,9 @@ namespace PITCHR
                 opcion.Font = EscalarFuente(new Font(_fuentesOriginales[opcion].FontFamily, _fuentesOriginales[opcion].Size,
                     elegida ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel), _escala);
             }
-            FiltrarBoton.Text = _categoriaElegida == null ? "Filtrar" : "Filtrar •";
+            // Con filtro: el botón muestra la categoría elegida y se pinta naranja (ver BotonPildora_Paint)
+            FiltrarBoton.Text = _categoriaElegida ?? "Filtrar";
+            FiltrarBoton.Invalidate();
         }
 
         // ==================== CARRUSEL ====================
@@ -638,6 +640,30 @@ namespace PITCHR
         }
 
         /// <summary>Botones redondeados: Iniciar Sesión, Evento presencial, Ver más, Filtrar y la lupa.</summary>
+        // Escribe el texto del botón Filtrar en un solo renglón; si no cabe, baja la letra poco a poco.
+        // Si aun así no cabe (ej. "Hogar y Limpieza"), lo parte en dos renglones por los espacios.
+        private void DibujarTextoFiltro(Graphics g, string texto, Font fuente, Rectangle rt)
+        {
+            TextFormatFlags renglon = TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
+            for (float factor = 1f; factor >= 0.7f; factor -= 0.05f)
+            {
+                using (Font f = new Font(fuente.FontFamily, fuente.Size * factor, fuente.Style, fuente.Unit))
+                {
+                    if (TextRenderer.MeasureText(texto, f, Size.Empty, renglon).Width <= rt.Width)
+                    {
+                        TextRenderer.DrawText(g, texto, f, rt, Color.White, renglon);
+                        return;
+                    }
+                }
+            }
+            int espacio = texto.IndexOf(' ', texto.Length / 2 - 1 < 0 ? 0 : texto.Length / 2 - 1);
+            if (espacio < 0) espacio = texto.LastIndexOf(' ');
+            string dosRenglones = espacio > 0 ? texto.Substring(0, espacio) + "\n" + texto.Substring(espacio + 1) : texto;
+            using (Font f = new Font(fuente.FontFamily, fuente.Size * 0.7f, fuente.Style, fuente.Unit))
+                TextRenderer.DrawText(g, dosRenglones, f, rt, Color.White,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis);
+        }
+
         private void BotonPildora_Paint(object sender, PaintEventArgs e)
         {
             Button boton = (Button)sender;
@@ -666,6 +692,7 @@ namespace PITCHR
 
             bool encima = boton.Enabled && boton.Cursor == Cursors.Hand && boton.ClientRectangle.Contains(boton.PointToClient(Cursor.Position));
             Color color = _coloresPildora[boton];
+            if (boton == FiltrarBoton && _categoriaElegida != null) color = Naranja;   // hay un filtro puesto
             if (encima) color = ControlPaint.Light(color, 0.15f);
             using (GraphicsPath ruta = Redondeado(area, area.Height / 2f))
             using (SolidBrush b = new SolidBrush(color))
@@ -679,11 +706,13 @@ namespace PITCHR
             }
             if (boton == FiltrarBoton)
             {
-                // "Filtrar" + flecha hacia abajo
-                Rectangle rt = Rectangle.Round(new RectangleF(area.X + 18 * k, area.Y, 80 * k, area.Height));
-                TextRenderer.DrawText(g, boton.Text, boton.Font, rt, Color.White,
-                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
-                float cx = area.X + 108 * k, cy = area.Y + area.Height / 2f;
+                // "Filtrar" (o la categoría elegida) + flecha hacia abajo.
+                // Con filtro la flecha se recorre a la derecha para dejar más espacio al nombre de la categoría.
+                bool conFiltro = _categoriaElegida != null;
+                float xFlecha = conFiltro ? 120 * k : 108 * k;
+                Rectangle rt = Rectangle.Round(new RectangleF(area.X + 16 * k, area.Y, xFlecha - 30 * k, area.Height));
+                this.DibujarTextoFiltro(g, boton.Text, boton.Font, rt);
+                float cx = area.X + xFlecha, cy = area.Y + area.Height / 2f;
                 using (Pen p = new Pen(Color.White, 2.6f * k))
                 {
                     p.StartCap = LineCap.Round; p.EndCap = LineCap.Round; p.LineJoin = LineJoin.Round;

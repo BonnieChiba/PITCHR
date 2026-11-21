@@ -543,9 +543,96 @@ namespace PITCHR
             Mensaje elegido = _mensajes.Find(m => m.EsMio && m.Burbuja.Contains(e.Location));
             if (elegido == null) return;
 
-            _menuMensaje.Items.Clear();
-            _menuMensaje.Items.Add("Editar mensaje", null, (s, a) => this.EmpezarEdicion(elegido));
+            // Mismo estilo que el menú del ícono de perfil: blanco, esquinas redondeadas y texto gris en negritas
+            if (_menuMensaje != null) _menuMensaje.Dispose();
+            _menuMensaje = new ContextMenuStrip();
+            _menuMensaje.Font = Fuente(16, FontStyle.Bold);
+            _menuMensaje.ShowImageMargin = false;
+            _menuMensaje.Padding = Padding.Empty;
+            _menuMensaje.Renderer = new MenuMensajeRenderer();
+
+            ToolStripMenuItem editar = new ToolStripMenuItem("Editar mensaje", null, (s, a) => this.EmpezarEdicion(elegido));
+            editar.AutoSize = false;
+            // Ancho justo: margen + texto + espacio + lápiz + margen (sin espacio vacío a la derecha)
+            int alto = (int)(40 * Escala);
+            int anchoTexto = TextRenderer.MeasureText(editar.Text, _menuMensaje.Font, Size.Empty, TextFormatFlags.SingleLine | TextFormatFlags.NoPadding).Width;
+            editar.Size = new Size((int)(9 * Escala) + anchoTexto + (int)(alto * 0.3f + alto * 0.42f) + (int)(18 * Escala), alto);
+            editar.Padding = new Padding((int)(9 * Escala), 0, 0, 0);
+            _menuMensaje.Items.Add(editar);
+
+            // Las esquinas redondeadas se recortan con el tamaño REAL del menú, cuando ya se abrió
+            // (antes de abrirse Windows todavía no lo ha medido y el recorte salía demasiado chico).
+            ContextMenuStrip menu = _menuMensaje;
+            menu.Opened += (s, a) =>
+            {
+                using (GraphicsPath ruta = Redondeado(new RectangleF(0, 0, menu.Width, menu.Height), 12 * Escala))
+                    menu.Region = new Region(ruta);
+            };
+
             _menuMensaje.Show(MensajesLista, e.Location);
+        }
+
+        /// <summary>Dibuja el menú de "Editar mensaje" igual que el menú de perfil de HomePage (fondo blanco, texto gris, ícono de lápiz).</summary>
+        private class MenuMensajeRenderer : ToolStripProfessionalRenderer
+        {
+            private static readonly Color GrisTexto = Color.FromArgb(174, 172, 172);   // #AEACAC
+
+            protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+            {
+                e.Graphics.Clear(Color.White);
+            }
+
+            protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+            {
+                // Sin borde: las esquinas redondeadas las da la Region del menú
+            }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                Color fondo = e.Item.Selected ? Color.FromArgb(244, 246, 250) : Color.White;
+                using (SolidBrush b = new SolidBrush(fondo))
+                    e.Graphics.FillRectangle(b, new Rectangle(Point.Empty, e.Item.Size));
+            }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                // Windows también llama a este método para el texto del atajo de teclado (vacío);
+                // sin esta línea se dibujaba un segundo lápiz encima de "Editar".
+                if (string.IsNullOrEmpty(e.Text)) return;
+
+                Color color = e.Item.Selected ? Color.FromArgb(110, 110, 110) : GrisTexto;
+                Rectangle area = new Rectangle(e.Item.Padding.Left, 0, e.Item.Width, e.Item.Height);
+                TextRenderer.DrawText(e.Graphics, e.Text, e.TextFont, area, color,
+                    TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.SingleLine);
+                // El lápiz va justo después del texto (así nunca queda pegado al borde ni se recorta)
+                int anchoTexto = TextRenderer.MeasureText(e.Graphics, e.Text, e.TextFont, Size.Empty,
+                    TextFormatFlags.SingleLine | TextFormatFlags.NoPadding).Width;
+                DibujarLapiz(e.Graphics, e.Item.Padding.Left + anchoTexto + e.Item.Height * 0.3f, e.Item.Height, color);
+            }
+
+            // Ícono de lápiz: un rectángulo inclinado 45° con su punta, dentro de un cuadro de "lado" pixeles
+            private static void DibujarLapiz(Graphics g, float x, float altoFila, Color color)
+            {
+                float lado = altoFila * 0.42f;
+                float cx = x + lado / 2f, cy = altoFila / 2f;
+                GraphicsState antes = g.Save();
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.TranslateTransform(cx, cy);
+                g.RotateTransform(45f);
+                float largo = lado * 1.25f, ancho = lado * 0.36f, punta = ancho * 0.9f;
+                using (Pen lapiz = new Pen(color, Math.Max(1.4f, lado / 9f)))
+                {
+                    lapiz.LineJoin = LineJoin.Round;
+                    float arriba = -largo / 2f, abajo = largo / 2f - punta;
+                    // cuerpo + punta
+                    g.DrawPolygon(lapiz, new[] {
+                        new PointF(-ancho / 2f, arriba), new PointF(ancho / 2f, arriba),
+                        new PointF(ancho / 2f, abajo), new PointF(0, largo / 2f), new PointF(-ancho / 2f, abajo) });
+                    // línea de la goma
+                    g.DrawLine(lapiz, -ancho / 2f, arriba + ancho * 0.8f, ancho / 2f, arriba + ancho * 0.8f);
+                }
+                g.Restore(antes);
+            }
         }
 
 
@@ -569,8 +656,6 @@ namespace PITCHR
         private void PrepararDiseno()
         {
             AltoDiseno = 717f;
-            _menuMensaje = new ContextMenuStrip();
-            _menuMensaje.Font = new Font("Segoe UI", 10f);
 
             foreach (Control c in new Control[] { ConversacionesLista, MensajesLista, ContactoFotoPanel, EncabezadoPanel })
                 ActivarDobleBuffer(c);
