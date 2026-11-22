@@ -28,6 +28,36 @@ namespace PITCHR
         // Carpeta (junto al .exe) donde se guardan las fotos. En la base solo se guarda el nombre del archivo.
         protected const string CarpetaImagenes = "Imagenes";
 
+        private static string _rutaImagenes;
+
+        /// <summary>
+        /// Ruta completa de la carpeta Imagenes. Primero busca junto al .exe; si ahí no existe
+        /// (por ejemplo al abrir el .exe de bin\Release), sube por las carpetas de arriba y usa
+        /// la que encuentre (como bin\Debug\Imagenes). Si no hay ninguna, usa la del .exe.
+        /// </summary>
+        public static string RutaImagenes
+        {
+            get
+            {
+                if (_rutaImagenes != null) return _rutaImagenes;
+                string junto = Path.Combine(Application.StartupPath, CarpetaImagenes);
+                if (Directory.Exists(junto)) return _rutaImagenes = junto;
+
+                DirectoryInfo carpeta = new DirectoryInfo(Application.StartupPath).Parent;
+                for (int nivel = 0; nivel < 4 && carpeta != null; nivel++, carpeta = carpeta.Parent)
+                {
+                    foreach (string opcion in new[] {
+                        Path.Combine(carpeta.FullName, CarpetaImagenes),
+                        Path.Combine(carpeta.FullName, "Debug", CarpetaImagenes),
+                        Path.Combine(carpeta.FullName, "bin", "Debug", CarpetaImagenes) })
+                    {
+                        if (Directory.Exists(opcion)) return _rutaImagenes = opcion;
+                    }
+                }
+                return _rutaImagenes = junto;
+            }
+        }
+
         protected static readonly Color AzulPitcher = Color.FromArgb(0, 96, 214);     // #0060D6
         protected static readonly Color AzulBoton = Color.FromArgb(8, 127, 223);      // #087FDF
         protected static readonly Color Naranja = Color.FromArgb(248, 110, 56);       // #F86E38
@@ -158,7 +188,7 @@ namespace PITCHR
                     using (Image original = Image.FromStream(datos))
                         return new Bitmap(original);
                 }
-                return LeerArchivo(Path.Combine(Application.StartupPath, CarpetaImagenes, valor));
+                return LeerArchivo(Path.Combine(RutaImagenes, valor));
             }
             catch (Exception)
             {
@@ -177,7 +207,7 @@ namespace PITCHR
         /// <summary>Copia una foto elegida a la carpeta Imagenes y regresa el nombre con el que quedó (para guardarlo en la base).</summary>
         protected static string CopiarAImagenes(string rutaOrigen)
         {
-            string carpeta = Path.Combine(Application.StartupPath, CarpetaImagenes);
+            string carpeta = RutaImagenes;
             Directory.CreateDirectory(carpeta);
             string nombre = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + Path.GetFileName(rutaOrigen);
             File.Copy(rutaOrigen, Path.Combine(carpeta, nombre), true);

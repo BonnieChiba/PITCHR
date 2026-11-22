@@ -12,6 +12,7 @@ namespace PITCHR
         public IniciaAqui()
         {
             InitializeComponent();
+            Program.PonerIcono(this);   // círculo con la R en la ventana y en la barra de tareas
             PrepararDiseno();   // estilo del Figma + adaptarse a cualquier pantalla (ver región de abajo)
         }
 

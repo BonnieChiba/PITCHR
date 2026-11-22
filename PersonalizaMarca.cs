@@ -15,6 +15,7 @@ namespace PITCHR
         public PersonalizaMarca()
         {
             InitializeComponent();
+            Program.PonerIcono(this);   // círculo con la R en la ventana y en la barra de tareas
         }
     }
 }

@@ -34,6 +34,7 @@ namespace PITCHR
         public RecuperarContrasena()
         {
             InitializeComponent();
+            Program.PonerIcono(this);   // círculo con la R en la ventana y en la barra de tareas
             PrepararDiseno();   // estilo del Figma + adaptarse a cualquier pantalla (ver región de abajo)
 
             // Las pantallas se ocultan con Hide(); si cierran esta ventana con la X, se cierra toda la aplicación.

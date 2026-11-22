@@ -311,14 +311,14 @@ namespace PITCHR
             CampoImagen campo = _imagenes[recuadro];
             campo.Archivo = string.IsNullOrWhiteSpace(archivo) ? null : archivo.Trim();
             campo.RutaNueva = null;
-            campo.Vista = campo.Archivo == null ? null : this.LeerImagen(Path.Combine(Application.StartupPath, CarpetaImagenes, campo.Archivo));
+            campo.Vista = campo.Archivo == null ? null : this.LeerImagen(Path.Combine(SeccionBase.RutaImagenes, campo.Archivo));
             recuadro.Invalidate();
         }
 
         // Copia a la carpeta Imagenes las fotos nuevas y cambia su "Archivo" por el nombre con el que quedó
         private void GuardarImagenesNuevas()
         {
-            string carpeta = Path.Combine(Application.StartupPath, CarpetaImagenes);
+            string carpeta = SeccionBase.RutaImagenes;
             Directory.CreateDirectory(carpeta);
 
             foreach (CampoImagen campo in _imagenes.Values)

@@ -25,6 +25,7 @@ namespace PITCHR
         public CrearCuentaEmprendedor()
         {
             InitializeComponent();
+            Program.PonerIcono(this);   // círculo con la R en la ventana y en la barra de tareas
             PrepararDiseno();   // aplica el estilo visual y adapta la pantalla a cualquier tamaño
 
             // Las pantallas se ocultan con Hide(); si cierran esta ventana con la X, se cierra toda la aplicación.

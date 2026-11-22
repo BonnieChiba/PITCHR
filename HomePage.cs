@@ -37,6 +37,7 @@ namespace PITCHR
         public HomePage(Seccion seccionInicial)
         {
             InitializeComponent();
+            Program.PonerIcono(this);   // círculo con la R en la ventana y en la barra de tareas
             PrepararDiseno();   
             _seccionInicial = seccionInicial;
 

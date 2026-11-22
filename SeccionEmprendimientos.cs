@@ -150,7 +150,7 @@ namespace PITCHR
         {
             if (string.IsNullOrWhiteSpace(archivo)) return null;
 
-            string ruta = Path.Combine(Application.StartupPath, CarpetaImagenes, archivo.Trim());
+            string ruta = Path.Combine(SeccionBase.RutaImagenes, archivo.Trim());
             if (!File.Exists(ruta)) return null;
 
             // Se copia en memoria para no dejar el archivo "bloqueado" mientras el programa está abierto
