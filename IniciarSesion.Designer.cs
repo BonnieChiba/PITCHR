@@ -189,7 +189,7 @@
             this.InvierteText.Name = "InvierteText";
             this.InvierteText.Size = new System.Drawing.Size(520, 290);
             this.InvierteText.TabIndex = 1;
-            this.InvierteText.Text = "Invierte\r\nComparte\r\nExpande";
+            this.InvierteText.Text = "Conecta\r\nComparte\r\nExpande";
             this.InvierteText.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // ChihuahuaText

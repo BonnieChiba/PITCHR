@@ -193,7 +193,7 @@
             this.SubtituloLabel.Name = "SubtituloLabel";
             this.SubtituloLabel.Size = new System.Drawing.Size(700, 44);
             this.SubtituloLabel.TabIndex = 6;
-            this.SubtituloLabel.Text = "Invierte hoy en el futuro de mañana";
+            this.SubtituloLabel.Text = "Conecta hoy con el futuro de mañana";
             this.SubtituloLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FiltrarBoton
